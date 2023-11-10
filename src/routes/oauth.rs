@@ -17,7 +17,7 @@ use oauth2::{
 };
 
 use chrono::Utc;
-use sqlx::SqlitePool;
+use sqlx::PgPool;
 use std::collections::HashMap;
 use uuid::Uuid;
 
@@ -37,7 +37,7 @@ fn get_client(hostname: String) -> Result<BasicClient, AppError> {
         "https"
     };
 
-    let redirect_url = format!("{}://{}/oauth_return", protocol, hostname);
+    let redirect_url = format!("{}://{}/auth/callback", protocol, hostname);
 
     // Set up the config for the Google OAuth2 process.
     let client = BasicClient::new(
@@ -57,7 +57,7 @@ fn get_client(hostname: String) -> Result<BasicClient, AppError> {
 pub async fn login(
     Extension(user_data): Extension<Option<UserData>>,
     Query(mut params): Query<HashMap<String, String>>,
-    State(db_pool): State<SqlitePool>,
+    State(db_pool): State<PgPool>,
     Host(hostname): Host,
 ) -> Result<Redirect, AppError> {
     if user_data.is_some() {
@@ -66,7 +66,7 @@ pub async fn login(
     }
 
     let return_url = params
-        .remove("return_url")
+        .remove("next")
         .unwrap_or_else(|| "/".to_string());
     // TODO: check if return_url is valid
 
@@ -83,7 +83,7 @@ pub async fn login(
         .url();
 
     sqlx::query(
-        "INSERT INTO oauth2_state_storage (csrf_state, pkce_code_verifier, return_url) VALUES (?, ?, ?);",
+        "INSERT INTO oauth2_state_storage (csrf_state, pkce_code_verifier, return_url) VALUES ($1, $2, $3);",
     )
     .bind(csrf_state.secret())
     .bind(pkce_code_verifier.secret())
@@ -96,14 +96,14 @@ pub async fn login(
 
 pub async fn oauth_return(
     Query(mut params): Query<HashMap<String, String>>,
-    State(db_pool): State<SqlitePool>,
+    State(db_pool): State<PgPool>,
     Host(hostname): Host,
 ) -> Result<impl IntoResponse, AppError> {
     let state = CsrfToken::new(params.remove("state").ok_or("OAuth: without state")?);
     let code = AuthorizationCode::new(params.remove("code").ok_or("OAuth: without code")?);
 
     let query: (String, String) = sqlx::query_as(
-        r#"DELETE FROM oauth2_state_storage WHERE csrf_state = ? RETURNING pkce_code_verifier,return_url"#,
+        r#"DELETE FROM oauth2_state_storage WHERE csrf_state = $1 RETURNING pkce_code_verifier,return_url;"#,
     )
     .bind(state.secret())
     .fetch_one(&db_pool)
@@ -121,6 +121,8 @@ pub async fn oauth_return(
     //     .execute(&db_pool)
     //     .await;
 
+    println!("oauth_return");
+
     let pkce_code_verifier = query.0;
     let return_url = query.1;
     let pkce_code_verifier = PkceCodeVerifier::new(pkce_code_verifier);
@@ -137,6 +139,8 @@ pub async fn oauth_return(
     .map_err(|_| "OAuth: exchange_code failure")?
     .map_err(|_| "OAuth: tokio spawn blocking failure")?;
     let access_token = token_response.access_token().secret();
+
+    println!("pkce_verifier");
 
     // Get user info from Google
     let url =
@@ -163,21 +167,26 @@ pub async fn oauth_return(
             .with_user_message("Your email address is not verified. Please verify your email address with Google and try again.".to_owned()));
     }
 
+    println!("google_verifier");
+
     // Check if user exists in database
     // If not, create a new user
-    let query: Result<(i64,), _> = sqlx::query_as(r#"SELECT id FROM users WHERE email=?"#)
+    let query: Result<(i64,), _> = sqlx::query_as(r#"SELECT id FROM users WHERE email=$1;"#)
         .bind(email.as_str())
         .fetch_one(&db_pool)
         .await;
     let user_id = if let Ok(query) = query {
         query.0
     } else {
-        let query: (i64,) = sqlx::query_as("INSERT INTO users (email) VALUES (?) RETURNING id")
-            .bind(email)
-            .fetch_one(&db_pool)
-            .await?;
+        let query: (i64,) =
+            sqlx::query_as(r#"INSERT INTO users (email) VALUES ($1) RETURNING id;"#)
+                .bind(email)
+                .fetch_one(&db_pool)
+                .await?;
         query.0
     };
+
+    println!("create_user {user_id}");
 
     // Create a session for the user
     let session_token_p1 = Uuid::new_v4().to_string();
@@ -192,9 +201,9 @@ pub async fn oauth_return(
     let now = Utc::now().timestamp();
 
     sqlx::query(
-        "INSERT INTO user_sessions
+        r#"INSERT INTO user_sessions
         (session_token_p1, session_token_p2, user_id, created_at, expires_at)
-        VALUES (?, ?, ?, ?, ?);",
+        VALUES ($1, $2, $3, $4, $5);"#,
     )
     .bind(session_token_p1)
     .bind(session_token_p2)
@@ -204,17 +213,23 @@ pub async fn oauth_return(
     .execute(&db_pool)
     .await?;
 
-    Ok((headers, Redirect::to(return_url.as_str())))
+    println!("set cookie");
+
+    match query{
+        Ok(_)=>  Ok((headers, Redirect::to(return_url.as_str()))),
+       _=>  Ok((headers, Redirect::to("/auth/signup")))
+    }
+
 }
 
 pub async fn logout(
     cookie: Option<TypedHeader<Cookie>>,
-    State(db_pool): State<SqlitePool>,
+    State(db_pool): State<PgPool>,
 ) -> Result<impl IntoResponse, AppError> {
     if let Some(cookie) = cookie {
         if let Some(session_token) = cookie.get("session_token") {
             let session_token: Vec<&str> = session_token.split('_').collect();
-            let _ = sqlx::query("DELETE FROM user_sessions WHERE session_token_1 = ?")
+            let _ = sqlx::query("DELETE FROM user_sessions WHERE session_token_1 = $1;")
                 .bind(session_token[0])
                 .execute(&db_pool)
                 .await;

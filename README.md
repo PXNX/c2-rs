@@ -18,7 +18,7 @@ https://rust-oauth.marcoinacio.com/
 
 * Create file named `.env` at the root of the repository (same folder as the README.md), containing:
 
-      DATABASE_URI=sqlite://db/db.sqlite3
+      DATABASE_URI=postgres://db/db.postgres3
       GOOGLE_CLIENT_ID=your_google_oauth_id
       GOOGLE_CLIENT_SECRET=your_google_oauth_secret
 
@@ -34,7 +34,7 @@ https://rust-oauth.marcoinacio.com/
 
 * Create file named `.env` at the root of the repository (same folder as the README.md), containing:
 
-      DATABASE_URI=sqlite://db/db.sqlite3
+      DATABASE_URI=postgres://db/db.postgres3
       GOOGLE_CLIENT_ID=your_google_oauth_id
       GOOGLE_CLIENT_SECRET=your_google_oauth_secret
 
@@ -48,7 +48,7 @@ https://rust-oauth.marcoinacio.com/
 
 * Build your OCI (Docker image) with `docker build -t ghcr.io/randommm/rust-axum-with-google-oauth .`.
 
-* Deploy with `docker run --env DATABASE_URI="sqlite://db/db.sqlite3" --env GOOGLE_CLIENT_ID=your_google_oauth_id --env GOOGLE_CLIENT_SECRET=your_google_oauth_secret --rm -p 3011:3011 -v db:db ghcr.io/randommm/rust-axum-with-google-oauth`, then just browse your website at `http://localhost:3011`.
+* Deploy with `docker run --env DATABASE_URI="postgres://db/db.postgres3" --env GOOGLE_CLIENT_ID=your_google_oauth_id --env GOOGLE_CLIENT_SECRET=your_google_oauth_secret --rm -p 3011:3011 -v db:db ghcr.io/randommm/rust-axum-with-google-oauth`, then just browse your website at `http://localhost:3011`.
 
 ## Optional extra: production deploy with Nginx
 

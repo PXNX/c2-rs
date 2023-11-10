@@ -1,5 +1,5 @@
 use dotenvy::var;
-use rust_axum_with_google_oauth::run;
+use c2::run;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

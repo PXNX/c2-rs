@@ -1,18 +1,13 @@
 <!doctype html>
 <title>{% block title %}{% endblock %} | My Site</title>
-<nav>
-  <ul>
-    <li><a href="/">Home page</a></li>
-    <li><a href="/about">About</a></li>
-    {% if user_email %}
-     <li><a href="/profile">Profile</a></li>
-     <li> Logged as {{ user_email }} (<a href="/logout">Logout</a>) </li>
-    {% else %}
-    <li> <a href="/login{{ login_return_url }}">Login or signup</a> </li>
-    {% endif %}
-    {% block extra_links %}{% endblock %}
-  </ul>
-</nav>
+
+<script src="//code.iconify.design/1/1.0.6/iconify.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/htmx.org@1.9.8"
+  integrity="sha384-rgjA7mptc2ETQqXoYC3/zJvkU7K/aP44Y+z7xQuJiVnB/422P/Ak+F/AqFR7E4Wr" crossorigin="anonymous"></script>
+
+
 <div class="content">
 
   {% block body %}{% endblock %}

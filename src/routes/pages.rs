@@ -15,7 +15,7 @@ pub async fn index<T>(
 ) -> Result<impl IntoResponse, AppError> {
     let tmpl = env.get_template("index.html")?;
     let user_email = user_data.map(|s| s.user_email);
-    let login_return_url = "?return_url=".to_owned() + &*request.uri().to_string();
+    let login_return_url = "?next=".to_owned() + &*request.uri().to_string();
     let content = tmpl.render(context!(
         user_email => user_email,
         login_return_url => login_return_url,
@@ -43,6 +43,17 @@ pub async fn profile(
     State(env): State<Environment<'static>>,
 ) -> Result<impl IntoResponse, AppError> {
     let tmpl = env.get_template("profile.html")?;
+    let user_email = user_data.map(|s| s.user_email);
+    let content = tmpl.render(context!(user_email => user_email))?;
+    Ok(Html(content))
+}
+
+
+pub async fn settings(
+    Extension(user_data): Extension<Option<UserData>>,
+    State(env): State<Environment<'static>>,
+) -> Result<impl IntoResponse, AppError> {
+    let tmpl = env.get_template("settings.html")?;
     let user_email = user_data.map(|s| s.user_email);
     let content = tmpl.render(context!(user_email => user_email))?;
     Ok(Html(content))
