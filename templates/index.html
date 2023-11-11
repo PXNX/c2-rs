@@ -2,19 +2,33 @@
 {% block title %}Index{% endblock %}
 {% block body %}
 
-<body>
+<body class="p-4">
 INDEX
 
-<li><a href="/profile">Profile</a></li>
+<div class="stats bg-primary text-primary-content">
+
+
+    <div class="w-full stat ">
+        <div class="stat-title">Current balance</div>
+        <div class="stat-value">$89,400</div>
+        <div class="stat-actions">
+
+            <button class="btn btn-sm btn-success">Add funds</button>
+            <button class="btn btn-sm">Withdrawal</button>
+        </div>
+    </div>
+
+</div>
+
+<li><a href="/u">Profile</a></li>
 <li> Logged as {{ user_email }} (<a href="/logout">Logout</a>) </li>
 
-<a href="/settings" role="button"
-   class="btn  btn-secondary">Settings</a>
+
 
 <a href="/about" role="button"
    class="btn  btn-primary">About</a>
 
-<a href="/profile" role="button"
+<a href="/u" role="button"
    class="btn  btn-secondary">Profile</a>
 
 

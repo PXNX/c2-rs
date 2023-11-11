@@ -44,7 +44,7 @@ pub async fn profile(
     Extension(user_data): Extension<Option<UserData>>,
     State(env): State<Environment<'static>>,
 ) -> Result<impl IntoResponse, AppError> {
-    let tmpl = env.get_template("profile.html")?;
+    let tmpl = env.get_template("u/index.html")?;
     let user_email = user_data.map(|s| s.user_email);
     let content = tmpl.render(context!(user_email => user_email))?;
     Ok(Html(content))
@@ -55,7 +55,7 @@ pub async fn settings(
     Extension(user_data): Extension<Option<UserData>>,
     State(env): State<Environment<'static>>,
 ) -> Result<impl IntoResponse, AppError> {
-    let tmpl = env.get_template("settings.html")?;
+    let tmpl = env.get_template("u/settings.html")?;
     let user_email = user_data.map(|s| s.user_email);
     let content = tmpl.render(context!(user_email => user_email))?;
     Ok(Html(content))
@@ -77,6 +77,7 @@ pub async fn article(
     Path(article_id): Path<i64>,
     State(env): State<Environment<'static>>,
 ) -> Result<impl IntoResponse, AppError> {
+    //TODO instead of view, just go with ifs in template?
     let tmpl = env.get_template("articles/view.html")?;
     let user_email = user_data.map(|s| s.user_email);
     let content = tmpl.render(context!(user_email => article_id))?;

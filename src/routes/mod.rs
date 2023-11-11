@@ -70,9 +70,10 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         .route("/", get(index))
         .route("/about", get(about))
         .route("/settings", get(settings))
-        .route("/profile", get(profile))
-        .route("/articles", get(articles))
-        .route("/a/:id", get(article))
+        .route("/u", get(profile))
+
+        .nest("/a", article_router())
+
         .route_layer(middleware::from_fn_with_state(
             app_state.clone(),
             check_auth,
@@ -98,6 +99,14 @@ fn auth_router() -> Router<AppState> {
         .route("/callback", get(oauth_return))
         .route("/logout", get(logout))
 }
+
+fn article_router() -> Router<AppState> {
+    Router::new()
+        .route("/", get(articles))
+        .route("/:id", get(article))
+}
+
+
 
 fn visit(path: &Path, cb: &mut dyn FnMut(PathBuf)) -> io::Result<()> {
     for e in read_dir(path)? {
