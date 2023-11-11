@@ -46,29 +46,29 @@ fn get_client(hostname: String) -> Result<BasicClient, AppError> {
         auth_url,
         Some(token_url),
     )
-    .set_redirect_uri(RedirectUrl::new(redirect_url).map_err(|_| "OAuth: invalid redirect URL")?)
-    .set_revocation_uri(
-        RevocationUrl::new("https://oauth2.googleapis.com/revoke".to_string())
-            .map_err(|_| "OAuth: invalid revocation endpoint URL")?,
-    );
+        .set_redirect_uri(RedirectUrl::new(redirect_url).map_err(|_| "OAuth: invalid redirect URL")?)
+        .set_revocation_uri(
+            RevocationUrl::new("https://oauth2.googleapis.com/revoke".to_string())
+                .map_err(|_| "OAuth: invalid revocation endpoint URL")?,
+        );
     Ok(client)
 }
 
-pub async fn login(
+pub async fn signin(
     Extension(user_data): Extension<Option<UserData>>,
     Query(mut params): Query<HashMap<String, String>>,
     State(db_pool): State<PgPool>,
     Host(hostname): Host,
 ) -> Result<Redirect, AppError> {
-    if user_data.is_some() {
-        // check if already authenticated
-        return Ok(Redirect::to("/"));
-    }
-
     let return_url = params
         .remove("next")
         .unwrap_or_else(|| "/".to_string());
     // TODO: check if return_url is valid
+
+    if user_data.is_some() {
+        // check if already authenticated
+        return Ok(Redirect::to(&return_url));
+    }
 
     let client = get_client(hostname)?;
 
@@ -85,11 +85,11 @@ pub async fn login(
     sqlx::query(
         "INSERT INTO oauth2_state_storage (csrf_state, pkce_code_verifier, return_url) VALUES ($1, $2, $3);",
     )
-    .bind(csrf_state.secret())
-    .bind(pkce_code_verifier.secret())
-    .bind(return_url)
-    .execute(&db_pool)
-    .await?;
+        .bind(csrf_state.secret())
+        .bind(pkce_code_verifier.secret())
+        .bind(return_url)
+        .execute(&db_pool)
+        .await?;
 
     Ok(Redirect::to(authorize_url.as_str()))
 }
@@ -105,9 +105,9 @@ pub async fn oauth_return(
     let query: (String, String) = sqlx::query_as(
         r#"DELETE FROM oauth2_state_storage WHERE csrf_state = $1 RETURNING pkce_code_verifier,return_url;"#,
     )
-    .bind(state.secret())
-    .fetch_one(&db_pool)
-    .await?;
+        .bind(state.secret())
+        .fetch_one(&db_pool)
+        .await?;
 
     // Alternative:
     // let query: (String, String) = sqlx::query_as(
@@ -135,9 +135,9 @@ pub async fn oauth_return(
             .set_pkce_verifier(pkce_code_verifier)
             .request(http_client)
     })
-    .await
-    .map_err(|_| "OAuth: exchange_code failure")?
-    .map_err(|_| "OAuth: tokio spawn blocking failure")?;
+        .await
+        .map_err(|_| "OAuth: exchange_code failure")?
+        .map_err(|_| "OAuth: tokio spawn blocking failure")?;
     let access_token = token_response.access_token().secret();
 
     println!("pkce_verifier");
@@ -171,14 +171,14 @@ pub async fn oauth_return(
 
     // Check if user exists in database
     // If not, create a new user
-    let query: Result<(i64,), _> = sqlx::query_as(r#"SELECT id FROM users WHERE email=$1;"#)
+    let user_query: Result<(i64, ), _> = sqlx::query_as(r#"SELECT id FROM users WHERE email=$1;"#)
         .bind(email.as_str())
         .fetch_one(&db_pool)
         .await;
-    let user_id = if let Ok(query) = query {
-        query.0
+    let user_id = if let Ok(user_query) = user_query {
+        user_query.0
     } else {
-        let query: (i64,) =
+        let query: (i64, ) =
             sqlx::query_as(r#"INSERT INTO users (email) VALUES ($1) RETURNING id;"#)
                 .bind(email)
                 .fetch_one(&db_pool)
@@ -205,22 +205,25 @@ pub async fn oauth_return(
         (session_token_p1, session_token_p2, user_id, created_at, expires_at)
         VALUES ($1, $2, $3, $4, $5);"#,
     )
-    .bind(session_token_p1)
-    .bind(session_token_p2)
-    .bind(user_id)
-    .bind(now)
-    .bind(now + 60 * 60 * 24)
-    .execute(&db_pool)
-    .await?;
+        .bind(session_token_p1)
+        .bind(session_token_p2)
+        .bind(user_id)
+        .bind(now)
+        .bind(now + 60 * 60 * 24)
+        .execute(&db_pool)
+        .await?;
 
     println!("set cookie");
 
-    match query{
-        Ok(_)=>  Ok((headers, Redirect::to(return_url.as_str()))),
-       _=>  Ok((headers, Redirect::to("/auth/signup")))
+    match user_query {
+        Ok(_) =>
+            Ok((headers, Redirect::to(return_url.as_str())))
+        ,
+        Err(_) =>
+            Ok((headers, Redirect::to("/welcome")))
     }
-
 }
+
 
 pub async fn logout(
     cookie: Option<TypedHeader<Cookie>>,
@@ -238,6 +241,6 @@ pub async fn logout(
     let headers = axum::response::AppendHeaders([(
         axum::http::header::SET_COOKIE,
         "session_token=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT",
-    )]);
+    ),  ( axum::http::header::REFERER, "/")]);
     Ok((headers, Redirect::to("/")))
 }

@@ -5,8 +5,8 @@ mod pages;
 
 use error_handling::AppError;
 use middlewares::{check_auth, inject_user_data};
-use oauth::{logout, oauth_return};
-use pages::{about, index, profile};
+use oauth::{logout, oauth_return, signin};
+use pages::{about, index, profile, login, settings, signup, welcome};
 use tower::ServiceExt;
 use tower_http::{
     services::{ServeDir, ServeFile},
@@ -20,10 +20,11 @@ use axum::{
 };
 use minijinja::Environment;
 use sqlx::PgPool;
-use std::fs;
-use crate::routes::oauth::login;
+use std::{fs, io};
+use std::fs::read_dir;
+use std::path::{Path, PathBuf};
+use crate::routes::pages::{article, articles};
 
-use crate::routes::pages::{ settings};
 
 #[derive(Clone, FromRef)]
 pub struct AppState {
@@ -35,20 +36,22 @@ pub struct AppState {
 pub struct UserData {
     pub user_id: i64,
     pub user_email: String,
+    pub name:Option<String>
 }
 
 pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error::Error>> {
     let mut env = Environment::new();
-
-    let paths = fs::read_dir("src/templates").unwrap();
-    for path in paths {
-        let path = path.map_err(|e| format!("Error on file {e}"))?.path();
+    let mut files = Vec::new();
+    visit(Path::new("templates"), &mut |e| files.push(e)).unwrap();
+    println!("files {:?}",&files);
+    for path in files {
         let source = fs::read_to_string(&path)?;
         let path = path.to_str().ok_or("Failed to convert path to str")?;
-        let path = &path[14..];
+        let path = &path[10..].replace(r"\","/");
         env.add_template_owned(path.to_owned(), source)
             .map_err(|e| format!("Failed to add {path}: {e}"))?;
     }
+
 
     let app_state = AppState { db_pool, env };
 
@@ -68,24 +71,43 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         .route("/about", get(about))
         .route("/settings", get(settings))
         .route("/profile", get(profile))
+        .route("/articles", get(articles))
+        .route("/a/:id", get(article))
         .route_layer(middleware::from_fn_with_state(
             app_state.clone(),
             check_auth,
         ))
-
-        .nest("/auth", Router::new()
-            .route("/login", get(login))
-            .route("/signup", get(signup))
-
-            .route("/callback", get(oauth_return))
-            .route("/logout", get(logout)),
-        )
+        .nest("/welcome", Router::new()
+            .route("/", get(welcome))
+            .route("/signup", get(signup)
+        ))
+        .nest("/auth",auth_router() )
         .route_layer(middleware::from_fn_with_state(
             app_state.clone(),
             inject_user_data,
         ))
-
+        .route("/login", get(login))
         .with_state(app_state)
         .layer(Extension(user_data))
         .fallback_service(serve_dir))
+}
+
+fn auth_router() -> Router<AppState> {
+    Router::new()
+        .route("/signin", get(signin))
+        .route("/callback", get(oauth_return))
+        .route("/logout", get(logout))
+}
+
+fn visit(path: &Path, cb: &mut dyn FnMut(PathBuf)) -> io::Result<()> {
+    for e in read_dir(path)? {
+        let e = e?;
+        let path = e.path();
+        if path.is_dir() {
+            visit(&path, cb)?;
+        } else if path.is_file() {
+            cb(path);
+        }
+    }
+    Ok(())
 }

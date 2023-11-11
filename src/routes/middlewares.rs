@@ -61,6 +61,7 @@ pub async fn inject_user_data<T>(
                                     request.extensions_mut().insert(Some(UserData {
                                         user_id,
                                         user_email,
+                                        name: None, //TODO: change
                                     }));
                                 }
                             }
@@ -88,7 +89,7 @@ pub async fn check_auth<T>(
     {
         Ok(next.run(request).await)
     } else {
-        let login_url = "/auth/login?next=".to_owned() + &*request.uri().to_string();
+        let login_url = "/login?next=".to_owned() + &*request.uri().to_string();
         Ok(Redirect::to(login_url.as_str()).into_response())
     }
 }

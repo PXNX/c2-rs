@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}{% endblock %} | My Site</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <link rel="shortcut icon" href="https://c.s-microsoft.com/favicon.ico?v2" />
+
+
+  <script src="//code.iconify.design/1/1.0.6/iconify.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.8"
+          integrity="sha384-rgjA7mptc2ETQqXoYC3/zJvkU7K/aP44Y+z7xQuJiVnB/422P/Ak+F/AqFR7E4Wr" crossorigin="anonymous"></script>
+
+<style>
+  .htmx-settling img {
+    opacity: 0;
+  }
+  img {
+    transition: opacity 300ms ease-in;
+  }
+
+
+
+  .ripple-bg-gray-300 {
+    background-color: #e2e8f0;
+    background-position: center;
+    transition: background 0.8s;
+  }
+
+  .ripple-bg-gray-300:hover {
+    background: #a5b7d0 radial-gradient(circle, transparent 1%, #a5b7d0 1%) center/15000%;
+  }
+
+  .ripple-bg-gray-300:active {
+    background-color: #e2e8f0;
+    background-size: 100%;
+    transition: background 0s;
+  }
+</style>
+</head>
+
+
+
+
+  {% block page %}{% endblock %}
+</html>

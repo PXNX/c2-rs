@@ -5,7 +5,6 @@
 <body>
 INDEX
 
-{% if user_email %}
 <li><a href="/profile">Profile</a></li>
 <li> Logged as {{ user_email }} (<a href="/logout">Logout</a>) </li>
 
@@ -18,10 +17,6 @@ INDEX
 <a href="/profile" role="button"
    class="btn  btn-secondary">Profile</a>
 
-
-{% else %}
-<li> <a href="/auth/login{{ login_return_url }}">Login or signup</a> </li>
-{% endif %}
 
 
 
