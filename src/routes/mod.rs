@@ -23,7 +23,7 @@ use sqlx::PgPool;
 use std::{fs, io};
 use std::fs::read_dir;
 use std::path::{Path, PathBuf};
-use crate::routes::pages::{article, articles};
+use crate::routes::pages::{article, articles, military};
 
 
 #[derive(Clone, FromRef)]
@@ -64,14 +64,14 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
     // you can convert handler function to service
     let service = handle_404.into_service();
 
-    let serve_dir = ServeDir::new("assets").not_found_service(service);
+    let serve_dir = ServeDir::new("public").not_found_service(service);
 
     Ok(Router::new()
         .route("/", get(index))
         .route("/about", get(about))
         .route("/settings", get(settings))
         .route("/u", get(profile))
-
+        .route("/m", get(military))
         .nest("/a", article_router())
 
         .route_layer(middleware::from_fn_with_state(

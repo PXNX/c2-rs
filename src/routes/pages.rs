@@ -50,6 +50,16 @@ pub async fn profile(
     Ok(Html(content))
 }
 
+pub async fn military(
+    Extension(user_data): Extension<Option<UserData>>,
+    State(env): State<Environment<'static>>,
+) -> Result<impl IntoResponse, AppError> {
+    let tmpl = env.get_template("m/index.html")?;
+    let user_email = user_data.map(|s| s.user_email);
+    let content = tmpl.render(context!(user_email => user_email))?;
+    Ok(Html(content))
+}
+
 
 pub async fn settings(
     Extension(user_data): Extension<Option<UserData>>,

@@ -2,12 +2,40 @@
 {% block title %}Index{% endblock %}
 {% block body %}
 
-<body>
+
+    <header class="sticky bg-base-100 top-0 ">
+
+        Article 1
+</header>
+
+<main>
 ARTICLE
 
 <p id="title">  Logged as {{ user_email }}</p>
 
 
+    <hr class="divide-gray-200 dark:divide-gray-700">
+
+<button class="share-button btn btn-primary" type="button" title="Share this article">
+    Share
+</button>
+<script>
+    const shareButton = document.querySelector('.share-button');
+    shareButton.addEventListener('click', event => {
+        if (navigator.share) {
+            navigator.share({
+                title: 'Article 1',
+                url: 'www.google.co.ck'
+            }).then(() => {
+                console.log('Thanks for sharing!');
+            })
+                .catch(console.error);
+        } else {
+            // fallback
+        }
+    });
+
+</script>
 
 
 
@@ -15,6 +43,5 @@ ARTICLE
 
 
 
-
-</body>
+</main>
 {% endblock %}

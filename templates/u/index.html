@@ -3,22 +3,24 @@
 {% block body %}
 
 
-
-<div class="space-y-4 p-4 pt-8">
+<div class="space-y-4 p-4 my-12">
     <div class="flex items-center space-x-4">
-        <img class="overflow-hidden rounded-full" width="130" height="130" src="https://placehold.co/130/svg" alt="profile picture"/>
+        <img class="overflow-hidden rounded-full" width="130" height="130" src="https://placehold.co/130/svg"
+             alt="profile picture"/>
         <div class="flex flex-col">
             <div class="flex items-center">
                 <h1>User Name 123</h1>
-                    <div class="tooltip hover:tooltip-open tooltip-left " data-tip="Member of staff">
-                        <svg class="h-5 w-5 ms-1 stroke-primary hover:stroke-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path d="M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,12M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z" />
+                <div class="tooltip hover:tooltip-open tooltip-left " data-tip="Member of staff">
+                    <svg class="h-5 w-5 ms-1 stroke-primary hover:stroke-2" xmlns="http://www.w3.org/2000/svg"
+                         fill="none" viewBox="0 0 24 24">
+                        <path d="M23,12L20.56,9.22L20.9,5.54L17.29,4.72L15.4,1.54L12,3L8.6,1.54L6.71,4.72L3.1,5.53L3.44,9.21L1,12L3.44,14.78L3.1,18.47L6.71,19.29L8.6,22.47L12,21L15.4,22.46L17.29,19.28L20.9,18.46L20.56,14.78L23,12M10,17L6,13L7.41,11.59L10,14.17L16.59,7.58L18,9L10,17Z"/>
 
-                    </div>
+                </div>
 
             </div>
             <code class="font-mono">#123456789</code>
 
-            <a href="/settings" role="button"   class="btn mt-2">Edit</a>
+            <a href="/settings" role="button" class="btn mt-2">Edit</a>
         </div>
     </div>
 
@@ -159,6 +161,34 @@
                     style="aspect-ratio: 50 / 50; object-fit: cover;"
             />
         </div>
+    </div>
+
+
+    <div class="space-y-4 p-4 my-12 bg-secondary rounded-lg flex items-center">
+
+
+            <div class="form-control">
+                <label class="label cursor-pointer active:bg-amber-300">
+                    <span class="label-text">Red pill</span>
+                    <input type="radio" name="radio-10" class="radio checked:bg-red-500" checked/>
+                </label>
+                <label class="label cursor-pointer">
+                    <span class="label-text">Blue pill</span>
+                    <input type="radio" name="radio-10" class="radio checked:bg-blue-500" checked/>
+                </label>
+                <label class="label cursor-pointer">
+                    <span class="label-text">Blue pill</span>
+                    <input type="radio" name="radio-10" class="radio checked:bg-blue-500" checked/>
+                </label>
+            </div>
+
+
+
+            <div class="flex flex-col">
+                <a href="/settings" role="button" class="btn mt-2">Edit</a>
+                <a href="/settings" role="button" class="btn mt-2">Edit</a>
+            </div>
+
     </div>
 </div>
 

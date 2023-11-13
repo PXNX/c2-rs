@@ -1,6 +1,6 @@
 {
-  "short_name": "PsyOp",
-  "name": "PsyOp: Command & Control",
+  "short_name": "PsyOps",
+  "name": "PsyOps: Command & Control",
   "icons": [
     {
       "src": "/logo.svg",
@@ -22,7 +22,7 @@
   "id": "/?source=pwa",
   "start_url": "/?source=pwa",
   "background_color": "#1d232a",
-  "display": "fullscreen",
+  "display": "standalone",
   "scope": "/",
   "theme_color": "#6419e6",
   "shortcuts": [
@@ -41,7 +41,7 @@
       "icons": [{ "src": "/images/tomorrow.png", "sizes": "192x192" }]
     }
   ],
-  "description": "Weather forecast information",
+  "description": "Economy, Journalism, Strategy",
   "screenshots": [
     {
       "src": "/images/screenshot1.png",
