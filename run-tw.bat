@@ -1,1 +1,1 @@
-npx tailwindcss -i ./input.css -o ./public/styles.css --watch
+npx unocss "templates/**/*.html" -w
