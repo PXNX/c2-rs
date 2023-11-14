@@ -1,0 +1,103 @@
+@tailwind base;
+/*
+@layer base {
+ h1 {
+        @apply text-2xl;
+    }
+
+    h2 {
+        @apply text-xl;
+    }
+
+    h3 {
+        @apply text-lg;
+    } 
+}*/
+
+
+@tailwind components;
+
+@layer components {
+
+
+    .skill_btn {
+        @apply flinch rounded-lg bg-transparent;
+        padding: 0.5rem;
+        line-height: 1.15rem;
+        height: auto
+            /* 48px */
+        ;
+        font-size: 1.2rem;
+        text-wrap: wrap;
+
+        word-wrap: break-word;
+
+        min-height: 3rem;
+        text-align: center;
+
+        justify-content: center;
+        display: block;
+
+        transition-duration: 200ms;
+        transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+        animation: button-pop var(--animation-btn, 0.25s) ease-out;
+        transition-property: color, background-color, border-color, opacity, box-shadow, transform;
+
+    }
+
+
+    .flinch {
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+
+    .flinch:active:hover,
+    .flinch:active:focus {
+        animation: button-pop 0s ease-out;
+        transform: scale(var(--btn-focus-scale, 0.97));
+    }
+
+    @keyframes button-pop {
+        0% {
+            transform: scale(var(--btn-focus-scale, 0.98));
+        }
+
+        40% {
+            transform: scale(1.02);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+}
+
+
+@tailwind utilities;
+
+
+.htmx-settling img {
+    opacity: 0;
+}
+
+img {
+    transition: opacity 300ms ease-in;
+}
+
+.ripple-bg-gray-300 {
+    background-color: #e2e8f0;
+    background-position: center;
+    transition: background 0.8s;
+}
+
+.ripple-bg-gray-300:hover {
+    background: #a5b7d0 radial-gradient(circle, transparent 1%, #a5b7d0 1%) center/15000%;
+}
+
+.ripple-bg-gray-300:active {
+    background-color: #e2e8f0;
+    background-size: 100%;
+    transition: background 0s;
+}
