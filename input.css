@@ -21,22 +21,17 @@
 
 
     .skill_btn {
-        @apply flinch rounded-lg bg-transparent;
+        @apply flinch rounded-lg bg-transparent flex-1 flex-grow;
         padding: 0.5rem;
-        line-height: 1.15rem;
-        height: auto
-            /* 48px */
-        ;
+
+        height: fit-content;
         font-size: 1.2rem;
-        text-wrap: wrap;
 
-        word-wrap: break-word;
 
-        min-height: 3rem;
+
+
         text-align: center;
 
-        justify-content: center;
-        display: block;
 
         transition-duration: 200ms;
         transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
