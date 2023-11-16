@@ -16,11 +16,10 @@ pub async fn index<T>(
     request: Request<T>,
 ) -> Result<impl IntoResponse, AppError> {
     let tmpl = env.get_template("index.html")?;
-    let user_id = user_data.map(|s| s.user_id);
     let login_return_url = "?next=".to_owned() + &*request.uri().to_string();
     let content = tmpl.render(context!(
+        user_id => user_data.unwrap().id,
         login_return_url => login_return_url,
-        user_id => user_id
     ))?;
     Ok(Html(content))
 }
@@ -31,10 +30,10 @@ pub async fn about<T>(
     request: Request<T>,
 ) -> Result<impl IntoResponse, AppError> {
     let tmpl = env.get_template("about.html")?;
-    let user_email = user_data.map(|s| s.user_email);
+
     let login_return_url = "?next=".to_owned() + &*request.uri().to_string();
     let content = tmpl.render(context!(
-        user_email => user_email,
+        user_id => user_data.unwrap().id,
         login_return_url => login_return_url,
     ))?;
     Ok(Html(content))
@@ -45,8 +44,9 @@ pub async fn military(
     State(env): State<Environment<'static>>,
 ) -> Result<impl IntoResponse, AppError> {
     let tmpl = env.get_template("m/index.html")?;
-    let user_email = user_data.map(|s| s.user_email);
-    let content = tmpl.render(context!(user_email => user_email))?;
+
+    let content = tmpl.render(context!(user_id => user_data.unwrap().id))?;
+
     Ok(Html(content))
 }
 
@@ -55,8 +55,9 @@ pub async fn settings(
     State(env): State<Environment<'static>>,
 ) -> Result<impl IntoResponse, AppError> {
     let tmpl = env.get_template("u/settings.html")?;
-    let user_email = user_data.map(|s| s.user_email);
-    let content = tmpl.render(context!(user_email => user_email))?;
+
+    let content = tmpl.render(context!(user_id => user_data.unwrap().id))?;
+
     Ok(Html(content))
 }
 
@@ -65,8 +66,8 @@ pub async fn articles(
     State(env): State<Environment<'static>>,
 ) -> Result<impl IntoResponse, AppError> {
     let tmpl = env.get_template("articles/index.html")?;
-    let user_email = user_data.map(|s| s.user_email);
-    let content = tmpl.render(context!(user_email => user_email))?;
+
+    let content = tmpl.render(context!(user_id => user_data.unwrap().id))?;
     Ok(Html(content))
 }
 
@@ -78,8 +79,9 @@ pub async fn article(
 ) -> Result<impl IntoResponse, AppError> {
     //TODO instead of view, just go with ifs in template?
     let tmpl = env.get_template("articles/view.html")?;
-    let user_email = user_data.map(|s| s.user_email);
-    let content = tmpl.render(context!(user_email => article_id))?;
+
+    let content = tmpl.render(context!(user_id => user_data.unwrap().id,
+    article_id=>article_id))?;
     Ok(Html(content))
 }
 
@@ -89,10 +91,10 @@ pub async fn signup<T>(
     request: Request<T>,
 ) -> Result<impl IntoResponse, AppError> {
     let tmpl = env.get_template("welcome/signup.html")?;
-    let user_email = user_data.map(|s| s.user_email);
     let login_return_url = "?next=".to_owned() + &*request.uri().to_string();
+
     let content = tmpl.render(context!(
-        user_email => user_email,
+        user_id => user_data.unwrap().id,
         login_return_url => login_return_url,
     ))?;
     Ok(Html(content))
@@ -104,10 +106,10 @@ pub async fn welcome<T>(
     request: Request<T>,
 ) -> Result<impl IntoResponse, AppError> {
     let tmpl = env.get_template("welcome/index.html")?;
-    let user_email = user_data.map(|s| s.user_email);
     let login_return_url = "?next=".to_owned() + &*request.uri().to_string();
+
     let content = tmpl.render(context!(
-        user_email => user_email,
+        user_id => user_data.unwrap().id,
         login_return_url => login_return_url,
     ))?;
     Ok(Html(content))
@@ -121,13 +123,11 @@ pub async fn login<T>(
     request: Request<T>,
 ) -> Result<impl IntoResponse, AppError> {
     let tmpl = env.get_template("login.html")?;
-    let user_email = user_data.map(|s| s.user_email);
-
     let login_return_url =
         "?next=".to_owned() + &*params.remove("next").unwrap_or_else(|| "/".to_string());
 
     let content = tmpl.render(context!(
-        user_email => user_email,
+        user_id => user_data.unwrap().id,
         login_return_url => login_return_url,
     ))?;
     Ok(Html(content))

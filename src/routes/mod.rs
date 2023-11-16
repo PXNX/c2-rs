@@ -46,9 +46,7 @@ pub struct AppState {
 
 #[derive(Clone, Debug)]
 pub struct UserData {
-    pub user_id: i64,
-    pub user_email: String,
-    pub user_name: Option<String>,
+    pub id: i64,
 }
 
 pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error::Error>> {
@@ -101,7 +99,7 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         ))
         .route("/login", get(login))
         .with_state(app_state)
-        .layer(Extension(user_data))
+        .layer(Extension(UserData))
         .fallback_service(serve_dir))
 }
 

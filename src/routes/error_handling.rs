@@ -4,9 +4,9 @@ use axum::{
 };
 
 pub struct AppError {
-    code: StatusCode,
-    message: String,
-    user_message: String,
+    pub code: StatusCode,
+    pub message: String,
+    pub user_message: String,
 }
 
 impl AppError {
