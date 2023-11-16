@@ -6,9 +6,10 @@ use axum::{
     http::Request,
     response::{Html, IntoResponse},
 };
+use axum::http::StatusCode;
 use axum::{Form, Router};
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use validator::Validate;
 
 use minijinja::{context, Environment, Error, Template};
 
@@ -26,6 +27,7 @@ use oauth2::{
 use chrono::Utc;
 use sqlx::PgPool;
 
+
 use uuid::Uuid;
 
 use super::{AppError, AppState, UserData};
@@ -33,43 +35,63 @@ use super::{AppError, AppState, UserData};
 async fn profile(
     Extension(user_data): Extension<Option<UserData>>,
     Path(user_id): Path<i64>,
+    State(db_pool): State<PgPool>,
     State(env): State<Environment<'static>>,
 ) -> Result<impl IntoResponse, AppError> {
-    let user_data = user_data.unwrap();
+    let mut user_data = user_data.unwrap();
 
     let tmpl;
     if user_data.user_id == user_id {
         tmpl = env.get_template("u/index.html")?;
     } else {
         tmpl = env.get_template("u/profile.html")?;
+        let query: Result<(String,Option<String,>), _> =
+            sqlx::query_as(r#"SELECT email,name FROM users WHERE id=$1;"#)
+                .bind(user_id)
+                .fetch_one(&db_pool)
+                .await;
+        if let Ok(query) = query {
+            let user_email = query.0;
+            let user_name = query.1;
+            user_data = UserData {
+                user_id,
+                user_email,
+                user_name,
+            };
+        }else{
+            return Err(AppError::new(format!("User with Id {user_id} was not found."))
+                .with_user_message(format!("User with Id {user_id} was not found. Please make sure you opened up the correct user profile.")));
+        }
+
     };
+
+
 
     let content = tmpl.render(context!(
         user_id =>  user_data.user_id,
-        user_name => user_data.user_name
+        user_name => user_data.user_name.unwrap()
     ))?;
     Ok(Html(content))
 }
 
-#[derive(Clone, Debug, Validate)]
+#[derive(Clone, Debug, Deserialize,Serialize)]
 struct CreateProfile {
-    #[validate(length(min = 1, max = 30, message = "Has to be between 1 and 30 characters"))]
     user_name: String,
 }
 
 async fn create_profile(
-    State(db_pool): State<PgPool>,
     Extension(user_data): Extension<Option<UserData>>,
-    ValidatedForm(input): ValidatedForm<CreateProfile>, //   Form(form): Form<CreateProfile>, // Form(form): Form<TodoNew>,
+
+    State(db_pool): State<PgPool>,
+    Form(input): Form<CreateProfile>,
 ) -> Result<impl IntoResponse, AppError> {
     let user_data = user_data.unwrap();
 
     sqlx::query(r#"UPDATE users SET name = $1 WHERE id=$2;"#)
-        //   .bind(form.user_name)
+        .bind(input.user_name)
         .bind(user_data.user_id)
         .execute(&db_pool)
-        .await
-        .unwrap();
+        .await?;
 
     Ok(Redirect::to("/"))
 }

@@ -48,6 +48,7 @@ impl IntoResponse for AppError {
                     <h1>Oops!</h1>
                     <p>Sorry, but something went wrong.</p>
                     <p>{}</p>
+                     <h2>If the issue persists, please let us know:</h1> https://t.me/+TEHh5GvOX6iYehnh
                 </body>
                 </html>
                 "#,

@@ -28,7 +28,5 @@ constant_time_eq = "0.3.0"
 tower = { version = "0.4.13", features = ["util"] }
 tower-http = { version = "0.4.4", features = ["fs", "trace"] }
 tracing = "0.1.40"
-tracing-subscriber = { version = "0.3.17", features = ["env-filter"] }
-validator = { version = "0.16.1", features = ["derive"] }
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 http-body = "1.0.0"
-thiserror="1.0.50"

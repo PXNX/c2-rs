@@ -51,17 +51,18 @@ pub async fn inject_user_data<T>(
                             let user_id = query.0;
                             let expires_at = query.1;
                             if expires_at > Utc::now().timestamp() {
-                                let query: Result<(String,), _> =
-                                    sqlx::query_as(r#"SELECT email FROM users WHERE id=$1;"#)
+                                let query: Result<(String,Option<String,>), _> =
+                                    sqlx::query_as(r#"SELECT email,name FROM users WHERE id=$1;"#)
                                         .bind(user_id)
                                         .fetch_one(&db_pool)
                                         .await;
                                 if let Ok(query) = query {
                                     let user_email = query.0;
+                                    let user_name = query.1;
                                     request.extensions_mut().insert(Some(UserData {
                                         user_id,
                                         user_email,
-                                        user_name: None, //TODO: change
+                                        user_name,
                                     }));
                                 }
                             }
