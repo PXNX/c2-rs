@@ -4,35 +4,26 @@
 
 
 
-<body>
+<body class="p-4 ">
 
 
-<div class="form-control w-full max-w-xs">
-    <label class="label">
-        <span class="label-text">What is your name?</span>
-        <span class="label-text-alt">Top Right label</span>
-    </label>
-    <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
-    <label class="label">
-        <span class="label-text-alt">Bottom Left label</span>
-        <span class="label-text-alt">Bottom Right label</span>
-    </label>
+    <form class="form-control w-full max-w-xs space-y-4" hx-post="/u">
+
+
+        <div>
+            <label class="label">
+                What should your account be called?
+            </label>
+            <input type="text" placeholder="Username" class="input input-bordered w-full max-w-xs" />
+        </div>
 
 
 
 
-    <select data-choose-theme>
-        <option value="light">Default</option>
-        <option value="dark">Dark</option>
-        <option value="cupcake">Pink</option>
-        <option value="winter">Winter</option>
-        <option value="cyperpunk">Cyberpunk</option>
-        <option value="cupcake">Pink</option>
-    </select>
-</div>
 
+        <button class="btn btn-primary">Save profile</button>
+    </form>
 
-<a href="/" role="button" class="btn btn-primary">Save profile</a>
 
 </body>
 {% endblock %}

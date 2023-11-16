@@ -12,6 +12,7 @@ opt-level = 3
 [dependencies]
 axum = { version = "0.6.20", features = ["headers", "macros"] }
 axum-extra = "0.8.0"
+axum-htmx="0.4.0"
 chrono = { version = "0.4.31", features = ["serde"] }
 serde = { version = "1.0.192", features = ["derive"] }
 serde_json = "1.0.108"
@@ -28,3 +29,6 @@ tower = { version = "0.4.13", features = ["util"] }
 tower-http = { version = "0.4.4", features = ["fs", "trace"] }
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.17", features = ["env-filter"] }
+validator = { version = "0.16.1", features = ["derive"] }
+http-body = "1.0.0"
+thiserror="1.0.50"

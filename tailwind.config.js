@@ -1,3 +1,6 @@
+const { fontFamily } = require('tailwindcss/defaultTheme');
+
+/** @type {import('tailwindcss').Config} */
 module.exports = {
     important: true,
     // mode: 'jit',
@@ -12,7 +15,12 @@ module.exports = {
                 'logo': "url('/logo.svg')",
 
             }
-        }
+        },
+
+        fontFamily: {
+            sans: ['Inter var', ...fontFamily.sans],
+        },
+
     },
 
     daisyui: {

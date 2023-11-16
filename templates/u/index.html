@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block title %}User Profile{% endblock %}
-{% block body %}
+{% block main %}
 
 
 <div
@@ -16,9 +16,9 @@
     </a>
 </div>
 
-<div class="space-y-4 px-2 py-8">
-    <div class="flex  justify-center  w-full items-center">
-        <b class="text-2xl">User Name 123</b>
+<div class="space-y-4 mx-2 mt-6">
+    <div class="flex  justify-center w-full items-center">
+        <b class="text-2xl">{{user_name}}</b>
         <div class="tooltip hover:tooltip-open tooltip-left " data-tip="Member of staff">
             <svg class="h-5 w-5 ms-1 stroke-primary hover:stroke-2" xmlns="http://www.w3.org/2000/svg" fill="none"
                 viewBox="0 0 24 24">
@@ -28,24 +28,29 @@
         </div>
     </div>
 
-    <div class=" rounded-lg border select-bordered">
+    <section class=" rounded-lg border select-bordered">
         <div class="flex  flex-row w-full  items-stretch">
             <input type="radio" id="skill_0" name="skill" class="peer/skill_0 hidden">
-            <label for="skill_0" class=" skill_btn text-lg  peer-checked/skill_0:text-secondary">
-                <b class="font-bold block">100</b>
-                <span class="opacity-75 font-medium">Strength</span>
+            <label for="skill_0" class=" skill_btn peer-checked/skill_0:text-secondary">
+
+                <b class="text-lg block">100</b>
+                <span class="label-text">Strength</span>
 
             </label>
             <input type="radio" id="skill_1" name="skill" class="peer/skill_1 hidden">
-            <label for="skill_1" class="skill_btn text-lg  peer-checked/skill_1:text-secondary ">
-                <b class="font-bold block">420</b>
-                <span class="opacity-75 font-medium">Endurance</span>
+            <label for="skill_1" class="skill_btn peer-checked/skill_1:text-secondary ">
+
+
+                <b class="text-lg block">420</b>
+                <span class=" label-text">Endurance</span>
             </label>
             <input type="radio" id="skill_2" name="skill" class="peer/skill_2 hidden">
             <!--peer-checked/skill_2:border-white-->
-            <label for="skill_2" class=" skill_btn text-lg  peer-checked/skill_2:text-secondary">
-                <b class=" font-bold block">69</b>
-                <span class="opacity-75 font-medium   ">Intelligence</span>
+            <label for="skill_2" class=" skill_btn peer-checked/skill_2:text-secondary">
+
+
+                <b class="text-lg block">69</b>
+                <span class=" label-text">Intelligence</span>
             </label>
             <!-- todo: reduce FLINCH to required fields -->
         </div>
@@ -54,71 +59,49 @@
             <a href="/settings" role="button" class="btn btn-primary flex-1  flex-grow">Upgrade</a>
             <a href="/settings" role="button" class="btn bg-secondary flex-1 flex-grow">Boost</a>
         </div>
-    </div>
+    </section>
 
-    <div class="p-2 mt-10 space-y-2  rounded-lg border select-bordered">
-        <a class="flex flex-row w-full flinch gap-2">
+    <section class="p-2 mt-10 space-y-2  rounded-lg border select-bordered">
+        <a class="flex flex-row w-full flinch gap-2  label-text">
             <img src="https://placehold.co/50/svg" class="rounded-lg bg-cover" width="50" height="50" />
             <div>
                 <b class="text-lg block">Nendeln</b>
-                <span class=" text-sm">Current Region | 26.11.2023, 04:20</span>
+                <span class=" text-primary">Current Region</span><span> 26.11.2023, 04:20</span>
             </div>
         </a>
-        <a class="flex flex-row w-full flinch gap-2">
+        <a class="flex flex-row w-full flinch gap-2  label-text">
             <img src="https://placehold.co/50/svg" class="rounded-lg bg-cover" width="50" height="50" />
             <div>
                 <b class="text-lg block">Baden-Württemberg</b>
-                <span class=" text-sm">Home Region | 26.11.2023, 04:20</span>
+                <span class=" text-primary">Home Region</span><span> 26.11.2023, 04:20</span>
             </div>
         </a>
-    </div>
+    </section>
 
 
-    <div class="p-2 mt-10 space-y-2  rounded-lg border select-bordered">
-        <a class="flex flex-row w-full flinch gap-2">
+    <section class="p-2 mt-10 space-y-2  rounded-lg border select-bordered">
+        <a class="flex flex-row w-full flinch gap-2 label-text">
             <img src="https://placehold.co/50/svg" class="rounded-lg bg-cover" width="50" height="50" />
             <div>
                 <b class="text-lg block">Wagner PMC</b>
-                <span class=" text-sm">Team | 26.11.2023, 04:20</span>
+                <span class=" text-primary">Team</span><span> 26.11.2023, 04:20</span>
             </div>
         </a>
-        <a class="flex flex-row w-full flinch gap-2">
+        <a class="flex flex-row w-full flinch gap-2 label-text">
             <img src="https://placehold.co/50/svg" class="rounded-lg bg-cover" width="50" height="50" />
             <div>
                 <b class="text-lg block">German Reich</b>
-                <span class=" text-sm">Chancellor | 26.11.2023, 19:33</span>
+                <span class=" text-primary">Chancellor</span><span> 26.11.2023, 19:33</span>
             </div>
         </a>
-    </div>
-
-    <div class="p-2 mt-10 space-y-2  rounded-lg border select-bordered">
-        <div class="flex flex-row w-full gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class=" h-5 w-5" fill=" currentColor">
-                <path
-                    d="M11.5,0.5C12,0.75 13,2.4 13,3.5C13,4.6 12.33,5 11.5,5C10.67,5 10,4.85 10,3.75C10,2.65 11,2 11.5,0.5M18.5,9C21,9 23,11 23,13.5C23,15.06 22.21,16.43 21,17.24V23H12L3,23V17.24C1.79,16.43 1,15.06 1,13.5C1,11 3,9 5.5,9H10V6H13V9H18.5M12,16A2.5,2.5 0 0,0 14.5,13.5H16A2.5,2.5 0 0,0 18.5,16A2.5,2.5 0 0,0 21,13.5A2.5,2.5 0 0,0 18.5,11H5.5A2.5,2.5 0 0,0 3,13.5A2.5,2.5 0 0,0 5.5,16A2.5,2.5 0 0,0 8,13.5H9.5A2.5,2.5 0 0,0 12,16Z" />
-            </svg> Account created: <b class="text-semibold self-end end-0">10.11.2023, 23:44</b>
-        </div>
-    </div>
+    </section>
 
 
-    <div class="flex flex-col">
-        <iconify-icon icon="mdi:home"></iconify-icon>
-        <iconify-icon icon="mdi:home"></iconify-icon>
-        <iconify-icon icon="mdi:home"></iconify-icon>
-        <iconify-icon icon="mdi:home"></iconify-icon>
-        <iconify-icon icon="mdi:home"></iconify-icon>
-        <iconify-icon icon="mdi:home"></iconify-icon>
-        <iconify-icon icon="mdi:home"></iconify-icon>
-        <iconify-icon icon="mdi:home"></iconify-icon>
-        <iconify-icon icon="mdi:home"></iconify-icon>
-        <iconify-icon icon="mdi:home"></iconify-icon>
-        <iconify-icon icon="mdi:home"></iconify-icon>
-        <iconify-icon icon="mdi:home"></iconify-icon>
-        <iconify-icon icon="mdi:home"></iconify-icon>
-        <iconify-icon icon="mdi:home"></iconify-icon>
-        <iconify-icon icon="mdi:home"></iconify-icon>
-        <iconify-icon icon="mdi:home"></iconify-icon>
-    </div>
+    <!-- todo: add additional info-->
+
+
+
+
 </div>
 
 

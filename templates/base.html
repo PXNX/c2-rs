@@ -1,25 +1,27 @@
 <!doctype html>
-<html lang="en" data-theme="dark"  >
+<html lang="en" data-theme="dark">
 
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="theme-color" content="#317EFB"/>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta name="theme-color" content="#317EFB" />
 
-    <link rel="manifest" href="/manifest.webmanifest">
-    <link rel="shortcut icon" href="/favicon.ico"/>
-    <link rel="stylesheet" type="text/css" href="/styles.css">
+        <link rel="manifest" href="/manifest.webmanifest">
+        <link rel="shortcut icon" href="/favicon.ico" />
 
-   <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
+        <link href="https://rsms.me/inter/inter.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="/styles.css">
 
-    <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
 
-    <!--  <script>document.addEventListener('contextmenu', event => event.preventDefault());</script> -->
+        <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+
+        <!--  <script>document.addEventListener('contextmenu', event => event.preventDefault());</script> -->
 
 
-      <!--<script src="//code.iconify.design/1/1.0.6/iconify.min.js"></script> -->
+        <!--<script src="//code.iconify.design/1/1.0.6/iconify.min.js"></script> -->
 
-    <!-- <script >
+        <!-- <script >
         if ("serviceWorker" in navigator) {
             navigator.serviceWorker.register("./sw.js");
         }
@@ -27,12 +29,13 @@
 
     </script> -->
 
-    <script src="https://unpkg.com/htmx.org@1.9.8"
+        <script src="https://unpkg.com/htmx.org@1.9.8"
             integrity="sha384-rgjA7mptc2ETQqXoYC3/zJvkU7K/aP44Y+z7xQuJiVnB/422P/Ak+F/AqFR7E4Wr"
             crossorigin="anonymous"></script>
 
-    <title>{% block title %}{% endblock %} | My Site</title>
-</head>
+        <title>{% block title %}{% endblock %} | My Site</title>
+    </head>
 
-{% block page %}{% endblock %}
+    {% block page %}{% endblock %}
+
 </html>

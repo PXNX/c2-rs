@@ -2,29 +2,42 @@ mod error_handling;
 mod middlewares;
 mod oauth;
 mod pages;
-
+mod profile;
+use axum::{
+    extract::{rejection::FormRejection, Form, FromRequest},
+    http::StatusCode,
+    response::{Html, IntoResponse, Response},
+    routing::get,
+    Router,
+};
 use error_handling::AppError;
 use middlewares::{check_auth, inject_user_data};
-use oauth::{logout, oauth_return, signin};
-use pages::{about, index, profile, login, settings, signup, welcome};
+use pages::{about, index, login, settings, signup, welcome};
+use serde::de::DeserializeOwned;
+use serde::Deserialize;
+use thiserror::Error;
 use tower::ServiceExt;
 use tower_http::{
     services::{ServeDir, ServeFile},
     trace::TraceLayer,
 };
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+use validator::Validate;
 
+use crate::routes::{
+    oauth::auth_router,
+    pages::{article, articles, military},
+    profile::profile_router,
+};
 use axum::{
-    extract::FromRef, handler::HandlerWithoutStateExt, http::StatusCode, middleware, routing::get,
-    Extension, Router,
+    async_trait, extract::FromRef, handler::HandlerWithoutStateExt, http::Request, middleware,
+    Extension,
 };
 use minijinja::Environment;
 use sqlx::PgPool;
-use std::{fs, io};
 use std::fs::read_dir;
 use std::path::{Path, PathBuf};
-use crate::routes::pages::{article, articles, military};
-
+use std::{fs, io};
 
 #[derive(Clone, FromRef)]
 pub struct AppState {
@@ -36,22 +49,22 @@ pub struct AppState {
 pub struct UserData {
     pub user_id: i64,
     pub user_email: String,
-    pub name:Option<String>
+
+    pub user_name: Option<String>,
 }
 
 pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error::Error>> {
     let mut env = Environment::new();
     let mut files = Vec::new();
     visit(Path::new("templates"), &mut |e| files.push(e)).unwrap();
-    println!("files {:?}",&files);
+    println!("files {:?}", &files);
     for path in files {
         let source = fs::read_to_string(&path)?;
         let path = path.to_str().ok_or("Failed to convert path to str")?;
-        let path = &path[10..].replace(r"\","/");
+        let path = &path[10..].replace(r"\", "/");
         env.add_template_owned(path.to_owned(), source)
             .map_err(|e| format!("Failed to add {path}: {e}"))?;
     }
-
 
     let app_state = AppState { db_pool, env };
 
@@ -70,19 +83,20 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         .route("/", get(index))
         .route("/about", get(about))
         .route("/settings", get(settings))
-        .route("/u", get(profile))
+        .nest("/u", profile_router())
         .route("/m", get(military))
         .nest("/a", article_router())
-
         .route_layer(middleware::from_fn_with_state(
             app_state.clone(),
             check_auth,
         ))
-        .nest("/welcome", Router::new()
-            .route("/", get(welcome))
-            .route("/signup", get(signup)
-        ))
-        .nest("/auth",auth_router() )
+        .nest(
+            "/welcome",
+            Router::new()
+                .route("/", get(welcome))
+                .route("/signup", get(signup)),
+        )
+        .nest("/auth", auth_router())
         .route_layer(middleware::from_fn_with_state(
             app_state.clone(),
             inject_user_data,
@@ -93,20 +107,11 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         .fallback_service(serve_dir))
 }
 
-fn auth_router() -> Router<AppState> {
-    Router::new()
-        .route("/signin", get(signin))
-        .route("/callback", get(oauth_return))
-        .route("/logout", get(logout))
-}
-
 fn article_router() -> Router<AppState> {
     Router::new()
         .route("/", get(articles))
         .route("/:id", get(article))
 }
-
-
 
 fn visit(path: &Path, cb: &mut dyn FnMut(PathBuf)) -> io::Result<()> {
     for e in read_dir(path)? {
@@ -119,4 +124,45 @@ fn visit(path: &Path, cb: &mut dyn FnMut(PathBuf)) -> io::Result<()> {
         }
     }
     Ok(())
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct ValidatedForm<T>(pub T);
+
+#[async_trait]
+impl<T, S> FromRequest<S> for ValidatedForm<T>
+where
+    T: DeserializeOwned + Validate,
+    S: Send + Sync,
+    Form<T>: FromRequest<S, Rejection = FormRejection>,
+{
+    type Rejection = ServerError;
+
+    async fn from_request(req: Request, state: &S) -> Result<Self, Self::Rejection> {
+        let Form(value) = Form::<T>::from_request(req, state).await?;
+        value.validate()?;
+        Ok(ValidatedForm(value))
+    }
+}
+
+#[derive(Debug, Error)]
+pub enum ServerError {
+    #[error(transparent)]
+    ValidationError(#[from] validator::ValidationErrors),
+
+    #[error(transparent)]
+    AxumFormRejection(#[from] FormRejection),
+}
+
+impl IntoResponse for ServerError {
+    fn into_response(self) -> Response {
+        match self {
+            ServerError::ValidationError(_) => {
+                let message = format!("Input validation error: [{self}]").replace('\n', ", ");
+                (StatusCode::BAD_REQUEST, message)
+            }
+            ServerError::AxumFormRejection(_) => (StatusCode::BAD_REQUEST, self.to_string()),
+        }
+        .into_response()
+    }
 }

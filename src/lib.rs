@@ -1,7 +1,16 @@
 mod routes;
 use sqlx::postgres::PgPoolOptions;
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 pub async fn run(database_url: String) -> Result<(), Box<dyn std::error::Error>> {
+    tracing_subscriber::registry()
+        .with(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| "example_validator=debug".into()),
+        )
+        .with(tracing_subscriber::fmt::layer())
+        .init();
+
     let db_pool = PgPoolOptions::new()
         .max_connections(5)
         .connect(database_url.as_str())

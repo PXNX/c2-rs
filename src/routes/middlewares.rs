@@ -61,7 +61,7 @@ pub async fn inject_user_data<T>(
                                     request.extensions_mut().insert(Some(UserData {
                                         user_id,
                                         user_email,
-                                        name: None, //TODO: change
+                                        user_name: None, //TODO: change
                                     }));
                                 }
                             }

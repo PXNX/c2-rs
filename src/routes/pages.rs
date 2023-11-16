@@ -1,10 +1,10 @@
-use std::collections::HashMap;
+use axum::extract::{Path, Query};
 use axum::{
     extract::{Extension, State},
     http::Request,
     response::{Html, IntoResponse},
 };
-use axum::extract::{Path, Query};
+use std::collections::HashMap;
 
 use minijinja::{context, Environment};
 
@@ -16,11 +16,11 @@ pub async fn index<T>(
     request: Request<T>,
 ) -> Result<impl IntoResponse, AppError> {
     let tmpl = env.get_template("index.html")?;
-    let user_email = user_data.map(|s| s.user_email);
+    let user_id = user_data.map(|s| s.user_id);
     let login_return_url = "?next=".to_owned() + &*request.uri().to_string();
     let content = tmpl.render(context!(
-        user_email => user_email,
         login_return_url => login_return_url,
+        user_id => user_id
     ))?;
     Ok(Html(content))
 }
@@ -40,16 +40,6 @@ pub async fn about<T>(
     Ok(Html(content))
 }
 
-pub async fn profile(
-    Extension(user_data): Extension<Option<UserData>>,
-    State(env): State<Environment<'static>>,
-) -> Result<impl IntoResponse, AppError> {
-    let tmpl = env.get_template("u/index.html")?;
-    let user_email = user_data.map(|s| s.user_email);
-    let content = tmpl.render(context!(user_email => user_email))?;
-    Ok(Html(content))
-}
-
 pub async fn military(
     Extension(user_data): Extension<Option<UserData>>,
     State(env): State<Environment<'static>>,
@@ -59,7 +49,6 @@ pub async fn military(
     let content = tmpl.render(context!(user_email => user_email))?;
     Ok(Html(content))
 }
-
 
 pub async fn settings(
     Extension(user_data): Extension<Option<UserData>>,
@@ -134,13 +123,12 @@ pub async fn login<T>(
     let tmpl = env.get_template("login.html")?;
     let user_email = user_data.map(|s| s.user_email);
 
-   let login_return_url = "?next=".to_owned() + &*params
-       .remove("next")
-       .unwrap_or_else(|| "/".to_string());
+    let login_return_url =
+        "?next=".to_owned() + &*params.remove("next").unwrap_or_else(|| "/".to_string());
 
     let content = tmpl.render(context!(
         user_email => user_email,
         login_return_url => login_return_url,
-    ))?;;
+    ))?;
     Ok(Html(content))
 }
