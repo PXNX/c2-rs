@@ -1,23 +1,35 @@
 -- Add migration script here
+-- Add migration script here
 CREATE TABLE
     users (
         id BIGSERIAL PRIMARY KEY,
         email text NOT NULL UNIQUE,
+        avatar text,
         name varchar(40),
         skill_0 smallint default 0,
         skill_1 smallint default 0,
         skill_2 smallint default 0,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+CREATE TABLE
+    newspapers (
+        id BIGSERIAL PRIMARY KEY,
+        avatar text NOT NULL,
+        name varchar(40) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
 CREATE TABLE
     articles (
         id BIGSERIAL PRIMARY KEY,
-        author_id bigint NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         title varchar(40) not null,
         content text NOT NULL,
-        CONSTRAINT fk_author_id FOREIGN KEY (author_id) REFERENCES users (id)
+        author_id bigint NOT NULL,
+        newspaper_id bigint,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT fk_author_id FOREIGN KEY (author_id) REFERENCES users (id),
+        CONSTRAINT fk_newspaper_id FOREIGN KEY (newspaper_id) REFERENCES newspapers (id)
     );
 
 CREATE TABLE

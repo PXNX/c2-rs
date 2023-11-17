@@ -10089,6 +10089,10 @@ details.collapse summary::-webkit-details-marker {
   margin: 2.5rem !important;
 }
 
+.m-2 {
+  margin: 0.5rem !important;
+}
+
 .mx-2 {
   margin-left: 0.5rem !important;
   margin-right: 0.5rem !important;
@@ -10118,14 +10122,6 @@ details.collapse summary::-webkit-details-marker {
   margin-left: 0.5rem !important;
 }
 
-.mr-2 {
-  margin-right: 0.5rem !important;
-}
-
-.mr-4 {
-  margin-right: 1rem !important;
-}
-
 .ms-1 {
   margin-inline-start: 0.25rem !important;
 }
@@ -10148,10 +10144,6 @@ details.collapse summary::-webkit-details-marker {
 
 .mt-20 {
   margin-top: 5rem !important;
-}
-
-.mt-4 {
-  margin-top: 1rem !important;
 }
 
 .mt-6 {
@@ -10297,10 +10289,6 @@ details.collapse summary::-webkit-details-marker {
   width: 3rem !important;
 }
 
-.w-4 {
-  width: 1rem !important;
-}
-
 .w-5 {
   width: 1.25rem !important;
 }
@@ -10313,8 +10301,8 @@ details.collapse summary::-webkit-details-marker {
   width: 100% !important;
 }
 
-.max-w-md {
-  max-width: 28rem !important;
+.max-w-sm {
+  max-width: 24rem !important;
 }
 
 .max-w-xs {
@@ -10877,12 +10865,6 @@ details.collapse summary::-webkit-details-marker {
   margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse))) !important;
 }
 
-.space-y-1 > :not([hidden]) ~ :not([hidden]) {
-  --tw-space-y-reverse: 0 !important;
-  margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse))) !important;
-  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse)) !important;
-}
-
 .space-y-2 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-y-reverse: 0 !important;
   margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse))) !important;
@@ -11395,11 +11377,6 @@ details.collapse summary::-webkit-details-marker {
   background-color: var(--fallback-s,oklch(var(--s)/var(--tw-bg-opacity))) !important;
 }
 
-.bg-white {
-  --tw-bg-opacity: 1 !important;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity)) !important;
-}
-
 .bg-\[url\(\'https\:\/\/victorypark\.com\.ua\/wp-content\/uploads\/2023\/04\/banner_azov\.jpeg\'\)\] {
   background-image: url('https://victorypark.com.ua/wp-content/uploads/2023/04/banner_azov.jpeg') !important;
 }
@@ -11554,11 +11531,6 @@ details.collapse summary::-webkit-details-marker {
 .py-12 {
   padding-top: 3rem !important;
   padding-bottom: 3rem !important;
-}
-
-.py-4 {
-  padding-top: 1rem !important;
-  padding-bottom: 1rem !important;
 }
 
 .pb-20 {
@@ -11774,11 +11746,6 @@ details.collapse summary::-webkit-details-marker {
   color: rgb(55 65 81 / var(--tw-text-opacity)) !important;
 }
 
-.text-gray-800 {
-  --tw-text-opacity: 1 !important;
-  color: rgb(31 41 55 / var(--tw-text-opacity)) !important;
-}
-
 .text-primary {
   --tw-text-opacity: 1 !important;
   color: var(--fallback-p,oklch(var(--p)/var(--tw-text-opacity))) !important;
@@ -11980,12 +11947,6 @@ details.collapse summary::-webkit-details-marker {
 .shadow {
   --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !important;
   --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color) !important;
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
-}
-
-.shadow-md {
-  --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
-  --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color) !important;
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
 }
 
@@ -14004,24 +13965,9 @@ img {
     border-color: rgb(55 65 81 / var(--tw-divide-opacity)) !important;
   }
 
-  .dark\:bg-gray-800 {
-    --tw-bg-opacity: 1 !important;
-    background-color: rgb(31 41 55 / var(--tw-bg-opacity)) !important;
-  }
-
-  .dark\:text-gray-300 {
-    --tw-text-opacity: 1 !important;
-    color: rgb(209 213 219 / var(--tw-text-opacity)) !important;
-  }
-
   .dark\:text-gray-400 {
     --tw-text-opacity: 1 !important;
     color: rgb(156 163 175 / var(--tw-text-opacity)) !important;
-  }
-
-  .dark\:text-white {
-    --tw-text-opacity: 1 !important;
-    color: rgb(255 255 255 / var(--tw-text-opacity)) !important;
   }
 }
 

@@ -61,30 +61,6 @@ pub async fn settings(
     Ok(Html(content))
 }
 
-pub async fn articles(
-    Extension(user_data): Extension<Option<UserData>>,
-    State(env): State<Environment<'static>>,
-) -> Result<impl IntoResponse, AppError> {
-    let tmpl = env.get_template("articles/index.html")?;
-
-    let content = tmpl.render(context!(user_id => user_data.unwrap().id))?;
-    Ok(Html(content))
-}
-
-pub async fn article(
-    Extension(user_data): Extension<Option<UserData>>,
-
-    Path(article_id): Path<i64>,
-    State(env): State<Environment<'static>>,
-) -> Result<impl IntoResponse, AppError> {
-    //TODO instead of view, just go with ifs in template?
-    let tmpl = env.get_template("articles/view.html")?;
-
-    let content = tmpl.render(context!(user_id => user_data.unwrap().id,
-    article_id=>article_id))?;
-    Ok(Html(content))
-}
-
 pub async fn signup<T>(
     Extension(user_data): Extension<Option<UserData>>,
     State(env): State<Environment<'static>>,
@@ -127,7 +103,6 @@ pub async fn login<T>(
         "?next=".to_owned() + &*params.remove("next").unwrap_or_else(|| "/".to_string());
 
     let content = tmpl.render(context!(
-        user_id => user_data.unwrap().id,
         login_return_url => login_return_url,
     ))?;
     Ok(Html(content))

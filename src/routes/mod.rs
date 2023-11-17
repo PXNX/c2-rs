@@ -1,3 +1,4 @@
+mod articles;
 mod error_handling;
 mod middlewares;
 mod oauth;
@@ -24,9 +25,7 @@ use tower_http::{
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 use crate::routes::{
-    oauth::auth_router,
-    pages::{article, articles, military},
-    profile::profile_router,
+    articles::article_router, oauth::auth_router, pages::military, profile::profile_router,
 };
 use axum::{
     async_trait, extract::FromRef, handler::HandlerWithoutStateExt, http::Request, middleware,
@@ -99,14 +98,8 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         ))
         .route("/login", get(login))
         .with_state(app_state)
-        .layer(Extension(UserData))
+        .layer(Extension(user_data))
         .fallback_service(serve_dir))
-}
-
-fn article_router() -> Router<AppState> {
-    Router::new()
-        .route("/", get(articles))
-        .route("/:id", get(article))
 }
 
 fn visit(path: &Path, cb: &mut dyn FnMut(PathBuf)) -> io::Result<()> {
