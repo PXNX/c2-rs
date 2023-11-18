@@ -1,9 +1,9 @@
-mod articles;
-mod error_handling;
-mod middlewares;
-mod oauth;
+mod article;
+mod map;
+mod newspaper;
 mod pages;
 mod profile;
+mod welcome;
 use axum::{
     extract::{rejection::FormRejection, Form, FromRequest},
     http::StatusCode,
@@ -11,9 +11,8 @@ use axum::{
     routing::get,
     Router,
 };
-use error_handling::AppError;
-use middlewares::{check_auth, inject_user_data};
-use pages::{about, index, login, settings, signup, welcome};
+
+use pages::{about, index};
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
 
@@ -24,8 +23,16 @@ use tower_http::{
 };
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-use crate::routes::{
-    articles::article_router, oauth::auth_router, pages::military, profile::profile_router,
+use crate::{
+    auth::{
+        login::login,
+        middlewares::{check_auth, inject_user_data},
+        oauth::auth_router,
+    },
+    routes::{
+        article::article_router, map::map_router, newspaper::newspaper_router, pages::military,
+        profile::profile_router, welcome::welcome_router,
+    },
 };
 use axum::{
     async_trait, extract::FromRef, handler::HandlerWithoutStateExt, http::Request, middleware,
@@ -77,20 +84,16 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
     Ok(Router::new()
         .route("/", get(index))
         .route("/about", get(about))
-        .route("/settings", get(settings))
         .nest("/u", profile_router())
         .route("/m", get(military))
+        .nest("/map", map_router())
+        .nest("/n", newspaper_router())
         .nest("/a", article_router())
         .route_layer(middleware::from_fn_with_state(
             app_state.clone(),
             check_auth,
         ))
-        .nest(
-            "/welcome",
-            Router::new()
-                .route("/", get(welcome))
-                .route("/signup", get(signup)),
-        )
+        .nest("/welcome", welcome_router())
         .nest("/auth", auth_router())
         .route_layer(middleware::from_fn_with_state(
             app_state.clone(),

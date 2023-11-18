@@ -7,14 +7,15 @@
 <body class="p-4 ">
 
 
-    <form hx-ext="debug" class="form-control w-full max-w-xs space-y-4" hx-post="/u">
+    <form hx-ext="debug" class="form-control w-full max-w-xs space-y-4" hx-post="/welcome/signup">
 
 
         <div>
             <label class="label">
                 What should your account be called?
             </label>
-            <input type="text" name="user_name" placeholder="Username" class="input input-bordered w-full max-w-xs" />
+            <input type="text" name="user_name" placeholder="Username" class="input input-bordered w-full max-w-xs"
+                required />
         </div>
 
 

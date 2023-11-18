@@ -1,5 +1,6 @@
 -- Add migration script here
 -- Add migration script here
+-- Add migration script here
 CREATE TABLE
     users (
         id BIGSERIAL PRIMARY KEY,
@@ -20,6 +21,18 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
+CREATE TYPE newspaper_ranks AS ENUM (
+    'author','editor',  'owner');
+CREATE TABLE
+  journalists (
+        user_id bigint,
+       newspaper_id bigint,
+       rank newspaper_ranks,
+        primary key (user_id,  newspaper_id),
+        CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users (id),
+        CONSTRAINT fk_newspaper_id FOREIGN KEY ( newspaper_id) REFERENCES  newspapers (id)
+    );
+
 CREATE TABLE
     articles (
         id BIGSERIAL PRIMARY KEY,
@@ -30,6 +43,31 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         CONSTRAINT fk_author_id FOREIGN KEY (author_id) REFERENCES users (id),
         CONSTRAINT fk_newspaper_id FOREIGN KEY (newspaper_id) REFERENCES newspapers (id)
+    );
+
+CREATE TABLE
+    upvotes (
+        user_id bigint,
+        article_id bigint,
+        primary key (user_id, article_id),
+        CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users (id),
+        CONSTRAINT fk_article_id FOREIGN KEY (article_id) REFERENCES articles (id)
+    );
+
+CREATE TABLE
+    vouchers (
+        id BIGSERIAL PRIMARY KEY,
+        code varchar(20) not null UNIQUE,
+        reward smallint not null
+    );
+
+CREATE TABLE
+    used_vouchers (
+        user_id bigint,
+        voucher_id bigint,
+        primary key (user_id, voucher_id),
+        CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users (id),
+        CONSTRAINT fk_voucher_id FOREIGN KEY (voucher_id) REFERENCES vouchers (id)
     );
 
 CREATE TABLE

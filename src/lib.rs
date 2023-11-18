@@ -1,6 +1,8 @@
 mod routes;
 use sqlx::postgres::PgPoolOptions;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+mod auth;
+mod common;
 
 pub async fn run(database_url: String) -> Result<(), Box<dyn std::error::Error>> {
     tracing_subscriber::registry()

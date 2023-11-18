@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Edit Article{% endblock %}
+{% block title %}Create Article{% endblock %}
 <script src="//unpkg.com/alpinejs" defer></script>
 
 {% block page %}
@@ -29,9 +29,22 @@
                     <div>
 
                         <input type="text" name="article_title" placeholder="Enter the title..."
-                            class="input input-bordered w-full max-w-sm" />
+                            class="input input-bordered w-full max-w-sm" required />
                     </div>
 
+
+
+
+
+                    {% if newspapers is defined and newspapers[0] is defined %}
+                    <select class="select select-bordered w-full max-w-sm" name="publisher">
+                        <option value="None">Yourself</option>
+                        {% for newspaper in newspapers %}
+                        <option value="{{newspaper.newspaper_id}}">{{newspaper.newspaper_name}}</option>
+
+                        {% endfor %}
+                    </select>
+                    {% endif %}
 
 
                     <button hx-ext="debug" class="btn btn-primary">Publish article</button>

@@ -52,11 +52,13 @@
         </div>
 
 
-        <input type="text" placeholder="Username" class="input input-bordered w-full max-w-sm" />
+        <input type="text" name="user_name" placeholder="Username" class="input input-bordered w-full max-w-sm"
+            value="{{user_name}}" required />
 
-        <input type="text" placeholder="Avatar Url" class="input input-bordered w-full max-w-sm" />
+        <input type="text" name="user_avatar" placeholder="Avatar Url" class="input input-bordered w-full max-w-sm"
+            value="{{user_avatar}}" />
 
-        <a href="/" role="button" class="btn btn-primary w-full">Edit profile</a>
+        <a hx-put="/u/settings" role="button" class="btn btn-primary w-full">Edit profile</a>
     </section>
 
     <section class="mt-20 space-y-2  w-full">

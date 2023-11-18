@@ -1,9 +1,3 @@
-// Code adapted from https://github.com/ramosbugs/oauth2-rs/blob/main/examples/google.rs
-//
-// Must set the enviroment variables:
-// GOOGLE_CLIENT_ID=xxx
-// GOOGLE_CLIENT_SECRET=yyy
-
 use axum::{
     extract::{Extension, Host, Query, State, TypedHeader},
     headers::Cookie,
@@ -23,7 +17,9 @@ use sqlx::PgPool;
 use std::collections::HashMap;
 use uuid::Uuid;
 
-use super::{AppError, AppState, UserData};
+use crate::routes::{AppState, UserData};
+
+use super::error_handling::AppError;
 
 fn get_client(hostname: String) -> Result<BasicClient, AppError> {
     let google_client_id = ClientId::new(var("GOOGLE_CLIENT_ID")?);

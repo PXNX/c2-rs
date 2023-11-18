@@ -1,4 +1,3 @@
-use super::{AppError, UserData};
 use axum::{
     extract::{State, TypedHeader},
     headers::Cookie,
@@ -8,6 +7,10 @@ use axum::{
 };
 use chrono::Utc;
 use sqlx::{query, query_as, PgPool};
+
+use crate::routes::UserData;
+
+use super::error_handling::AppError;
 
 pub async fn inject_user_data<T>(
     State(db_pool): State<PgPool>,
