@@ -94,7 +94,7 @@ async fn articles(
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-struct Createarticle {
+struct CreateArticle {
     article_title: String,
     article_content: String,
     publisher: Option<i64>,
@@ -104,7 +104,7 @@ async fn publish_article(
     Extension(user_data): Extension<Option<UserData>>,
 
     State(db_pool): State<PgPool>,
-    Form(input): Form<Createarticle>,
+    Form(input): Form<CreateArticle>,
 ) -> Result<impl IntoResponse, AppError> {
     let user_id = user_data.unwrap().id;
 
@@ -158,6 +158,59 @@ async fn create_article(
     let content = tmpl.render(context!(user_id => user_id, newspapers => newspapers
     ))?;
     Ok(Html(content))
+}
+
+async fn edit_article(
+    Extension(user_data): Extension<Option<UserData>>,
+    Path(article_id): Path<i64>,
+    State(db_pool): State<PgPool>,
+    State(env): State<Environment<'static>>,
+) -> Result<impl IntoResponse, AppError> {
+    let tmpl = env.get_template("article/edit.html")?;
+    let user_id = user_data.unwrap().id;
+
+    let article = query!(
+        r#"SELECT content 
+    
+ FROM
+    articles where id = $1;"#,
+        &article_id
+    )
+    .fetch_one(&db_pool)
+    .await?;
+
+    let content = tmpl.render(
+        context!(user_id => user_id, article_content=>article.content
+        ),
+    )?;
+    Ok(Html(content))
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+struct EditArticle {
+    article_content: String,
+}
+
+async fn save_article(
+    Extension(user_data): Extension<Option<UserData>>,
+    Path(article_id): Path<i64>,
+    State(db_pool): State<PgPool>,
+    Form(input): Form<EditArticle>,
+) -> Result<impl IntoResponse, AppError> {
+    let user_id = user_data.unwrap().id;
+
+    //todo: check if user is editor/owner
+
+    let query = query!(
+        r#"UPDATE articles SET content = $1
+  where id = $2;"#,
+        input.article_content,
+        &article_id
+    )
+    .execute(&db_pool)
+    .await?;
+
+    Ok(Redirect::to(format!("/a/{}", article_id).as_str()))
 }
 
 async fn article(
@@ -258,6 +311,7 @@ pub fn article_router() -> Router<AppState> {
     Router::new()
         .route("/", get(articles))
         .route("/:id", get(article))
-        .route("/edit", get(create_article).post(publish_article))
-        .route("/upvote/:id", put(upvote_article).delete(remove_upvote))
+        .route("/create", get(create_article).post(publish_article))
+        .route("/:id/edit", get(edit_article).post(save_article))
+        .route("/:id/upvote", put(upvote_article).delete(remove_upvote))
 }

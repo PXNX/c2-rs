@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}Create Newspaper{% endblock %}
+{% block main %}
+
+<div class="my-12 px-4 space-y-8">
+    <form id="publish_article" hx-ext="debug" class="form-control w-full space-y-4" hx-post="/n/create">
+
+        <h2 class="text-2xl font-bold mx-2">Appearance</h2>
+
+
+
+        <select class="select select-bordered w-full max-w-sm">
+            <option value="dark">Default</option>
+            <option value="light">Light</option>
+            <option value="cupcake">Pink</option>
+            <option value="retro">Retro</option>
+
+        </select>
+
+
+
+        <input type="text" name="newspaper_name" placeholder="Newspaper name"
+            class="input input-bordered w-full max-w-sm" value="{{newspaper_name}}" required />
+
+        <input type="text" name="newspaper_avatar" placeholder="Avatar Url" class="input input-bordered w-full max-w-sm"
+            value="{{newspaper_avatar}}" required />
+
+        <button hx-ext="debug" class="btn btn-primary">Create newspaper</button>
+        </section>
+
+
+
+
+
+</div>
+
+{% endblock %}

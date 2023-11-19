@@ -11457,6 +11457,20 @@ details.collapse summary::-webkit-details-marker {
   background-image: url('https://victorypark.com.ua/wp-content/uploads/2023/04/banner_azov.jpeg') !important;
 }
 
+.bg-gradient-to-br {
+  background-image: linear-gradient(to bottom right, var(--tw-gradient-stops)) !important;
+}
+
+.from-primary {
+  --tw-gradient-from: var(--fallback-p,oklch(var(--p)/1)) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: var(--fallback-p,oklch(var(--p)/0)) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.to-secondary {
+  --tw-gradient-to: var(--fallback-s,oklch(var(--s)/1)) var(--tw-gradient-to-position) !important;
+}
+
 .decoration-slice {
   -webkit-box-decoration-break: slice !important;
           box-decoration-break: slice !important;
@@ -11548,6 +11562,14 @@ details.collapse summary::-webkit-details-marker {
 
 .fill-current {
   fill: currentColor !important;
+}
+
+.fill-orange-600 {
+  fill: #ea580c !important;
+}
+
+.stroke-neutral-content {
+  stroke: var(--fallback-nc,oklch(var(--nc)/1)) !important;
 }
 
 .stroke-primary {

@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block page %}
 
+
+
+
 <body>
 
   {% block body %}{% endblock %}
@@ -56,3 +59,10 @@ class="transition-opacity ease-in fade_in duration-500  "
 
 <!--ripple-bg-gray-300-->
 {% endblock %}
+
+<script type="text/javascript">
+  function replace_img(img) {
+    img.onerror = null;
+    img.src = "/icons/account.svg";
+  }
+</script>
