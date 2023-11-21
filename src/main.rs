@@ -1,4 +1,5 @@
 use dotenvy::var;
+
 use c2::run;
 
 #[tokio::main]

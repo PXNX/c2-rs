@@ -1,40 +1,19 @@
-use axum::extract::{Path, Query};
-use axum::http::StatusCode;
-use axum::response::Redirect;
-use axum::routing::{get, post, put};
 use axum::{
     extract::{Extension, State},
-    http::Request,
     response::{Html, IntoResponse},
 };
 use axum::{Form, Router};
-
-use minijinja::{context, Environment, Error, Template};
+use axum::extract::Path;
+use axum::response::Redirect;
+use axum::routing::{get, put};
+use minijinja::{context, Environment};
 use serde::{Deserialize, Serialize};
-use serde_with::rust::unwrap_or_skip;
-use std::collections::HashMap;
-use time::formatting::Formattable;
-
-use axum::{
-    extract::{Host, TypedHeader},
-    headers::Cookie,
-};
-use dotenvy::var;
-use oauth2::{
-    basic::BasicClient, reqwest::http_client, AuthUrl, AuthorizationCode, ClientId, ClientSecret,
-    CsrfToken, PkceCodeChallenge, PkceCodeVerifier, RedirectUrl, RevocationUrl, Scope,
-    TokenResponse, TokenUrl,
-};
-
-use chrono::Utc;
-use sqlx::{query, query_as, Executor, PgPool};
-
-use uuid::Uuid;
+use sqlx::{Executor, PgPool, query};
 
 use crate::auth::error_handling::AppError;
 use crate::common::tools::format_date;
 
-use super::{newspaper, AppState, UserData};
+use super::{AppState, UserData};
 
 #[derive(Debug, Clone, Serialize)]
 struct ArticlePreview {
@@ -42,7 +21,8 @@ struct ArticlePreview {
     title: String,
     upvote_count: i64,
     publish_date: String,
-    author_avatar: Option<String>, //TODO: force user to set avatar
+    author_avatar: Option<String>,
+    //TODO: force user to set avatar
     author_name: String,
 }
 
@@ -70,21 +50,21 @@ async fn articles(
  ORDER BY articles.created_at DESC
  LIMIT 30;"#,
     )
-    .fetch_all(&db_pool)
-    .await?
-    .iter()
-    .map(|a| {
-        ArticlePreview {
-            id: a.id,
-            title: a.title.clone(),
+        .fetch_all(&db_pool)
+        .await?
+        .iter()
+        .map(|a| {
+            ArticlePreview {
+                id: a.id,
+                title: a.title.clone(),
 
-            publish_date: format_date(a.created_at),
-            upvote_count: a.upvote_count.unwrap(),
-            author_avatar: a.author_avatar.clone(),
-            author_name: a.author_name.clone().unwrap(), //TODO: unwrap is not necessary, after making title not null in sql
-        }
-    })
-    .collect();
+                publish_date: format_date(a.created_at),
+                upvote_count: a.upvote_count.unwrap(),
+                author_avatar: a.author_avatar.clone(),
+                author_name: a.author_name.clone().unwrap(), //TODO: unwrap is not necessary, after making title not null in sql
+            }
+        })
+        .collect();
 
     let content = tmpl.render(context!(
         user_id =>  user_data.unwrap().id,
@@ -102,7 +82,6 @@ struct CreateArticle {
 
 async fn publish_article(
     Extension(user_data): Extension<Option<UserData>>,
-
     State(db_pool): State<PgPool>,
     Form(input): Form<CreateArticle>,
 ) -> Result<impl IntoResponse, AppError> {
@@ -116,8 +95,8 @@ async fn publish_article(
         input.article_content,
         input.publisher
     )
-    .fetch_one(&db_pool)
-    .await?;
+        .fetch_one(&db_pool)
+        .await?;
 
     Ok(Redirect::to(format!("/a/{}", query.id).as_str()))
 }
@@ -146,14 +125,14 @@ async fn create_article(
         LEFT OUTER JOIN newspapers ON (newspaper_id =newspapers.id) where user_id = $1;"#,
         &user_id
     )
-    .fetch_all(&db_pool)
-    .await?
-    .iter()
-    .map(|n| Newspaper {
-        newspaper_name: n.name.to_owned(),
-        newspaper_id: n.id,
-    })
-    .collect();
+        .fetch_all(&db_pool)
+        .await?
+        .iter()
+        .map(|n| Newspaper {
+            newspaper_name: n.name.to_owned(),
+            newspaper_id: n.id,
+        })
+        .collect();
 
     let content = tmpl.render(context!(user_id => user_id, newspapers => newspapers
     ))?;
@@ -176,8 +155,8 @@ async fn edit_article(
     articles where id = $1;"#,
         &article_id
     )
-    .fetch_one(&db_pool)
-    .await?;
+        .fetch_one(&db_pool)
+        .await?;
 
     let content = tmpl.render(
         context!(user_id => user_id, article_content=>article.content
@@ -207,8 +186,8 @@ async fn save_article(
         input.article_content,
         &article_id
     )
-    .execute(&db_pool)
-    .await?;
+        .execute(&db_pool)
+        .await?;
 
     Ok(Redirect::to(format!("/a/{}", article_id).as_str()))
 }
@@ -276,8 +255,8 @@ async fn upvote_article(
         user_data.unwrap().id,
         article_id,
     )
-    .execute(&db_pool)
-    .await?;
+        .execute(&db_pool)
+        .await?;
 
     let content = tmpl.render(context!(   article_id =>    article_id,
     ))?;
@@ -299,8 +278,8 @@ where user_id = $1 and article_id = $2;"#,
         user_data.unwrap().id,
         article_id,
     )
-    .execute(&db_pool)
-    .await?;
+        .execute(&db_pool)
+        .await?;
 
     let content = tmpl.render(context!( article_id =>    article_id,
     ))?;

@@ -3,7 +3,6 @@
 {% block main %}
 
 
-
 <div class="stats bg-primary text-primary-content">
 
 
@@ -19,19 +18,15 @@
 
 </div>
 
-<li> Logged in as {{ user_name }} (<a href="/logout">Logout</a>) </li>
+<li> Logged in as {{ user_name }} (<a href="/logout">Logout</a>)</li>
 
 
+<a class="btn  btn-primary" href="/about" role="button">About</a>
 
-<a href="/about" role="button" class="btn  btn-primary">About</a>
-
-<a href="/u" role="button" class="btn  btn-secondary">Profile</a>
-
+<a class="btn  btn-secondary" href="/map" role="button">Map</a>
 
 
-
-<a href="/welcome/signup" role="button" class="btn  btn-primary">Welcome</a>
-
+<a class="btn  btn-primary" href="/welcome/signup" role="button">Welcome</a>
 
 
 {% endblock %}

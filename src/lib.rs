@@ -1,6 +1,8 @@
-mod routes;
 use sqlx::postgres::PgPoolOptions;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+mod routes;
+
 mod auth;
 mod common;
 

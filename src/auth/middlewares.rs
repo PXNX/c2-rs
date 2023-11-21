@@ -6,7 +6,7 @@ use axum::{
     response::{IntoResponse, Redirect},
 };
 use chrono::Utc;
-use sqlx::{query, query_as, PgPool};
+use sqlx::{PgPool, query};
 
 use crate::routes::UserData;
 
@@ -21,11 +21,11 @@ pub async fn inject_user_data<T>(
     if let Some(cookie) = cookie {
         if let Some(session_token) = cookie.get("session_token") {
             let session_token: Vec<&str> = session_token.split('_').collect();
-            let query= query!(
+            let query = query!(
                 r#"SELECT user_id,expires_at,session_token_p2 FROM user_sessions WHERE session_token_p1=$1;"#,
             session_token[0])
-            .fetch_one(&db_pool)
-            .await;
+                .fetch_one(&db_pool)
+                .await;
 
             println!("inject--{:#?}", query);
 

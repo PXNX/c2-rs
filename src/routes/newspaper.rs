@@ -1,33 +1,15 @@
-use axum::extract::{Path, Query};
-use axum::http::StatusCode;
-use axum::response::Redirect;
-use axum::routing::{get, post};
 use axum::{
     extract::{Extension, State},
-    http::Request,
     response::{Html, IntoResponse},
 };
 use axum::{Form, Router};
+use axum::extract::Path;
+use axum::http::StatusCode;
+use axum::response::Redirect;
+use axum::routing::get;
+use minijinja::{context, Environment};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-
-use minijinja::{context, Environment, Error, Template};
-
-use axum::{
-    extract::{Host, TypedHeader},
-    headers::Cookie,
-};
-use dotenvy::var;
-use oauth2::{
-    basic::BasicClient, reqwest::http_client, AuthUrl, AuthorizationCode, ClientId, ClientSecret,
-    CsrfToken, PkceCodeChallenge, PkceCodeVerifier, RedirectUrl, RevocationUrl, Scope,
-    TokenResponse, TokenUrl,
-};
-
-use chrono::Utc;
-use sqlx::{query, query_as, Executor, PgPool};
-
-use uuid::Uuid;
+use sqlx::{Executor, PgPool, query};
 
 use crate::auth::error_handling::AppError;
 use crate::common::tools::format_date;
@@ -48,13 +30,13 @@ async fn newspaper(
         r#"SELECT name, avatar,created_at FROM newspapers WHERE id=$1;"#,
         &newspaper_id
     )
-    .fetch_one(&db_pool)
-    .await
-    .map_err(|e| AppError {
-        code: StatusCode::NOT_FOUND,
-        message: format!("GET Newspaper: No newspaper with id {newspaper_id} was found: {e}"),
-        user_message: format!("No newspaper with id {newspaper_id} was found."),
-    })?;
+        .fetch_one(&db_pool)
+        .await
+        .map_err(|e| AppError {
+            code: StatusCode::NOT_FOUND,
+            message: format!("GET Newspaper: No newspaper with id {newspaper_id} was found: {e}"),
+            user_message: format!("No newspaper with id {newspaper_id} was found."),
+        })?;
 
     let content = tmpl.render(context!(
         user_id =>  user_id,
@@ -79,8 +61,8 @@ async fn newspaper_settings(
         r#"SELECT name, avatar, background FROM newspapers WHERE id=$1;"#,
         &newspaper_id
     )
-    .fetch_one(&db_pool)
-    .await?;
+        .fetch_one(&db_pool)
+        .await?;
 
     let content = tmpl.render(context!(user_id => user_id,
     newspaper_name => newspaper.name,
@@ -100,7 +82,6 @@ struct CreateNewspaper {
 
 async fn publish_newspaper(
     Extension(user_data): Extension<Option<UserData>>,
-
     State(db_pool): State<PgPool>,
     Form(input): Form<CreateNewspaper>,
 ) -> Result<impl IntoResponse, AppError> {
@@ -113,8 +94,8 @@ async fn publish_newspaper(
         input.newspaper_name,
         input.newspaper_avatar,
     )
-    .fetch_one(&db_pool)
-    .await?;
+        .fetch_one(&db_pool)
+        .await?;
 
     query!(
         r#"INSERT INTO journalists (newspaper_id,user_id,rank)
@@ -123,8 +104,8 @@ async fn publish_newspaper(
         &newspaper.id,
         user_id,
     )
-    .execute(&db_pool)
-    .await?;
+        .execute(&db_pool)
+        .await?;
 
     Ok(Redirect::to(format!("/n/{}", newspaper.id).as_str()))
 }
@@ -153,14 +134,14 @@ async fn create_newspaper(
         LEFT OUTER JOIN newspapers ON (newspaper_id =newspapers.id) where user_id = $1;"#,
         &user_id
     )
-    .fetch_all(&db_pool)
-    .await?
-    .iter()
-    .map(|n| Newspaper {
-        newspaper_name: n.name.to_owned(),
-        newspaper_id: n.id,
-    })
-    .collect();
+        .fetch_all(&db_pool)
+        .await?
+        .iter()
+        .map(|n| Newspaper {
+            newspaper_name: n.name.to_owned(),
+            newspaper_id: n.id,
+        })
+        .collect();
 
     let content = tmpl.render(context!(user_id => user_id, newspapers => newspapers
     ))?;

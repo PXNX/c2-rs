@@ -1,7 +1,10 @@
 {
   "dependencies": {
+    "@panzoom/panzoom": "^4.5.1",
     "@tailwindcss/typography": "^0.5.10",
-    "tailwindcss": "^3.3.5"
+    "@thesoulfresh/pan-z": "^1.2.8",
+    "tailwindcss": "^3.3.5",
+    "vanilla-js-wheel-zoom": "^8.1.0"
   },
   "devDependencies": {
     "@iconify/json": "^2.2.142",

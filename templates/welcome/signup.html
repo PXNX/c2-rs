@@ -3,58 +3,54 @@
 {% block page %}
 
 
-
 <body class="p-4 ">
 
 
-    <form hx-ext="debug" class="form-control w-full max-w-xs space-y-4" hx-post="/welcome/signup">
+<form class="form-control w-full max-w-xs space-y-4" hx-ext="debug" hx-post="/welcome/signup">
 
 
-        <div>
-            <label class="label">
-                What should your account be called?
-            </label>
-            <input type="text" name="user_name" placeholder="Username" class="input input-bordered w-full max-w-xs"
-                required />
-        </div>
+    <div>
+        <label class="label">
+            What should your account be called?
+        </label>
+        <input class="input input-bordered w-full max-w-xs" name="user_name" placeholder="Username" required
+               type="text"/>
+    </div>
 
 
+    <button class="btn btn-primary" hx-ext="debug">Save profile
+        <svg class="htmx-indicator" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <style>
+                .spinner_ngNb {
+                    animation: spinner_ZRWK 1.2s cubic-bezier(0.52, .6, .25, .99) infinite
+                }
 
+                .spinner_6TBP {
+                    animation-delay: .6s
+                }
 
-
-        <button hx-ext="debug" class="btn btn-primary">Save profile
-            <svg class="htmx-indicator" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <style>
-                    .spinner_ngNb {
-                        animation: spinner_ZRWK 1.2s cubic-bezier(0.52, .6, .25, .99) infinite
+                @keyframes spinner_ZRWK {
+                    0% {
+                        transform: translate(12px, 12px) scale(0);
+                        opacity: 1
                     }
 
-                    .spinner_6TBP {
-                        animation-delay: .6s
+                    100% {
+                        transform: translate(0, 0) scale(1);
+                        opacity: 0
                     }
+                }
+            </style>
+            <path class="spinner_ngNb"
+                  d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,12,21Z"
+                  transform="translate(12, 12) scale(0)"/>
+            <path class="spinner_ngNb spinner_6TBP"
+                  d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,12,21Z"
+                  transform="translate(12, 12) scale(0)"/>
+        </svg>
 
-                    @keyframes spinner_ZRWK {
-                        0% {
-                            transform: translate(12px, 12px) scale(0);
-                            opacity: 1
-                        }
-
-                        100% {
-                            transform: translate(0, 0) scale(1);
-                            opacity: 0
-                        }
-                    }
-                </style>
-                <path class="spinner_ngNb"
-                    d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,12,21Z"
-                    transform="translate(12, 12) scale(0)" />
-                <path class="spinner_ngNb spinner_6TBP"
-                    d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,12,21Z"
-                    transform="translate(12, 12) scale(0)" />
-            </svg>
-
-        </button>
-    </form>
+    </button>
+</form>
 
 
 </body>

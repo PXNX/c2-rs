@@ -1,33 +1,15 @@
-use axum::extract::{Path, Query};
-use axum::http::StatusCode;
-use axum::response::Redirect;
-use axum::routing::{get, post};
 use axum::{
     extract::{Extension, State},
-    http::Request,
     response::{Html, IntoResponse},
 };
 use axum::{Form, Router};
+use axum::extract::Path;
+use axum::http::StatusCode;
+use axum::response::Redirect;
+use axum::routing::get;
+use minijinja::{context, Environment};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-
-use minijinja::{context, Environment, Error, Template};
-
-use axum::{
-    extract::{Host, TypedHeader},
-    headers::Cookie,
-};
-use dotenvy::var;
-use oauth2::{
-    basic::BasicClient, reqwest::http_client, AuthUrl, AuthorizationCode, ClientId, ClientSecret,
-    CsrfToken, PkceCodeChallenge, PkceCodeVerifier, RedirectUrl, RevocationUrl, Scope,
-    TokenResponse, TokenUrl,
-};
-
-use chrono::Utc;
-use sqlx::{query, query_as, Executor, PgPool};
-
-use uuid::Uuid;
+use sqlx::{Executor, PgPool, query};
 
 use crate::auth::error_handling::AppError;
 
@@ -51,13 +33,13 @@ async fn profile(
         r#"SELECT name, skill_0,skill_1,skill_2,created_at FROM users WHERE id=$1;"#,
         &user_id
     )
-    .fetch_one(&db_pool)
-    .await
-    .map_err(|e| AppError {
-        code: StatusCode::NOT_FOUND,
-        message: format!("GET Profile: No user with id {user_id} was found: {e}"),
-        user_message: format!("No user with id {user_id} was found."),
-    })?;
+        .fetch_one(&db_pool)
+        .await
+        .map_err(|e| AppError {
+            code: StatusCode::NOT_FOUND,
+            message: format!("GET Profile: No user with id {user_id} was found: {e}"),
+            user_message: format!("No user with id {user_id} was found."),
+        })?;
 
     let content = tmpl.render(context!(
         user_id =>  user_id,
@@ -96,7 +78,6 @@ struct EditProfile {
 
 async fn edit_profile(
     Extension(user_data): Extension<Option<UserData>>,
-
     State(db_pool): State<PgPool>,
     Form(input): Form<EditProfile>,
 ) -> Result<impl IntoResponse, AppError> {
@@ -108,8 +89,8 @@ async fn edit_profile(
         input.user_avatar,
         &user_id
     )
-    .execute(&db_pool)
-    .await?;
+        .execute(&db_pool)
+        .await?;
 
     Ok(Redirect::to("/")) //format!("/u/{user_id}")
 }
@@ -121,7 +102,6 @@ struct VoucherCode {
 
 async fn check_voucher(
     Extension(user_data): Extension<Option<UserData>>,
-
     State(db_pool): State<PgPool>,
     Form(input): Form<VoucherCode>,
 ) -> Result<impl IntoResponse, AppError> {
@@ -132,8 +112,8 @@ async fn check_voucher(
         input.voucher_code,
         &user_id
     )
-    .execute(&db_pool)
-    .await?;
+        .execute(&db_pool)
+        .await?;
 
     Ok(Redirect::to("/")) //format!("/u/{user_id}")
 }

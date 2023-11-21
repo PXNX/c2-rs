@@ -28,8 +28,6 @@
         font-size: 1.2rem;
 
 
-
-
         text-align: center;
 
 
@@ -108,4 +106,45 @@ img {
     background-color: #e2e8f0;
     background-size: 100%;
     transition: background 0s;
+}
+
+
+
+
+
+.imageContainer {
+    width: 96%;
+    height: 96%;
+    max-width: 800px;
+    max-height: 600px;
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    background: #2b2b2c;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+svg {
+    display: block;
+
+    cursor: move;
+    touch-action: none;
+}
+
+#hud {
+    background: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    padding: 10px 20px;
+    color: #FFF;
+    font-family: sans-serif;
+    font-size: 1.2em;
+    pointer-events: none;
 }

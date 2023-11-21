@@ -1,33 +1,14 @@
-use axum::extract::{Path, Query};
-use axum::http::StatusCode;
-use axum::response::Redirect;
-use axum::routing::{get, post};
 use axum::{
     extract::{Extension, State},
     http::Request,
     response::{Html, IntoResponse},
 };
 use axum::{Form, Router};
+use axum::response::Redirect;
+use axum::routing::get;
+use minijinja::{context, Environment};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-
-use minijinja::{context, Environment, Error, Template};
-
-use axum::{
-    extract::{Host, TypedHeader},
-    headers::Cookie,
-};
-use dotenvy::var;
-use oauth2::{
-    basic::BasicClient, reqwest::http_client, AuthUrl, AuthorizationCode, ClientId, ClientSecret,
-    CsrfToken, PkceCodeChallenge, PkceCodeVerifier, RedirectUrl, RevocationUrl, Scope,
-    TokenResponse, TokenUrl,
-};
-
-use chrono::Utc;
-use sqlx::{query, query_as, Executor, PgPool};
-
-use uuid::Uuid;
+use sqlx::{Executor, PgPool, query};
 
 use crate::auth::error_handling::AppError;
 
@@ -70,7 +51,6 @@ struct CreateProfile {
 
 async fn create_profile(
     Extension(user_data): Extension<Option<UserData>>,
-
     State(db_pool): State<PgPool>,
     Form(input): Form<CreateProfile>,
 ) -> Result<impl IntoResponse, AppError> {
@@ -81,8 +61,8 @@ async fn create_profile(
         input.user_name,
         user_data.id
     )
-    .execute(&db_pool)
-    .await?;
+        .execute(&db_pool)
+        .await?;
 
     Ok(Redirect::to("/"))
 }

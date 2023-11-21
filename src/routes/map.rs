@@ -1,40 +1,15 @@
-use axum::extract::{Path, Query};
-use axum::http::StatusCode;
-use axum::response::Redirect;
-use axum::routing::{get, post};
 use axum::{
     extract::{Extension, State},
-    http::Request,
     response::{Html, IntoResponse},
 };
-use axum::{Form, Router};
-
-use minijinja::{context, Environment, Error, Template};
-use serde::{Deserialize, Serialize};
-use serde_with::rust::unwrap_or_skip;
-use std::collections::HashMap;
-use time::formatting::Formattable;
-
-use axum::{
-    extract::{Host, TypedHeader},
-    headers::Cookie,
-};
-use dotenvy::var;
-use oauth2::{
-    basic::BasicClient, reqwest::http_client, AuthUrl, AuthorizationCode, ClientId, ClientSecret,
-    CsrfToken, PkceCodeChallenge, PkceCodeVerifier, RedirectUrl, RevocationUrl, Scope,
-    TokenResponse, TokenUrl,
-};
-
-use chrono::Utc;
-use sqlx::{query, query_as, Executor, PgPool};
-
-use uuid::Uuid;
+use axum::Router;
+use axum::routing::get;
+use minijinja::{context, Environment};
+use sqlx::PgPool;
 
 use crate::auth::error_handling::AppError;
-use crate::common::tools::format_date;
 
-use super::{newspaper, AppState, UserData};
+use super::{AppState, UserData};
 
 async fn map(
     Extension(user_data): Extension<Option<UserData>>,

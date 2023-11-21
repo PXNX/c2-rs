@@ -1,11 +1,8 @@
-use axum::extract::{Path, Query};
 use axum::{
     extract::{Extension, State},
     http::Request,
     response::{Html, IntoResponse},
 };
-use std::collections::HashMap;
-
 use minijinja::{context, Environment};
 
 use crate::auth::error_handling::AppError;

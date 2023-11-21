@@ -12,7 +12,7 @@ opt-level = 3
 [dependencies]
 axum = { version = "0.6.20", features = ["headers", "macros"] }
 axum-extra = "0.8.0"
-axum-htmx="0.4.0"
+axum-htmx = "0.4.0"
 chrono = { version = "0.4.31", features = ["serde"] }
 serde = { version = "1.0.192", features = ["derive"] }
 serde_json = "1.0.108"
@@ -25,7 +25,7 @@ uuid = { version = "1.5.0", features = ["v4"] }
 reqwest = "0.11.22"
 dotenvy = "0.15.7"
 constant_time_eq = "0.3.0"
-time  = { version = "0.3.30", features = ["formatting"] }
+time = { version = "0.3.30", features = ["formatting"] }
 tower = { version = "0.4.13", features = ["util"] }
 tower-http = { version = "0.4.4", features = ["fs", "trace"] }
 tracing = "0.1.40"

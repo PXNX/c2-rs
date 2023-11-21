@@ -1,27 +1,27 @@
-mod article;
-mod map;
-mod newspaper;
-mod pages;
-mod profile;
-mod welcome;
-use axum::{
-    extract::{rejection::FormRejection, Form, FromRequest},
-    http::StatusCode,
-    response::{Html, IntoResponse, Response},
-    routing::get,
-    Router,
-};
+use std::{fs, io};
+use std::fs::read_dir;
+use std::path::{Path, PathBuf};
 
-use pages::{about, index};
+use axum::{
+    extract::FromRequest,
+    http::StatusCode,
+    response::IntoResponse,
+    Router,
+    routing::get,
+};
+use axum::{
+    Extension, extract::FromRef, handler::HandlerWithoutStateExt,
+    middleware,
+};
+use minijinja::Environment;
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
-
+use sqlx::PgPool;
 use tower::ServiceExt;
-use tower_http::{
-    services::{ServeDir, ServeFile},
-    trace::TraceLayer,
-};
+use tower_http::services::ServeDir;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+use pages::{about, index};
 
 use crate::{
     auth::{
@@ -34,15 +34,13 @@ use crate::{
         profile::profile_router, welcome::welcome_router,
     },
 };
-use axum::{
-    async_trait, extract::FromRef, handler::HandlerWithoutStateExt, http::Request, middleware,
-    Extension,
-};
-use minijinja::Environment;
-use sqlx::PgPool;
-use std::fs::read_dir;
-use std::path::{Path, PathBuf};
-use std::{fs, io};
+
+mod article;
+mod map;
+mod newspaper;
+mod pages;
+mod profile;
+mod welcome;
 
 #[derive(Clone, FromRef)]
 pub struct AppState {

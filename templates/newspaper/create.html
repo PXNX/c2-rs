@@ -3,10 +3,9 @@
 {% block main %}
 
 <div class="my-12 px-4 space-y-8">
-    <form id="publish_article" hx-ext="debug" class="form-control w-full space-y-4" hx-post="/n/create">
+    <form class="form-control w-full space-y-4" hx-ext="debug" hx-post="/n/create" id="publish_article">
 
         <h2 class="text-2xl font-bold mx-2">Appearance</h2>
-
 
 
         <select class="select select-bordered w-full max-w-sm">
@@ -18,18 +17,14 @@
         </select>
 
 
+        <input class="input input-bordered w-full max-w-sm" name="newspaper_name" placeholder="Newspaper name"
+               required type="text" value="{{newspaper_name}}"/>
 
-        <input type="text" name="newspaper_name" placeholder="Newspaper name"
-            class="input input-bordered w-full max-w-sm" value="{{newspaper_name}}" required />
+        <input class="input input-bordered w-full max-w-sm" name="newspaper_avatar" placeholder="Avatar Url" required
+               type="text" value="{{newspaper_avatar}}"/>
 
-        <input type="text" name="newspaper_avatar" placeholder="Avatar Url" class="input input-bordered w-full max-w-sm"
-            value="{{newspaper_avatar}}" required />
-
-        <button hx-ext="debug" class="btn btn-primary">Create newspaper</button>
+        <button class="btn btn-primary" hx-ext="debug">Create newspaper</button>
         </section>
-
-
-
 
 
 </div>

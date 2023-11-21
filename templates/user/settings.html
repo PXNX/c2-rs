@@ -7,7 +7,6 @@
         <h2 class="text-2xl font-bold mx-2">Appearance</h2>
 
 
-
         <select class="select select-bordered w-full max-w-sm" data-choose-theme>
             <option value="dark">Default</option>
             <option value="light">Light</option>
@@ -47,28 +46,28 @@
         <div class="form-control w-full">
             <label class="label cursor-pointer">
                 <span class="label-text">Load images</span>
-                <input type="checkbox" checked="checked" class="checkbox checkbox-primary" data-toggle-theme />
+                <input checked="checked" class="checkbox checkbox-primary" data-toggle-theme type="checkbox"/>
             </label>
         </div>
 
 
-        <input type="text" name="user_name" placeholder="Username" class="input input-bordered w-full max-w-sm"
-            value="{{user_name}}" required />
+        <input class="input input-bordered w-full max-w-sm" name="user_name" placeholder="Username" required
+               type="text" value="{{user_name}}"/>
 
-        <input type="text" name="user_avatar" placeholder="Avatar Url" class="input input-bordered w-full max-w-sm"
-            value="{{user_avatar}}" />
+        <input class="input input-bordered w-full max-w-sm" name="user_avatar" placeholder="Avatar Url" type="text"
+               value="{{user_avatar}}"/>
 
-        <a hx-put="/u/settings" role="button" class="btn btn-primary w-full">Edit profile</a>
+        <a class="btn btn-primary w-full" hx-put="/u/settings" role="button">Edit profile</a>
     </section>
 
     <section class="mt-20 space-y-2  w-full">
         <h2 class="text-2xl font-bold mx-2">Account</h2>
 
-        <input type="text" placeholder="Enter voucher code..." class="input input-bordered w-full max-w-sm" />
+        <input class="input input-bordered w-full max-w-sm" placeholder="Enter voucher code..." type="text"/>
 
-        <a href="/" role="button" class="btn btn-primary w-full">Redeem code</a>
+        <a class="btn btn-primary w-full" href="/" role="button">Redeem code</a>
 
-        <a href="/auth/logout" role="button" class="btn w-full">Logout</a>
+        <a class="btn w-full" href="/auth/logout" role="button">Logout</a>
     </section>
 
 
