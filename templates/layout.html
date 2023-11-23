@@ -3,13 +3,13 @@
 
 <!-- FIXME: wtf is going on with bottom padding?? :( -->
 
-<body class=" bg-green-400 flex flex-col">
+<body class=" bg-green-400 m-0 p-0 flex flex-col h-screen ">
 
     {% block body %}{% endblock %}
 
     {% block header %}{% endblock %}
 
-    <main class="bg-pink-500 mb-auto">
+    <main class="bg-pink-500 flex-1 overflow-y-auto pb-16">
 
         {% block main %}{% endblock %}
 
@@ -21,7 +21,7 @@
 class="transition-opacity ease-in fade_in duration-500  "
 -->
     <footer>
-        <nav class="btm-nav  btm-nav-md  bg-amber-300 ">
+        <nav class="btm-nav  btm-nav-md  bg-amber-300">
 
             <a class="flinch" href="/">
                 <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

@@ -10111,6 +10111,10 @@ details.collapse summary::-webkit-details-marker {
   clear: none !important;
 }
 
+.m-0 {
+  margin: 0px !important;
+}
+
 .m-1 {
   margin: 0.25rem !important;
 }
@@ -10164,10 +10168,6 @@ details.collapse summary::-webkit-details-marker {
 
 .mb-4 {
   margin-bottom: 1rem !important;
-}
-
-.mb-auto {
-  margin-bottom: auto !important;
 }
 
 .ml-2 {
@@ -10335,6 +10335,10 @@ details.collapse summary::-webkit-details-marker {
 
 .h-full {
   height: 100% !important;
+}
+
+.h-screen {
+  height: 100vh !important;
 }
 
 .min-h-screen {
@@ -11622,6 +11626,10 @@ details.collapse summary::-webkit-details-marker {
      object-fit: scale-down !important;
 }
 
+.p-0 {
+  padding: 0px !important;
+}
+
 .p-1 {
   padding: 0.25rem !important;
 }
@@ -11669,6 +11677,10 @@ details.collapse summary::-webkit-details-marker {
 .py-3 {
   padding-top: 0.75rem !important;
   padding-bottom: 0.75rem !important;
+}
+
+.pb-16 {
+  padding-bottom: 4rem !important;
 }
 
 .pe-1 {
