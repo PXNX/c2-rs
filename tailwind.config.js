@@ -1,5 +1,6 @@
 const { fontFamily } = require('tailwindcss/defaultTheme');
 
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     important: true,
@@ -14,12 +15,13 @@ module.exports = {
             backgroundImage: {
                 'logo': "url('/logo.svg')",
 
-            }
+            },
+            fontFamily: {
+                sans: ['Inter var', ...fontFamily.sans],
+            },
         },
 
-        fontFamily: {
-            sans: ['Inter var', ...fontFamily.sans],
-        },
+
 
     },
 
