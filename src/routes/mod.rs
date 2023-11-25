@@ -1,25 +1,20 @@
-use std::{fs, io};
 use std::fs::read_dir;
 use std::path::{Path, PathBuf};
+use std::{fs, io};
 
-use axum::{
-    extract::FromRequest,
-    http::StatusCode,
-    response::IntoResponse,
-    Router,
-    routing::get,
-};
-use axum::{
-    Extension, extract::FromRef, handler::HandlerWithoutStateExt,
-    middleware,
-};
+use axum::{extract::FromRef, handler::HandlerWithoutStateExt, middleware, Extension};
+use axum::{extract::FromRequest, http::StatusCode, response::IntoResponse, routing::get, Router};
 use minijinja::Environment;
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
 use sqlx::PgPool;
-use tower::ServiceExt;
-use tower_http::services::ServeDir;
+
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+use tower_http::{
+    services::{ServeDir, ServeFile},
+    trace::TraceLayer,
+};
 
 use pages::{about, index};
 
