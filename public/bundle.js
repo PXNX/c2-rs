@@ -1,4 +1,3 @@
-
 function showMap() {
     var beforePan = function (oldPan, newPan) {
         var stopHorizontal = false
@@ -76,7 +75,7 @@ function showMap() {
         }
     }
     svgPanZoom('#limit-svg', {
-        //  viewportSelector: '#limit-div',
+        viewportSelector: '#limit-div',
         zoomEnabled: true
         , controlIconsEnabled: true
 
@@ -91,5 +90,25 @@ function showMap() {
 
 
 
-    document.getElementById("limit-div").classList.remove("hidden");
+    document.getElementById("map").classList.remove("hidden");
+}
+
+function shareLink(title) {
+    if (navigator.share) {
+        navigator.share({
+            title: title,
+            url: window.location.href
+
+        }).then(() => {
+            console.log('Thanks for sharing!');
+        })
+            .catch(console.error);
+    } else {
+        // fallback
+    }
+}
+
+function replaceImg(img) {
+    img.onerror = null;
+    img.src = "/icons/account.svg";
 }

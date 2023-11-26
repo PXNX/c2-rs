@@ -18,6 +18,7 @@ use tower_http::{
 
 use pages::{about, index};
 
+use crate::routes::inbox::inbox_router;
 use crate::{
     auth::{
         login::login,
@@ -31,6 +32,7 @@ use crate::{
 };
 
 mod article;
+mod inbox;
 mod map;
 mod newspaper;
 mod pages;
@@ -82,6 +84,7 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         .nest("/map", map_router())
         .nest("/n", newspaper_router())
         .nest("/a", article_router())
+        .nest("/inbox", inbox_router())
         .route_layer(middleware::from_fn_with_state(
             app_state.clone(),
             check_auth,

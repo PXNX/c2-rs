@@ -10,15 +10,18 @@ opt-level = 0
 opt-level = 3
 
 [dependencies]
+askama = { version = "0.12.1", features = ["with-axum"] }
+askama_axum = "0.3.0"
 axum = { version = "0.6.20", features = ["headers", "macros"] }
 axum-extra = "0.8.0"
 axum-htmx = "0.4.0"
 chrono = { version = "0.4.31", features = ["serde"] }
-serde = { version = "1.0.192", features = ["derive"] }
+serde = { version = "1.0.193", features = ["derive"] }
 serde_json = "1.0.108"
 serde_with = "3.4.0"
+tokio-stream = { version = "0.1.14", features = ["sync"] }
 tokio = { version = "1.34.0", features = ["full"] }
-sqlx = { version = "0.7.2", features = ["postgres", "runtime-tokio", "macros", "migrate", "time"] }
+sqlx = { version = "0.7.3", features = ["postgres", "runtime-tokio-native-tls", "macros", "migrate", "time"] }
 minijinja = { version = "1.0.10", features = ["loader"] }
 oauth2 = "4.4.2"
 uuid = { version = "1.5.0", features = ["v4"] }

@@ -60,8 +60,8 @@
 
 <a class="p-2 flex flinch  w-full no-underline text-current gap-2 label-text" href="/a/{{article.id }}"
     oncontextmenu="return false">
-    <img alt="Article Image" class="rounded-lg" height="56" loading="lazy" src="{{article.author_avatar }}"
-        width="56" />
+    <img alt="Article Image" onError="replaceImg(this);" class="rounded-lg" height="56" loading="lazy"
+        src="{{article.author_avatar }}" width="56" />
     <!-- style="aspect-ratio: 100 / 100; object-fit: cover;" -->
     <div>
         <b class="text-lg block transition-all duration-3000 font-bold tracking-tight"

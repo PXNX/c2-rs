@@ -93,3 +93,22 @@ function showMap() {
     document.getElementById("map").classList.remove("hidden");
 }
 
+function shareLink(title) {
+    if (navigator.share) {
+        navigator.share({
+            title: title,
+            url: window.location.href
+
+        }).then(() => {
+            console.log('Thanks for sharing!');
+        })
+            .catch(console.error);
+    } else {
+        // fallback
+    }
+}
+i
+function replaceImg(img) {
+    img.onerror = null;
+    img.src = "/icons/account.svg";
+}
