@@ -132,13 +132,6 @@ img {
 }
 
 
-svg {
-    /* display: block; */
-
-    cursor: move;
-    touch-action: none;
-}
-
 #hud {
     background: rgba(0, 0, 0, 0.6);
     position: absolute;

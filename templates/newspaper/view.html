@@ -29,28 +29,34 @@
     </div>
 
 
+    <section class=" m-2 p-2 mt-10 space-y-2  rounded-lg border select-bordered">
+        <aside>Some description of this newspaper.</aside>
+
+        <a class="flex flex-row w-full flinch gap-2 label-text" href="{{owner_id}}" role="button">
+            <img class="rounded-lg bg-cover" onError="replaceImg(this);" height="50" src="{{owner_avatar}}"
+                width="50" />
+            <div>
+                <b class="text-lg block" id="author_name">{{owner_name}}</b>
+                <span class=" text-primary">Editor in Chief</span> since {{newspaper_created_at}}
+            </div>
+        </a>
+    </section>
+
     <!-- todo: add additional info-->
-    {#
 
+    <h2 class="text-xl font-bold mx-2 mt-20 mb-4">Articles by {{newspaper_name}}</h2>
     {% for article in articles %}
-
-
-    <!-- if no avatar, then initials and rounded-lg -->
-
-    <a class="p-2 flex flinch  w-full no-underline text-current gap-2 label-text" href="/a/{{article.id }}"
+    <a class="p-2 flinch  w-full no-underline text-current gap-2 label-text" href="/a/{{article.id }}"
         oncontextmenu="return false">
-        <img alt="Article Image" class="rounded-lg" height="56" src="{{article.author_avatar }}" width="56" />
-        <!-- style="aspect-ratio: 100 / 100; object-fit: cover;" -->
-        <div>
-            <b class="text-lg block transition-all duration-3000 font-bold tracking-tight"
-                id="article_title">{{article.title }}</b>
-            <span class="text-primary block transition-all" id="author_name">{{article.author_name }}</span>
-            {{article. publish_date}} | {{article.upvote_count }} Likes
-        </div>
+
+        <b class="text-lg block transition-all duration-3000 font-bold tracking-tight"
+            id="article_title">{{article.title }}</b>
+        {{article. publish_date}} | <span class="text-primary">{{article.upvote_count }} Likes</span>
+
     </a>
 
 
-    {% endfor %} #}
+    {% endfor %}
 
 </div>
 
