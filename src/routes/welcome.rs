@@ -16,7 +16,6 @@ use askama::Template;
 #[derive(Template)]
 #[template(path = "welcome/index.html")]
 struct WelcomeTemplate {
-    user_id: i64,
     login_return_url: String,
 }
 
@@ -25,7 +24,6 @@ pub async fn welcome<T>(
     request: Request<T>,
 ) -> Result<impl IntoResponse, AppError> {
     Ok(WelcomeTemplate {
-        user_id: user_data.unwrap().id,
         login_return_url: "?next=".to_owned() + &*request.uri().to_string(),
     })
 }
@@ -33,7 +31,6 @@ pub async fn welcome<T>(
 #[derive(Template)]
 #[template(path = "welcome/signup.html")]
 struct SignupTemplate {
-    user_id: i64,
     login_return_url: String,
 }
 
@@ -42,7 +39,6 @@ pub async fn signup<T>(
     request: Request<T>,
 ) -> Result<impl IntoResponse, AppError> {
     Ok(SignupTemplate {
-        user_id: user_data.unwrap().id,
         login_return_url: "?next=".to_owned() + &*request.uri().to_string(),
     })
 }

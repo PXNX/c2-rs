@@ -19,7 +19,6 @@ use super::{AppState, UserData};
 #[derive(Template)]
 #[template(path = "newspaper/view.html")]
 struct NewspaperTemplate {
-    user_id: i64,
     newspaper_name: String,
     newspaper_avatar: String,
     newspaper_created_at: String,
@@ -46,7 +45,6 @@ async fn newspaper(
     })?;
 
     Ok(NewspaperTemplate {
-        user_id: user_id,
         newspaper_name: newspaper.name,
         newspaper_avatar: newspaper.avatar,
         newspaper_created_at: format_date(newspaper.created_at),
@@ -56,7 +54,6 @@ async fn newspaper(
 #[derive(Template)]
 #[template(path = "newspaper/settings.html")]
 struct NewspaperSettingsTemplate {
-    user_id: i64,
     newspaper_name: String,
     newspaper_avatar: String,
     newspaper_background: String,
@@ -79,7 +76,6 @@ async fn newspaper_settings(
     .await?;
 
     Ok(NewspaperSettingsTemplate {
-        user_id: user_id,
         newspaper_name: newspaper.name,
         newspaper_avatar: newspaper.avatar,
         newspaper_background: newspaper.background.unwrap(),
@@ -90,16 +86,12 @@ async fn newspaper_settings(
 
 #[derive(Template)]
 #[template(path = "newspaper/create.html")]
-struct CreateNewspaperTemplate {
-    user_id: i64,
-}
+struct CreateNewspaperTemplate {}
 
 async fn create_newspaper(
     Extension(user_data): Extension<Option<UserData>>,
 ) -> Result<impl IntoResponse, AppError> {
-    Ok(CreateNewspaperTemplate {
-        user_id: user_data.unwrap().id,
-    })
+    Ok(CreateNewspaperTemplate {})
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -148,7 +140,6 @@ struct Newspaper {
 #[derive(Template)]
 #[template(path = "newspaper/index.html")]
 struct NewspapersTemplate {
-    user_id: i64,
     newspapers: Vec<Newspaper>,
 }
 
@@ -179,7 +170,6 @@ async fn newspapers(
     .collect();
 
     Ok(NewspapersTemplate {
-        user_id: user_id,
         newspapers: newspapers,
     })
 }

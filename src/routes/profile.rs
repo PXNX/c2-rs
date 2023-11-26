@@ -52,7 +52,6 @@ async fn own_profile(
 #[derive(Template)]
 #[template(path = "user/profile.html")]
 struct OtherProfileTemplate {
-    user_id: i64,
     user_name: String,
     skill_0: i16,
 }
@@ -81,7 +80,6 @@ async fn profile(
     })?;
 
     Ok(OtherProfileTemplate {
-        user_id: user_id,
         user_name: user.name.unwrap(),
         skill_0: user.skill_0.unwrap(),
     }
@@ -91,7 +89,6 @@ async fn profile(
 #[derive(Template)]
 #[template(path = "user/settings.html")]
 struct ProfileSettingsTemplate {
-    user_id: i64,
     user_name: String,
     user_avatar: String,
 }
@@ -108,7 +105,6 @@ async fn profile_settings(
 
     //todo: check unwraps nd use if in template to not display if None
     Ok(ProfileSettingsTemplate {
-        user_id: user_id,
         user_name: user.name.unwrap(),
         user_avatar: user.avatar.unwrap(),
     })

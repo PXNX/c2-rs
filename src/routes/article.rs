@@ -114,7 +114,6 @@ struct Newspaper {
 #[derive(Template)]
 #[template(path = "article/create.html")]
 struct CreateArticleTemplate {
-    user_id: i64,
     newspapers: Vec<Newspaper>,
 }
 
@@ -144,7 +143,6 @@ async fn create_article(
     .collect();
 
     Ok(CreateArticleTemplate {
-        user_id: user_id,
         newspapers: newspapers,
     })
 }
@@ -161,6 +159,7 @@ async fn edit_article(
     Path(article_id): Path<i64>,
     State(db_pool): State<PgPool>,
 ) -> Result<impl IntoResponse, AppError> {
+    //todo: also check that you're the author
     let user_id = user_data.unwrap().id;
 
     let article = query!(
@@ -257,7 +256,7 @@ async fn view_article(
         article_content: article.content,
         publish_date: format_date(article.created_at),
         author_name: article.author_name.unwrap(),
-        author_avatar: article.author_avatar.unwrap(),
+        author_avatar: article.author_avatar.unwrap_or("".to_string()),
         author_link: author_link,
         author_id: article.author_id,
         has_upvoted: article.has_upvoted.unwrap_or(false),

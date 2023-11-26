@@ -93,11 +93,11 @@ function showMap() {
     document.getElementById("map").classList.remove("hidden");
 }
 
-function shareLink(title) {
+function shareLink(title, url = window.location.href) {
     if (navigator.share) {
         navigator.share({
             title: title,
-            url: window.location.href
+            url: url
 
         }).then(() => {
             console.log('Thanks for sharing!');

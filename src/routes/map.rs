@@ -12,17 +12,13 @@ use super::{AppState, UserData};
 
 #[derive(Template)]
 #[template(path = "map.html")]
-struct MapTemplate {
-    user_id: i64,
-}
+struct MapTemplate {}
 
 async fn map(
     Extension(user_data): Extension<Option<UserData>>,
     State(db_pool): State<PgPool>,
 ) -> Result<impl IntoResponse, AppError> {
-    Ok(MapTemplate {
-        user_id: user_data.unwrap().id,
-    })
+    Ok(MapTemplate {})
 }
 
 pub fn map_router() -> Router<AppState> {

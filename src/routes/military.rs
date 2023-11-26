@@ -16,16 +16,12 @@ use super::{AppState, UserData};
 
 #[derive(Template)]
 #[template(path = "military/index.html")]
-struct MilitaryTemplate {
-    user_id: i64,
-}
+struct MilitaryTemplate {}
 
 pub async fn military(
     Extension(user_data): Extension<Option<UserData>>,
 ) -> Result<impl IntoResponse, AppError> {
-    Ok(MilitaryTemplate {
-        user_id: user_data.unwrap().id,
-    })
+    Ok(MilitaryTemplate {})
 }
 
 pub fn military_router() -> Router<AppState> {
