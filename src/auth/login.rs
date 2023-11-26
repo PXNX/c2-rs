@@ -1,30 +1,23 @@
 use std::collections::HashMap;
 
-use axum::{
-    extract::{Extension, State},
-    http::Request,
-    response::IntoResponse,
-};
+use askama::Template;
 use axum::extract::Query;
-use axum::response::Html;
-use minijinja::{context, Environment};
 
-use crate::routes::UserData;
+use axum::response::IntoResponse;
 
 use super::error_handling::AppError;
 
-pub async fn login<T>(
-    Extension(user_data): Extension<Option<UserData>>,
-    State(env): State<Environment<'static>>,
-    Query(mut params): Query<HashMap<String, String>>,
-    request: Request<T>,
-) -> Result<impl IntoResponse, AppError> {
-    let tmpl = env.get_template("login.html")?;
-    let login_return_url =
-        "?next=".to_owned() + &*params.remove("next").unwrap_or_else(|| "/".to_string());
+#[derive(Template)]
+#[template(path = "login.html")]
+struct LoginTemplate {
+    login_return_url: String,
+}
 
-    let content = tmpl.render(context!(
-        login_return_url => login_return_url,
-    ))?;
-    Ok(Html(content))
+pub async fn login(
+    Query(mut params): Query<HashMap<String, String>>,
+) -> Result<impl IntoResponse, AppError> {
+    Ok(LoginTemplate {
+        login_return_url: "?next=".to_owned()
+            + &*params.remove("next").unwrap_or_else(|| "/".to_string()),
+    })
 }

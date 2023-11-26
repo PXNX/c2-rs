@@ -59,8 +59,8 @@ impl IntoResponse for AppError {
     }
 }
 
-impl From<minijinja::Error> for AppError {
-    fn from(err: minijinja::Error) -> Self {
+impl From<askama::Error> for AppError {
+    fn from(err: askama::Error) -> Self {
         AppError::new(format!("Template error: {:#}", err))
     }
 }

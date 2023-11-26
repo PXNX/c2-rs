@@ -4,7 +4,6 @@ use std::{fs, io};
 
 use axum::{extract::FromRef, handler::HandlerWithoutStateExt, middleware, Extension};
 use axum::{extract::FromRequest, http::StatusCode, response::IntoResponse, routing::get, Router};
-use minijinja::Environment;
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
 use sqlx::PgPool;
@@ -18,7 +17,9 @@ use tower_http::{
 
 use pages::{about, index};
 
-use crate::routes::inbox::inbox_router;
+use crate::auth::error_handling::AppError;
+//use crate::routes::inbox::inbox_router;
+use crate::routes::military::military_router;
 use crate::{
     auth::{
         login::login,
@@ -26,14 +27,15 @@ use crate::{
         oauth::auth_router,
     },
     routes::{
-        article::article_router, map::map_router, newspaper::newspaper_router, pages::military,
+        article::article_router, map::map_router, newspaper::newspaper_router,
         profile::profile_router, welcome::welcome_router,
     },
 };
 
 mod article;
-mod inbox;
+//mod inbox;
 mod map;
+mod military;
 mod newspaper;
 mod pages;
 mod profile;
@@ -42,7 +44,6 @@ mod welcome;
 #[derive(Clone, FromRef)]
 pub struct AppState {
     pub db_pool: PgPool,
-    pub env: Environment<'static>,
 }
 
 #[derive(Clone, Debug)]
@@ -51,19 +52,7 @@ pub struct UserData {
 }
 
 pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error::Error>> {
-    let mut env = Environment::new();
-    let mut files = Vec::new();
-    visit(Path::new("templates"), &mut |e| files.push(e)).unwrap();
-    println!("files {:?}", &files);
-    for path in files {
-        let source = fs::read_to_string(&path)?;
-        let path = path.to_str().ok_or("Failed to convert path to str")?;
-        let path = &path[10..].replace(r"\", "/");
-        env.add_template_owned(path.to_owned(), source)
-            .map_err(|e| format!("Failed to add {path}: {e}"))?;
-    }
-
-    let app_state = AppState { db_pool, env };
+    let app_state = AppState { db_pool };
 
     let user_data: Option<UserData> = None;
 
@@ -80,11 +69,11 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         .route("/", get(index))
         .route("/about", get(about))
         .nest("/u", profile_router())
-        .route("/m", get(military))
+        .nest("/m", military_router())
         .nest("/map", map_router())
         .nest("/n", newspaper_router())
         .nest("/a", article_router())
-        .nest("/inbox", inbox_router())
+        //   .nest("/inbox", inbox_router())
         .route_layer(middleware::from_fn_with_state(
             app_state.clone(),
             check_auth,
@@ -99,17 +88,4 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         .with_state(app_state)
         .layer(Extension(user_data))
         .fallback_service(serve_dir))
-}
-
-fn visit(path: &Path, cb: &mut dyn FnMut(PathBuf)) -> io::Result<()> {
-    for e in read_dir(path)? {
-        let e = e?;
-        let path = e.path();
-        if path.is_dir() {
-            visit(&path, cb)?;
-        } else if path.is_file() {
-            cb(path);
-        }
-    }
-    Ok(())
 }

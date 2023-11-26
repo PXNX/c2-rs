@@ -1,47 +1,50 @@
+use axum::response::Redirect;
+use axum::routing::get;
 use axum::{
     extract::{Extension, State},
     http::Request,
-    response::{Html, IntoResponse},
+    response::IntoResponse,
 };
 use axum::{Form, Router};
-use axum::response::Redirect;
-use axum::routing::get;
-use minijinja::{context, Environment};
 use serde::{Deserialize, Serialize};
-use sqlx::{Executor, PgPool, query};
-
-use crate::auth::error_handling::AppError;
+use sqlx::{query, PgPool};
 
 use super::{AppState, UserData};
+use crate::auth::error_handling::AppError;
+use askama::Template;
 
-pub async fn signup<T>(
-    Extension(user_data): Extension<Option<UserData>>,
-    State(env): State<Environment<'static>>,
-    request: Request<T>,
-) -> Result<impl IntoResponse, AppError> {
-    let tmpl = env.get_template("welcome/signup.html")?;
-    let login_return_url = "?next=".to_owned() + &*request.uri().to_string();
-
-    let content = tmpl.render(context!(
-        user_id => user_data.unwrap().id,
-        login_return_url => login_return_url,
-    ))?;
-    Ok(Html(content))
+#[derive(Template)]
+#[template(path = "welcome/index.html")]
+struct WelcomeTemplate {
+    user_id: i64,
+    login_return_url: String,
 }
 
 pub async fn welcome<T>(
     Extension(user_data): Extension<Option<UserData>>,
-    State(env): State<Environment<'static>>,
     request: Request<T>,
 ) -> Result<impl IntoResponse, AppError> {
-    let tmpl = env.get_template("welcome/index.html")?;
-    let login_return_url = "?next=".to_owned() + &*request.uri().to_string();
+    Ok(WelcomeTemplate {
+        user_id: user_data.unwrap().id,
+        login_return_url: "?next=".to_owned() + &*request.uri().to_string(),
+    })
+}
 
-    let content = tmpl.render(context!(
-        user_id => user_data.unwrap().id,
-        login_return_url => login_return_url,
-    ))?;
-    Ok(Html(content))
+#[derive(Template)]
+#[template(path = "welcome/signup.html")]
+struct SignupTemplate {
+    user_id: i64,
+    login_return_url: String,
+}
+
+pub async fn signup<T>(
+    Extension(user_data): Extension<Option<UserData>>,
+    request: Request<T>,
+) -> Result<impl IntoResponse, AppError> {
+    Ok(SignupTemplate {
+        user_id: user_data.unwrap().id,
+        login_return_url: "?next=".to_owned() + &*request.uri().to_string(),
+    })
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -61,8 +64,8 @@ async fn create_profile(
         input.user_name,
         user_data.id
     )
-        .execute(&db_pool)
-        .await?;
+    .execute(&db_pool)
+    .await?;
 
     Ok(Redirect::to("/"))
 }
