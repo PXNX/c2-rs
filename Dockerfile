@@ -13,8 +13,14 @@ COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --recipe-path recipe.json
 
 COPY . .
-RUN cargo build 
+
+RUN cargo install sqlx-cli
+RUN cargo build --release --locked
+
+COPY migrations migrations
+
+CMD sqlx database create && sqlx migrate run && cargo run --release --locked
 
 FROM rust:1.74-slim AS template-rust
-COPY --from=builder /app/target/debug/template-rust /usr/local/bin
-ENTRYPOINT ["/usr/local/bin/template-rust"]
+COPY --from=builder /app/target/release/c2-rs /usr/local/bin
+ENTRYPOINT ["/usr/local/bin/c2-rs"]
