@@ -1,44 +1,20 @@
-FROM ubuntu
+# Leveraging the pre-built Docker images with 
+# cargo-chef and the Rust toolchain
+FROM lukemathwalker/cargo-chef:latest-rust-1.74.0 AS chef
+WORKDIR /app
 
-RUN apt-get update
+FROM chef AS planner
+COPY . .
+RUN cargo chef prepare --recipe-path recipe.json
 
-RUN apt-get install -y \
-    curl \
-    clang \
-    gcc \
-    g++ \
-    zlib1g-dev \
-    libmpc-dev \
-    libmpfr-dev \
-    libgmp-dev \
-    git \
-    cmake \
-    pkg-config \
-    libssl-dev \
-    build-essential
+FROM chef AS builder
+COPY --from=planner /app/recipe.json recipe.json
+# Build dependencies - this is the caching Docker layer!
+RUN cargo chef cook --recipe-path recipe.json
 
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s - -y
+COPY . .
+RUN cargo build 
 
-ENV PATH=/root/.cargo/bin:${PATH}
-
-RUN cargo install sqlx-cli
-
-WORKDIR /opt
-
-COPY Cargo.toml Cargo.toml
-
-COPY Cargo.lock Cargo.lock
-
-RUN mkdir src && echo "fn main() {}" > src/main.rs
-
-RUN cargo build --release --locked
-
-RUN rm -rf src
-
-COPY src src
-
-RUN cargo build --release --locked
-
-COPY migrations migrations
-
-CMD sqlx database create && sqlx migrate run && cargo run --release --locked
+FROM rust:1.74-slim AS template-rust
+COPY --from=builder /app/target/debug/template-rust /usr/local/bin
+ENTRYPOINT ["/usr/local/bin/template-rust"]
