@@ -14,9 +14,9 @@ opt-level = 3
 
 [dependencies]
 askama = { version = "0.12.1", features = ["with-axum"] }
-askama_axum = "0.3.0"
-axum = { version = "0.6.20", features = ["headers", "macros"] }
-axum-extra = "0.8.0"
+askama_axum = "0.4.0"
+axum = { version = "0.7.1", features = [ "macros"] }
+axum-extra = {version="0.9.0", features=["typed-header","cookie"]}
 axum-htmx = "0.4.0"
 chrono = { version = "0.4.31", features = ["serde"] }
 serde = { version = "1.0.193", features = ["derive"] }
@@ -32,7 +32,7 @@ dotenvy = "0.15.7"
 constant_time_eq = "0.3.0"
 time = { version = "0.3.30", features = ["formatting"] }
 tower = { version = "0.4.13", features = ["util"] }
-tower-http = { version = "0.4.4", features = ["fs", "trace"] }
+tower-http = { version = "0.5.0", features = ["fs", "trace"] }
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 http-body = "1.0.0"

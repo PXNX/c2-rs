@@ -3,6 +3,7 @@ const { fontFamily } = require('tailwindcss/defaultTheme');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+    mode: 'jit',
     important: true,
     // mode: 'jit',
     content: ["/templates/**/*.html", "./templates/*.html", './**/*.{html,js}', './**/*.html'],
@@ -19,6 +20,18 @@ module.exports = {
             fontFamily: {
                 sans: ['Inter var', ...fontFamily.sans],
             },
+
+            animation: {
+                "fade": "fadeOut .9s ease-in-out",
+            },
+
+            // that is actual animation
+            keyframes: (theme) => ({
+                fadeOut: {
+                    "0%": { backgroundColor: theme("colors.amber.300") },
+                    "100%": { backgroundColor: theme("colors.transparent") },
+                },
+            }),
         },
 
 

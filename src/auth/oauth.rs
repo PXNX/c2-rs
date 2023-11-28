@@ -1,17 +1,17 @@
 use std::collections::HashMap;
 
 use axum::{
-    extract::{Extension, Host, Query, State, TypedHeader},
-    headers::Cookie,
+    extract::{Extension, Host, Query, State},
     response::{IntoResponse, Redirect},
-    Router,
     routing::get,
+    Router,
 };
+use axum_extra::{headers::Cookie, TypedHeader};
 use chrono::Utc;
 use dotenvy::var;
 use oauth2::{
-    AuthorizationCode, AuthUrl, basic::BasicClient, ClientId, ClientSecret, CsrfToken,
-    PkceCodeChallenge, PkceCodeVerifier, RedirectUrl, reqwest::http_client, RevocationUrl, Scope,
+    basic::BasicClient, reqwest::http_client, AuthUrl, AuthorizationCode, ClientId, ClientSecret,
+    CsrfToken, PkceCodeChallenge, PkceCodeVerifier, RedirectUrl, RevocationUrl, Scope,
     TokenResponse, TokenUrl,
 };
 use sqlx::PgPool;
@@ -44,11 +44,11 @@ fn get_client(hostname: String) -> Result<BasicClient, AppError> {
         auth_url,
         Some(token_url),
     )
-        .set_redirect_uri(RedirectUrl::new(redirect_url).map_err(|_| "OAuth: invalid redirect URL")?)
-        .set_revocation_uri(
-            RevocationUrl::new("https://oauth2.googleapis.com/revoke".to_string())
-                .map_err(|_| "OAuth: invalid revocation endpoint URL")?,
-        );
+    .set_redirect_uri(RedirectUrl::new(redirect_url).map_err(|_| "OAuth: invalid redirect URL")?)
+    .set_revocation_uri(
+        RevocationUrl::new("https://oauth2.googleapis.com/revoke".to_string())
+            .map_err(|_| "OAuth: invalid revocation endpoint URL")?,
+    );
     Ok(client)
 }
 
@@ -131,9 +131,9 @@ async fn oauth_return(
             .set_pkce_verifier(pkce_code_verifier)
             .request(http_client)
     })
-        .await
-        .map_err(|_| "OAuth: exchange_code failure")?
-        .map_err(|_| "OAuth: tokio spawn blocking failure")?;
+    .await
+    .map_err(|_| "OAuth: exchange_code failure")?
+    .map_err(|_| "OAuth: tokio spawn blocking failure")?;
     let access_token = token_response.access_token().secret();
 
     println!("pkce_verifier");
@@ -167,14 +167,14 @@ async fn oauth_return(
 
     // Check if user exists in database
     // If not, create a new user
-    let user_query: Result<(i64, ), _> = sqlx::query_as(r#"SELECT id FROM users WHERE email=$1;"#)
+    let user_query: Result<(i64,), _> = sqlx::query_as(r#"SELECT id FROM users WHERE email=$1;"#)
         .bind(email.as_str())
         .fetch_one(&db_pool)
         .await;
     let user_id = if let Ok(user_query) = user_query {
         user_query.0
     } else {
-        let query: (i64, ) =
+        let query: (i64,) =
             sqlx::query_as(r#"INSERT INTO users (email) VALUES ($1) RETURNING id;"#)
                 .bind(email)
                 .fetch_one(&db_pool)
@@ -201,13 +201,13 @@ async fn oauth_return(
         (session_token_p1, session_token_p2, user_id, created_at, expires_at)
         VALUES ($1, $2, $3, $4, $5);"#,
     )
-        .bind(session_token_p1)
-        .bind(session_token_p2)
-        .bind(user_id)
-        .bind(now)
-        .bind(now + 60 * 60 * 24)
-        .execute(&db_pool)
-        .await?;
+    .bind(session_token_p1)
+    .bind(session_token_p2)
+    .bind(user_id)
+    .bind(now)
+    .bind(now + 60 * 60 * 24)
+    .execute(&db_pool)
+    .await?;
 
     println!("set cookie");
 

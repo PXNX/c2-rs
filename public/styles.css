@@ -10445,6 +10445,20 @@ details.collapse summary::-webkit-details-marker {
   transform: none !important;
 }
 
+@keyframes fadeOut {
+  0% {
+    background-color: #fcd34d;
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}
+
+.animate-fade {
+  animation: fadeOut .9s ease-in-out !important;
+}
+
 .cursor-pointer {
   cursor: pointer !important;
 }

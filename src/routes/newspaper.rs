@@ -63,7 +63,7 @@ async fn newspaper(
  FROM articles
 
           LEFT JOIN (SELECT article_id, count(*) upvote_count
-                     FROM upvotes
+                     FROM upvotes 
                      GROUP BY article_id) as uv
                     ON uv.article_id = articles.id
                     where articles.newspaper_id = $1

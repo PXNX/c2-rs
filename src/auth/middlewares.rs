@@ -1,22 +1,21 @@
 use axum::{
-    extract::{State, TypedHeader},
-    headers::Cookie,
-    http::Request,
+    extract::{Request, State},
     middleware::Next,
     response::{IntoResponse, Redirect},
 };
+use axum_extra::{headers::Cookie, TypedHeader};
 use chrono::Utc;
-use sqlx::{PgPool, query};
+use sqlx::{query, PgPool};
 
 use crate::routes::UserData;
 
 use super::error_handling::AppError;
 
-pub async fn inject_user_data<T>(
+pub async fn inject_user_data(
     State(db_pool): State<PgPool>,
     cookie: Option<TypedHeader<Cookie>>,
-    mut request: Request<T>,
-    next: Next<T>,
+    mut request: Request,
+    next: Next,
 ) -> Result<impl IntoResponse, AppError> {
     if let Some(cookie) = cookie {
         if let Some(session_token) = cookie.get("session_token") {
@@ -65,10 +64,7 @@ pub async fn inject_user_data<T>(
     Ok(next.run(request).await)
 }
 
-pub async fn check_auth<T>(
-    request: Request<T>,
-    next: Next<T>,
-) -> Result<impl IntoResponse, AppError> {
+pub async fn check_auth(request: Request, next: Next) -> Result<impl IntoResponse, AppError> {
     println!("check auth");
 
     if request
