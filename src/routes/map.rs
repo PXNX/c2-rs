@@ -1,12 +1,13 @@
-use crate::auth::error_handling::AppError;
 use askama::Template;
-use axum::routing::get;
-use axum::Router;
 use axum::{
     extract::{Extension, State},
-    response::{Html, IntoResponse},
+    response::IntoResponse,
 };
+use axum::Router;
+use axum::routing::get;
 use sqlx::PgPool;
+
+use crate::auth::error_handling::AppError;
 
 use super::{AppState, UserData};
 

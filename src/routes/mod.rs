@@ -1,26 +1,16 @@
+use std::env;
 use std::fs::read_dir;
-use std::path::{Path, PathBuf};
-use std::{env, fs, io};
 
-use axum::{extract::FromRef, handler::HandlerWithoutStateExt, middleware, Extension};
-use axum::{extract::FromRequest, http::StatusCode, response::IntoResponse, routing::get, Router};
-use glob::glob;
+use axum::{Extension, extract::FromRef, handler::HandlerWithoutStateExt, middleware};
+use axum::{http::StatusCode, response::IntoResponse, Router, routing::get};
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
 use sqlx::PgPool;
-
+use tower_http::services::ServeDir;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
-
-use tower_http::{
-    services::{ServeDir, ServeFile},
-    trace::TraceLayer,
-};
 
 use pages::{about, index};
 
-use crate::auth::error_handling::AppError;
-//use crate::routes::inbox::inbox_router;
-use crate::routes::military::military_router;
 use crate::{
     auth::{
         login::login,
@@ -32,6 +22,8 @@ use crate::{
         profile::profile_router, welcome::welcome_router,
     },
 };
+//use crate::routes::inbox::inbox_router;
+use crate::routes::military::military_router;
 
 mod article;
 //mod inbox;
@@ -60,11 +52,10 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
     async fn handle_404() -> (StatusCode, String) {
         let paths = read_dir("./").unwrap();
 
-        let mut text:Vec<String>=Vec::new();
+        let mut text: Vec<String> = Vec::new();
         for path in paths {
             text.push(path.unwrap().path().display().to_string());
-          //  println!("Name: {}", path.unwrap().path().display())
-
+            //  println!("Name: {}", path.unwrap().path().display())
         }
 
         text.push("--------------\n..".to_string());
@@ -73,39 +64,37 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
 
         for path in paths {
             text.push(path.unwrap().path().display().to_string());
-         //   println!("Name: {}", path.unwrap().path().display())
+            //   println!("Name: {}", path.unwrap().path().display())
         }
 
 
+        /*        let  paths = fs::read_dir("../../").unwrap();
 
-/*        let  paths = fs::read_dir("../../").unwrap();
+                for path in paths {
+                    println!("Name: {}", path.unwrap().path().display())
+                    text.push(path);
+                }
 
-        for path in paths {
-            println!("Name: {}", path.unwrap().path().display())
-            text.push(path);
-        }
-
- */
-
-
+         */
 
 
         text.push("--------------\n../../".to_string());
 
-        let paths = read_dir("../../").unwrap();
+        /*  let paths = read_dir("./usr").unwrap();
 
-        for path in paths {
-            text.push(path.unwrap().path().display().to_string());
-            //   println!("Name: {}", path.unwrap().path().display())
-        }
+          for path in paths {
+              text.push(path.unwrap().path().display().to_string());
+              //   println!("Name: {}", path.unwrap().path().display())
+          } */
 
-        let diir =  env::current_dir().unwrap().display().to_string();
+
+        let diir = env::current_dir().unwrap().display().to_string();
 
         text.push(diir.to_string());
 
         //let tx = format!("Assets not found {}", text.join("&&&  "));
 
-        (StatusCode::NOT_FOUND, text.join("\n\n") )
+        (StatusCode::NOT_FOUND, text.join("\n\n"))
     }
 
     // you can convert handler function to service

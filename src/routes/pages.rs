@@ -1,6 +1,6 @@
 use askama::Template;
 use axum::{
-    extract::{Extension, State},
+    extract::Extension,
     http::Request,
     response::IntoResponse,
 };

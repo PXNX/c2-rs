@@ -6,7 +6,7 @@ use axum::{
 use axum::body::Body;
 use axum_extra::{headers::Cookie, TypedHeader};
 use chrono::Utc;
-use sqlx::{query, PgPool};
+use sqlx::{PgPool, query};
 
 use crate::routes::UserData;
 
@@ -15,7 +15,7 @@ use super::error_handling::AppError;
 pub async fn inject_user_data(
     State(db_pool): State<PgPool>,
     cookie: Option<TypedHeader<Cookie>>,
-    mut request:Request<Body>,
+    mut request: Request<Body>,
     next: Next,
 ) -> Result<impl IntoResponse, AppError> {
     if let Some(cookie) = cookie {
