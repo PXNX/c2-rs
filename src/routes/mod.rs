@@ -87,18 +87,17 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
 
  */
 
-        text.push("--------------\nglob".to_string());
 
-
-        for entry in glob("**/*.svg").unwrap() {
-
-            text.push(entry.unwrap().display().to_string());
-        }
 
 
         text.push("--------------\n../../".to_string());
 
+        let paths = read_dir("../../").unwrap();
 
+        for path in paths {
+            text.push(path.unwrap().path().display().to_string());
+            //   println!("Name: {}", path.unwrap().path().display())
+        }
 
         //let tx = format!("Assets not found {}", text.join("&&&  "));
 
