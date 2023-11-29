@@ -1,6 +1,6 @@
 use std::fs::read_dir;
 use std::path::{Path, PathBuf};
-use std::{fs, io};
+use std::{env, fs, io};
 
 use axum::{extract::FromRef, handler::HandlerWithoutStateExt, middleware, Extension};
 use axum::{extract::FromRequest, http::StatusCode, response::IntoResponse, routing::get, Router};
@@ -99,15 +99,19 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
             //   println!("Name: {}", path.unwrap().path().display())
         }
 
+        let diir =  env::current_dir().unwrap().display().to_string();
+
+        text.push(diir.to_string());
+
         //let tx = format!("Assets not found {}", text.join("&&&  "));
 
-        (StatusCode::NOT_FOUND, text.join("\n\n"))
+        (StatusCode::NOT_FOUND, text.join("\n\n") )
     }
 
     // you can convert handler function to service
     let service = handle_404.into_service();
 
-    let serve_dir = ServeDir::new("../media").not_found_service(service);
+    let serve_dir = ServeDir::new("./assets").not_found_service(service);
 
     Ok(Router::new()
         .route("/", get(index))
