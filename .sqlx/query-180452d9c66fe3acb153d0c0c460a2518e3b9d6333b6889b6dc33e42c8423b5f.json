@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE articles SET content = $1\n  where id = $2;",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "180452d9c66fe3acb153d0c0c460a2518e3b9d6333b6889b6dc33e42c8423b5f"
+}

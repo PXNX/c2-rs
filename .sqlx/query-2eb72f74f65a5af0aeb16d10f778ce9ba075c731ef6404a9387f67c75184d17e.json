@@ -1,0 +1,46 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT name, skill_0,skill_1,skill_2,created_at FROM users WHERE id=$1;",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "skill_0",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 2,
+        "name": "skill_1",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 3,
+        "name": "skill_2",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 4,
+        "name": "created_at",
+        "type_info": "Timestamp"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "2eb72f74f65a5af0aeb16d10f778ce9ba075c731ef6404a9387f67c75184d17e"
+}

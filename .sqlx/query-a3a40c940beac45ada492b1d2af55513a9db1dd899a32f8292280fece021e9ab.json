@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO upvotes ( user_id,article_id)\n    VALUES ($1,$2)\n    ON CONFLICT DO Nothing; ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "a3a40c940beac45ada492b1d2af55513a9db1dd899a32f8292280fece021e9ab"
+}

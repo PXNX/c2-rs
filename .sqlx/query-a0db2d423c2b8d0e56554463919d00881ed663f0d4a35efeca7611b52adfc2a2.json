@@ -1,0 +1,40 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT articles.id,\n        articles.title,\n        articles.created_at,\n        COALESCE(uv.upvote_count,0) AS upvote_count\n FROM articles\n\n          LEFT JOIN (SELECT article_id, count(*) upvote_count\n                     FROM upvotes \n                     GROUP BY article_id) as uv\n                    ON uv.article_id = articles.id\n                    where articles.newspaper_id = $1\n ORDER BY articles.created_at DESC\n LIMIT 30;",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "title",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "created_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 3,
+        "name": "upvote_count",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      null
+    ]
+  },
+  "hash": "a0db2d423c2b8d0e56554463919d00881ed663f0d4a35efeca7611b52adfc2a2"
+}
