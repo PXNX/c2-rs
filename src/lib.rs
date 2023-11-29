@@ -7,15 +7,15 @@ mod auth;
 mod common;
 
 pub async fn run(database_url: String) -> Result<(), Box<dyn std::error::Error>> {
-    /*  tracing_subscriber::registry()
+    tracing_subscriber::registry()
             .with(
                 tracing_subscriber::EnvFilter::try_from_default_env()
                     .unwrap_or_else(|_| "example_validator=debug".into()),
             )
             .with(tracing_subscriber::fmt::layer())
             .init();
-    */
-    tracing_subscriber::fmt::init();
+
+ //   tracing_subscriber::fmt::init();
 
     let db_pool = PgPoolOptions::new()
         .max_connections(5)

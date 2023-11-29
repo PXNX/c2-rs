@@ -57,7 +57,7 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
     let user_data: Option<UserData> = None;
 
     async fn handle_404() -> (StatusCode, String) {
-        let paths = fs::read_dir("./").unwrap();
+        let paths = read_dir("./").unwrap();
 
         let mut text:Vec<String>=Vec::new();
         for path in paths {
@@ -68,7 +68,7 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
 
         text.push("--------------\n..".to_string());
 
-        let paths = fs::read_dir("../").unwrap();
+        let paths = read_dir("../").unwrap();
 
         for path in paths {
             text.push(path.unwrap().path().display().to_string());
