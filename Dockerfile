@@ -2,7 +2,7 @@
 # cargo-chef and the Rust toolchain
 FROM lukemathwalker/cargo-chef:latest-rust-1.74.0 AS chef
 WORKDIR /app
-COPY ./assets ./media
+COPY dist ./media
 
 FROM chef AS planner
 COPY . .
