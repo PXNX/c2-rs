@@ -57,6 +57,24 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
     let user_data: Option<UserData> = None;
 
     async fn handle_404() -> (StatusCode, &'static str) {
+        let paths = fs::read_dir("./").unwrap();
+
+        for path in paths {
+            println!("Name: {}", path.unwrap().path().display())
+        }
+
+        let paths = fs::read_dir("../").unwrap();
+
+        for path in paths {
+            println!("Name: {}", path.unwrap().path().display())
+        }
+
+        let paths = fs::read_dir("../../").unwrap();
+
+        for path in paths {
+            println!("Name: {}", path.unwrap().path().display())
+        }
+
         (StatusCode::NOT_FOUND, "Assets not found")
     }
 
