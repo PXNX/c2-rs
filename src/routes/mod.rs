@@ -1,8 +1,10 @@
 use std::env;
 use std::fs::read_dir;
 
-use axum::{Extension, extract::FromRef, handler::HandlerWithoutStateExt, middleware};
+use axum::{Extension, extract::FromRef, handler::HandlerWithoutStateExt, http, middleware};
 use axum::{http::StatusCode, response::IntoResponse, Router, routing::get};
+use axum::http::{header, Response};
+use axum_extra::headers::ContentType;
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
 use sqlx::PgPool;
@@ -50,60 +52,13 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
     let user_data: Option<UserData> = None;
 
     async fn handle_404() -> (StatusCode, String) {
-        let paths = read_dir("./").unwrap();
-
-        let mut text: Vec<String> = Vec::new();
-        for path in paths {
-            text.push(path.unwrap().path().display().to_string());
-            //  println!("Name: {}", path.unwrap().path().display())
-        }
-
-        text.push("--------------\n..".to_string());
-
-        let paths = read_dir("../").unwrap();
-
-        for path in paths {
-            text.push(path.unwrap().path().display().to_string());
-            //   println!("Name: {}", path.unwrap().path().display())
-        }
-
-
-        /*        let  paths = fs::read_dir("../../").unwrap();
-
-                for path in paths {
-                    println!("Name: {}", path.unwrap().path().display())
-                    text.push(path);
-                }
-
-         */
-
-
-        text.push("--------------\n../../".to_string());
-
-        /*  let paths = read_dir("./usr").unwrap();
-
-          for path in paths {
-              text.push(path.unwrap().path().display().to_string());
-              //   println!("Name: {}", path.unwrap().path().display())
-          } */
-
-
-        let diir = env::current_dir().unwrap().display().to_string();
-
-        text.push(diir.to_string());
-
-        //let tx = format!("Assets not found {}", text.join("&&&  "));
-
-        (StatusCode::NOT_FOUND, text.join("\n\n"))
+        (StatusCode::NOT_FOUND, "Not found".to_owned())
     }
 
-    // you can convert handler function to service
-    let service = handle_404.into_service();
-
-    let serve_dir = ServeDir::new("./dist").not_found_service(service);
 
     Ok(Router::new()
         .route("/", get(index))
+        .route("/styles.css", get(styles))
         .route("/about", get(about))
         .nest("/u", profile_router())
         .nest("/m", military_router())
@@ -124,5 +79,19 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         .route("/login", get(login))
         .with_state(app_state)
         .layer(Extension(user_data))
-        .fallback_service(serve_dir))
+           .fallback_service(handle_404.into_service()))
+}
+
+async fn styles() -> impl IntoResponse {
+
+    Response::builder()
+
+        .status(StatusCode::OK)
+
+        .header("Content-Type", "text/css")
+
+        .body(include_str!("../../public/styles.css").to_owned())
+
+        .unwrap()
+
 }

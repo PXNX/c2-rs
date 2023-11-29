@@ -1,0 +1,29 @@
+{
+  "short_name": "PsyOps",
+  "name": "PsyOps: Command & Control",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/logo-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "id": "/?source=pwa",
+  "start_url": "/?source=pwa",
+  "background_color": "#1d232a",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#6419e6",
+  "description": "Economy, Journalism, Strategy"
+}
