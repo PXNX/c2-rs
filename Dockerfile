@@ -21,4 +21,5 @@ RUN cargo build #--release --locked
 
 FROM rust:1.74-slim AS template-rust
 COPY --from=builder /app/target/debug/c2 /usr/local/bin
+COPY --from=builder app/assets /usr/local/assets
 ENTRYPOINT ["/usr/local/bin/c2"]
