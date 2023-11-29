@@ -13,7 +13,7 @@ COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --recipe-path recipe.json
 
 COPY . .
-COPY ./assets /assets
+COPY ./assets ./media
 #RUN cargo install sqlx-cli && cargo sqlx prepare
 RUN cargo build #--release --locked
 
