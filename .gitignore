@@ -9,3 +9,4 @@ migration/target
 *.postgres3
 *.postgres3-shm
 *.postgres3-wal
+.sqlx
