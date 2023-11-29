@@ -113,7 +113,7 @@ export default class Impetus extends EventEmitter {
 
     /**
      * Disable movement processing
-     * @public
+     * @assets
      */
     this.pause = function() {
       cleanUpRuntimeEvents();
@@ -124,7 +124,7 @@ export default class Impetus extends EventEmitter {
 
     /**
      * Enable movement processing
-     * @public
+     * @assets
      */
     this.resume = function() {
       paused = false;
@@ -132,7 +132,7 @@ export default class Impetus extends EventEmitter {
 
     /**
      * Update the current x and y values
-     * @public
+     * @assets
      * @param {Number} x
      * @param {Number} y
      */
@@ -147,7 +147,7 @@ export default class Impetus extends EventEmitter {
 
     /**
      * Update the multiplier value
-     * @public
+     * @assets
      * @param {Number} val
      */
     this.setMultiplier = function(val) {
@@ -157,7 +157,7 @@ export default class Impetus extends EventEmitter {
 
     /**
      * Update boundX value
-     * @public
+     * @assets
      * @param {Number[]} boundX
      */
     this.setBoundX = function(boundX) {
@@ -167,7 +167,7 @@ export default class Impetus extends EventEmitter {
 
     /**
      * Update boundY value
-     * @public
+     * @assets
      * @param {Number[]} boundY
      */
     this.setBoundY = function(boundY) {

@@ -204,7 +204,7 @@ function clearEvent(emitter, evt) {
  * `EventEmitter` interface.
  *
  * @constructor
- * @public
+ * @assets
  */
 function EventEmitter() {
   this._events = new Events();
@@ -216,7 +216,7 @@ function EventEmitter() {
  * listeners.
  *
  * @returns {Array}
- * @public
+ * @assets
  */
 EventEmitter.prototype.eventNames = function eventNames() {
   var names = []
@@ -241,7 +241,7 @@ EventEmitter.prototype.eventNames = function eventNames() {
  *
  * @param {(String|Symbol)} event The event name.
  * @returns {Array} The registered listeners.
- * @public
+ * @assets
  */
 EventEmitter.prototype.listeners = function listeners(event) {
   var evt = prefix ? prefix + event : event
@@ -262,7 +262,7 @@ EventEmitter.prototype.listeners = function listeners(event) {
  *
  * @param {(String|Symbol)} event The event name.
  * @returns {Number} The number of listeners.
- * @public
+ * @assets
  */
 EventEmitter.prototype.listenerCount = function listenerCount(event) {
   var evt = prefix ? prefix + event : event
@@ -278,7 +278,7 @@ EventEmitter.prototype.listenerCount = function listenerCount(event) {
  *
  * @param {(String|Symbol)} event The event name.
  * @returns {Boolean} `true` if the event had listeners, else `false`.
- * @public
+ * @assets
  */
 EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
   var evt = prefix ? prefix + event : event;
@@ -339,7 +339,7 @@ EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
  * @param {Function} fn The listener function.
  * @param {*} [context=this] The context to invoke the listener with.
  * @returns {EventEmitter} `this`.
- * @public
+ * @assets
  */
 EventEmitter.prototype.on = function on(event, fn, context) {
   return addListener(this, event, fn, context, false);
@@ -352,7 +352,7 @@ EventEmitter.prototype.on = function on(event, fn, context) {
  * @param {Function} fn The listener function.
  * @param {*} [context=this] The context to invoke the listener with.
  * @returns {EventEmitter} `this`.
- * @public
+ * @assets
  */
 EventEmitter.prototype.once = function once(event, fn, context) {
   return addListener(this, event, fn, context, true);
@@ -366,7 +366,7 @@ EventEmitter.prototype.once = function once(event, fn, context) {
  * @param {*} context Only remove the listeners that have this context.
  * @param {Boolean} once Only remove one-time listeners.
  * @returns {EventEmitter} `this`.
- * @public
+ * @assets
  */
 EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
   var evt = prefix ? prefix + event : event;
@@ -413,7 +413,7 @@ EventEmitter.prototype.removeListener = function removeListener(event, fn, conte
  *
  * @param {(String|Symbol)} [event] The event name.
  * @returns {EventEmitter} `this`.
- * @public
+ * @assets
  */
 EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
   var evt;
@@ -1712,7 +1712,7 @@ var ResizeObserverSPI = /** @class */ (function () {
      *      when one of the observed elements changes it's content dimensions.
      * @param {ResizeObserverController} controller - Controller instance which
      *      is responsible for the updates of observer.
-     * @param {ResizeObserver} callbackCtx - Reference to the public
+     * @param {ResizeObserver} callbackCtx - Reference to the assets
      *      ResizeObserver instance which will be passed to callback function.
      */
     function ResizeObserverSPI(callback, controller, callbackCtx) {
@@ -1881,7 +1881,7 @@ var ResizeObserver = /** @class */ (function () {
     }
     return ResizeObserver;
 }());
-// Expose public methods of ResizeObserver.
+// Expose assets methods of ResizeObserver.
 [
     'observe',
     'unobserve',
