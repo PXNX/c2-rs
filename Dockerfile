@@ -15,7 +15,7 @@ RUN cargo chef cook --recipe-path recipe.json
 COPY . .
 COPY ./assets /assets
 #RUN cargo install sqlx-cli && cargo sqlx prepare
-RUN cargo build --release --locked
+RUN cargo build #--release --locked
 
 FROM rust:1.74-slim AS template-rust
 COPY --from=builder /app/target/release/c2 /usr/local/bin
