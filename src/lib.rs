@@ -23,10 +23,10 @@ pub async fn run(database_url: String) -> Result<(), Box<dyn std::error::Error>>
         .await
         .map_err(|e| format!("DB connection failed: {}", e))?;
 
-    /* sqlx::migrate!("./migrations")
+     sqlx::migrate!("./migrations")
     .run(&db_pool)
     .await
-    .expect("Error running DB migrations");  */
+    .expect("Error running DB migrations");
 
     let app = routes::create_routes(db_pool).await?;
 
