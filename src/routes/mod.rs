@@ -4,6 +4,7 @@ use std::{fs, io};
 
 use axum::{extract::FromRef, handler::HandlerWithoutStateExt, middleware, Extension};
 use axum::{extract::FromRequest, http::StatusCode, response::IntoResponse, routing::get, Router};
+use glob::glob;
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
 use sqlx::PgPool;
@@ -75,6 +76,8 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
          //   println!("Name: {}", path.unwrap().path().display())
         }
 
+
+
 /*        let  paths = fs::read_dir("../../").unwrap();
 
         for path in paths {
@@ -83,6 +86,22 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         }
 
  */
+
+        text.push("--------------\nglob".to_string());
+
+
+        for entry in glob("**/*.svg").unwrap() {
+
+            text.push(entry.unwrap().display().to_string());
+        }
+
+
+        let paths = read_dir("../../").unwrap();
+
+        for path in paths {
+            text.push(path.unwrap().path().display().to_string());
+            //   println!("Name: {}", path.unwrap().path().display())
+        }
 
         //let tx = format!("Assets not found {}", text.join("&&&  "));
 
