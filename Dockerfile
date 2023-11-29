@@ -13,12 +13,7 @@ COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --recipe-path recipe.json
 
 COPY . .
-
-RUN cargo build --release --locked
-
-COPY migrations migrations
-
-CMD cargo run --release --locked
+RUN cargo build --release
 
 FROM rust:1.74-slim AS template-rust
 COPY --from=builder /app/target/release/c2-rs /usr/local/bin
