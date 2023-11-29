@@ -2,7 +2,7 @@
 # cargo-chef and the Rust toolchain
 FROM lukemathwalker/cargo-chef:latest-rust-1.74.0 AS chef
 WORKDIR /app
-COPY dist ./media
+
 
 FROM chef AS planner
 COPY . .
@@ -21,5 +21,5 @@ RUN cargo build #--release --locked
 
 FROM rust:1.74-slim AS template-rust
 COPY --from=builder /app/target/debug/c2 /usr/local/bin
-COPY --from=builder app/assets /usr/local/assets
+COPY --from=builder app/dist /usr/local/dist
 ENTRYPOINT ["/usr/local/bin/c2"]
