@@ -54,6 +54,8 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
 
     Ok(Router::new()
         .route("/styles.css", get(styles))
+        .route("/manifest.webmanifest", get(manifest))
+    //    .route("/favicon.ico", get(favicon))
         .route("/bundle.js", get(bundle))
         .route("/", get(index))
         .route("/about", get(about))
@@ -86,6 +88,25 @@ async fn styles() -> impl IntoResponse {
         .body(include_str!("../../public/styles.css").to_owned())
         .unwrap()
 }
+
+async fn manifest() -> impl IntoResponse {
+    Response::builder()
+        .status(StatusCode::OK)
+        .header("Content-Type", "application/manifest+json")
+        .body(include_str!("../../public/manifest.webmanifest").to_owned())
+        .unwrap()
+}
+/*
+//TODO: try https://github.com/pyrossh/rust-embed/blob/master/examples/axum.rs
+async fn favicon() -> impl IntoResponse {
+    Response::builder()
+        .status(StatusCode::OK)
+        .header("Content-Type", "image/x-icon")
+        .body(include_str!("../../public/favicon.ico").to_owned())
+        .unwrap()
+}*/
+
+
 
 async fn bundle() -> impl IntoResponse {
     Response::builder()
