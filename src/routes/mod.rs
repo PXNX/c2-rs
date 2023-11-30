@@ -1,6 +1,6 @@
 use axum::{Extension, extract::FromRef, handler::HandlerWithoutStateExt, middleware};
 use axum::{http::StatusCode, response::IntoResponse, Router, routing::get};
-use axum::http::Response;
+use axum::http::{header, Response};
 use axum::response::Html;
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
@@ -54,10 +54,7 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
     }
 
     Ok(Router::new()
-        .route("/styles.css", get(styles))
-        .route("/manifest.webmanifest", get(manifest))
-    //    .route("/favicon.ico", get(favicon))
-        .route("/bundle.js", get(bundle))
+
         .route("/", get(index))
         .route("/about", get(about))
         .nest("/u", profile_router())
@@ -79,9 +76,15 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         .route("/login", get(login))
         .with_state(app_state)
         .layer(Extension(user_data))
+        .route("/styles.css", get(styles))
+        .route("/manifest.webmanifest", get(manifest))
+        .route("/favicon.ico", get(favicon))
+            .route("/logo.svg", get(logo))
+        .route("/bundle.js", get(bundle))
         .fallback_service(handle_404.into_service()))
 }
 
+//todo: iterate over all assets
 async fn styles() -> impl IntoResponse {
     Response::builder()
         .status(StatusCode::OK)
@@ -97,15 +100,35 @@ async fn manifest() -> impl IntoResponse {
         .body(include_str!("../../public/manifest.webmanifest").to_owned())
         .unwrap()
 }
-/*
+
+
+
+async fn logo() -> impl IntoResponse {
+    let headers = [
+        (header::CONTENT_TYPE, "image/svg+xml"),
+        /*   (
+               header::CONTENT_DISPOSITION,
+               "attachment; filename=\"favicon.ico\"",
+           ), */
+    ];
+    (headers, include_bytes!("../../public/logo.svg").to_owned()).into_response()
+
+
+}
+
 //TODO: try https://github.com/pyrossh/rust-embed/blob/master/examples/axum.rs
 async fn favicon() -> impl IntoResponse {
-    Response::builder()
-        .status(StatusCode::OK)
-        .header("Content-Type", "image/x-icon")
-        .body(include_str!("../../public/favicon.ico").to_owned())
-        .unwrap()
-}*/
+    let headers = [
+        (header::CONTENT_TYPE, "image/x-icon"),
+     /*   (
+            header::CONTENT_DISPOSITION,
+            "attachment; filename=\"favicon.ico\"",
+        ), */
+    ];
+    (headers, include_bytes!("../../public/favicon.ico").to_owned()).into_response()
+
+
+}
 
 
 
