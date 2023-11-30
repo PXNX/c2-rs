@@ -94,6 +94,11 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
 
         .with_state(app_state)
       //  .nest("/dist",asserts)
+        .route("/styles.css", get(styles))
+        .route("/manifest.webmanifest", get(manifest))
+        .route("/favicon.ico", get(favicon))
+        .route("/logo.svg", get(logo))
+        .route("/bundle.js", get(bundle))
         .layer(Extension(user_data))
 
 
