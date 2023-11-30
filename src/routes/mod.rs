@@ -1,7 +1,8 @@
 use axum::{Extension, extract::FromRef, handler::HandlerWithoutStateExt, middleware};
-use axum::{http::StatusCode, response::IntoResponse, Router, routing::get};
-use axum::http::{header, Response};
-use axum::response::Html;
+use axum::{ response::IntoResponse, Router, routing::get};
+use axum::http::{header, Uri,StatusCode};
+use axum::response::{Html, Response};
+use rust_embed::RustEmbed;
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
 use sqlx::PgPool;
@@ -24,6 +25,7 @@ use crate::routes::inbox::inbox_router;
 //use crate::routes::inbox::inbox_router;
 use crate::routes::military::military_router;
 
+
 mod article;
 //mod inbox;
 mod map;
@@ -44,10 +46,25 @@ pub struct UserData {
     pub id: i64,
 }
 
+
+
+
 pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error::Error>> {
     let app_state = AppState { db_pool };
 
     let user_data: Option<UserData> = None;
+
+
+
+
+
+//    let index_html = Asset::get("logo.svg").unwrap();
+   // println!("{:?}", std::str::from_utf8(index_html.data.as_ref()));
+
+
+
+
+
 
     async fn handle_404() -> impl IntoResponse {
         (StatusCode::NOT_FOUND, Html(include_str!("../../templates/error/404.html").to_string())).into_response()
@@ -74,15 +91,21 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
             inject_user_data,
         ))
         .route("/login", get(login))
+
         .with_state(app_state)
+      //  .nest("/dist",asserts)
         .layer(Extension(user_data))
-        .route("/styles.css", get(styles))
-        .route("/manifest.webmanifest", get(manifest))
-        .route("/favicon.ico", get(favicon))
-            .route("/logo.svg", get(logo))
-        .route("/bundle.js", get(bundle))
+
+
         .fallback_service(handle_404.into_service()))
 }
+
+
+
+
+
+
+
 
 //todo: iterate over all assets
 async fn styles() -> impl IntoResponse {
@@ -102,7 +125,6 @@ async fn manifest() -> impl IntoResponse {
 }
 
 
-
 async fn logo() -> impl IntoResponse {
     let headers = [
         (header::CONTENT_TYPE, "image/svg+xml"),
@@ -112,24 +134,19 @@ async fn logo() -> impl IntoResponse {
            ), */
     ];
     (headers, include_bytes!("../../public/logo.svg").to_owned()).into_response()
-
-
 }
 
 //TODO: try https://github.com/pyrossh/rust-embed/blob/master/examples/axum.rs
 async fn favicon() -> impl IntoResponse {
     let headers = [
         (header::CONTENT_TYPE, "image/x-icon"),
-     /*   (
-            header::CONTENT_DISPOSITION,
-            "attachment; filename=\"favicon.ico\"",
-        ), */
+        /*   (
+               header::CONTENT_DISPOSITION,
+               "attachment; filename=\"favicon.ico\"",
+           ), */
     ];
     (headers, include_bytes!("../../public/favicon.ico").to_owned()).into_response()
-
-
 }
-
 
 
 async fn bundle() -> impl IntoResponse {
@@ -139,3 +156,5 @@ async fn bundle() -> impl IntoResponse {
         .body(include_str!("../../public/bundle.js").to_owned())
         .unwrap()
 }
+
+

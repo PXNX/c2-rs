@@ -406,6 +406,8 @@ dependencies = [
  "dotenvy",
  "glob",
  "http-body 1.0.0",
+ "mime",
+ "mime_guess",
  "oauth2",
  "pulldown-cmark",
  "reqwest",

@@ -43,8 +43,8 @@ async fn own_profile(
 
     Ok(OwnProfileTemplate {
         user_id: user_id,
-        user_name: user.name.unwrap(),
-        skill_0: user.skill_0.unwrap(),
+        user_name: user.name.unwrap_or("Empty".to_owned()),
+        skill_0: user.skill_0.unwrap_or(100.to_owned()),
     })
 }
 
