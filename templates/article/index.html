@@ -31,6 +31,14 @@
 
 {% block main %}
 
+
+
+<a class="p-2 m-2 flex flex-col space-y-2 flinch  rounded-lg border select-bordered bg-primary text-primary-content" href="/a/1">
+    <div class="badge badge-neutral">New Update 🎉</div>
+    <h3 class="font-bold text-lg">MVP Release, 0.0.1 28.11.2023</h3>
+    <p class="py-4">Click to see more details</p>
+</a>
+
 {% for article in articles %}
 
 
@@ -42,8 +50,8 @@
         width="56" />
     <!-- style="aspect-ratio: 100 / 100; object-fit: cover;" -->
     <div>
-        <b class="text-lg block transition-all duration-3000 font-bold tracking-tight"
-            id="article_title">{{article.title }}</b>
+        <h3 class="font-bold text-lg block transition-all duration-800"
+            id="article_title">{{article.title }}</h3>
         <span class="text-primary block transition-all" id="author_name">{{article.author_name }}</span>
         {{article. publish_date}} | {{article.upvote_count }} Likes
     </div>

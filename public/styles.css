@@ -10353,6 +10353,14 @@ details.collapse summary::-webkit-details-marker {
   width: 50% !important;
 }
 
+.w-10 {
+  width: 2.5rem !important;
+}
+
+.w-24 {
+  width: 6rem !important;
+}
+
 .w-4 {
   width: 1rem !important;
 }
@@ -10443,20 +10451,6 @@ details.collapse summary::-webkit-details-marker {
 
 .transform-none {
   transform: none !important;
-}
-
-@keyframes fadeOut {
-  0% {
-    background-color: #fcd34d;
-  }
-
-  100% {
-    background-color: transparent;
-  }
-}
-
-.animate-fade {
-  animation: fadeOut .9s ease-in-out !important;
 }
 
 .cursor-pointer {
@@ -11684,6 +11678,11 @@ details.collapse summary::-webkit-details-marker {
   padding-bottom: 0.75rem !important;
 }
 
+.py-4 {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+}
+
 .pb-16 {
   padding-bottom: 4rem !important;
 }
@@ -11787,6 +11786,11 @@ details.collapse summary::-webkit-details-marker {
 .text-xl {
   font-size: 1.25rem !important;
   line-height: 1.75rem !important;
+}
+
+.text-xs {
+  font-size: 0.75rem !important;
+  line-height: 1rem !important;
 }
 
 .font-bold {
@@ -11964,6 +11968,10 @@ details.collapse summary::-webkit-details-marker {
 .subpixel-antialiased {
   -webkit-font-smoothing: auto !important;
   -moz-osx-font-smoothing: auto !important;
+}
+
+.opacity-50 {
+  opacity: 0.5 !important;
 }
 
 .opacity-75 {

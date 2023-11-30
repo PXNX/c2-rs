@@ -1,14 +1,9 @@
-use std::env;
-use std::fs::read_dir;
-
-use axum::{Extension, extract::FromRef, handler::HandlerWithoutStateExt, http, middleware};
+use axum::{Extension, extract::FromRef, handler::HandlerWithoutStateExt, middleware};
 use axum::{http::StatusCode, response::IntoResponse, Router, routing::get};
-use axum::http::{header, Response};
-use axum_extra::headers::ContentType;
+use axum::http::Response;
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
 use sqlx::PgPool;
-use tower_http::services::ServeDir;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 use pages::{about, index};
@@ -24,6 +19,7 @@ use crate::{
         profile::profile_router, welcome::welcome_router,
     },
 };
+use crate::routes::inbox::inbox_router;
 //use crate::routes::inbox::inbox_router;
 use crate::routes::military::military_router;
 
@@ -35,6 +31,7 @@ mod newspaper;
 mod pages;
 mod profile;
 mod welcome;
+mod inbox;
 
 #[derive(Clone, FromRef)]
 pub struct AppState {
@@ -55,17 +52,17 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         (StatusCode::NOT_FOUND, "Not found".to_owned())
     }
 
-
     Ok(Router::new()
-        .route("/", get(index))
         .route("/styles.css", get(styles))
+        .route("/bundle.js", get(bundle))
+        .route("/", get(index))
         .route("/about", get(about))
         .nest("/u", profile_router())
         .nest("/m", military_router())
         .nest("/map", map_router())
         .nest("/n", newspaper_router())
         .nest("/a", article_router())
-        //   .nest("/inbox", inbox_router())
+        .nest("/inbox", inbox_router())
         .route_layer(middleware::from_fn_with_state(
             app_state.clone(),
             check_auth,
@@ -79,19 +76,21 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         .route("/login", get(login))
         .with_state(app_state)
         .layer(Extension(user_data))
-           .fallback_service(handle_404.into_service()))
+        .fallback_service(handle_404.into_service()))
 }
 
 async fn styles() -> impl IntoResponse {
-
     Response::builder()
-
         .status(StatusCode::OK)
-
         .header("Content-Type", "text/css")
-
         .body(include_str!("../../public/styles.css").to_owned())
-
         .unwrap()
+}
 
+async fn bundle() -> impl IntoResponse {
+    Response::builder()
+        .status(StatusCode::OK)
+        .header("Content-Type", "text/javascript")
+        .body(include_str!("../../public/bundle.js").to_owned())
+        .unwrap()
 }
