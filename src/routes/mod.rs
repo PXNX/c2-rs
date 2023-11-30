@@ -1,6 +1,7 @@
 use axum::{Extension, extract::FromRef, handler::HandlerWithoutStateExt, middleware};
 use axum::{http::StatusCode, response::IntoResponse, Router, routing::get};
 use axum::http::Response;
+use axum::response::Html;
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
 use sqlx::PgPool;
@@ -48,8 +49,8 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
 
     let user_data: Option<UserData> = None;
 
-    async fn handle_404() -> (StatusCode, String) {
-        (StatusCode::NOT_FOUND, "Not found".to_owned())
+    async fn handle_404() -> impl IntoResponse {
+        (StatusCode::NOT_FOUND, Html(include_str!("../../templates/error/404.html").to_string())).into_response()
     }
 
     Ok(Router::new()
