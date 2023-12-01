@@ -1,14 +1,14 @@
-use axum::{Extension, extract::FromRef, handler::HandlerWithoutStateExt, middleware};
-use axum::{ response::IntoResponse, Router, routing::get};
-use axum::http::{header, Uri,StatusCode};
+use axum::{body, Extension, extract::FromRef, handler::HandlerWithoutStateExt, middleware};
+use axum::{response::IntoResponse, Router, routing::get};
+use axum::http::{header, Uri, StatusCode, HeaderValue};
 use axum::response::{Html, Response};
-use rust_embed::RustEmbed;
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
 use sqlx::PgPool;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
-
+use rust_embed::RustEmbed;
 use pages::{about, index};
+
 
 use crate::{
     auth::{
@@ -47,26 +47,13 @@ pub struct UserData {
 }
 
 
-
-
 pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error::Error>> {
     let app_state = AppState { db_pool };
 
     let user_data: Option<UserData> = None;
 
-
-
-
-
-//    let index_html = Asset::get("logo.svg").unwrap();
-   // println!("{:?}", std::str::from_utf8(index_html.data.as_ref()));
-
-
-
-
-
-
     async fn handle_404() -> impl IntoResponse {
+        //TODO: utilize StaticAssets for that
         (StatusCode::NOT_FOUND, Html(include_str!("../../templates/error/404.html").to_string())).into_response()
     }
 
@@ -91,75 +78,43 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
             inject_user_data,
         ))
         .route("/login", get(login))
-
         .with_state(app_state)
-      //  .nest("/dist",asserts)
-        .route("/styles.css", get(styles))
-        .route("/manifest.webmanifest", get(manifest))
-        .route("/favicon.ico", get(favicon))
-        .route("/logo.svg", get(logo))
-        .route("/bundle.js", get(bundle))
         .layer(Extension(user_data))
-
-
+        .route("/dist/*file", get(static_handler))
         .fallback_service(handle_404.into_service()))
 }
 
 
+async fn static_handler(uri: Uri) -> impl IntoResponse {
+    let mut path = uri.path().trim_start_matches('/').to_string();
 
+    if path.starts_with("dist/") {
+        path = path.replace("dist/", "");
+    }
 
-
-
-
-
-//todo: iterate over all assets
-async fn styles() -> impl IntoResponse {
-    Response::builder()
-        .status(StatusCode::OK)
-        .header("Content-Type", "text/css")
-        .body(include_str!("../../public/styles.css").to_owned())
-        .unwrap()
-}
-
-async fn manifest() -> impl IntoResponse {
-    Response::builder()
-        .status(StatusCode::OK)
-        .header("Content-Type", "application/manifest+json")
-        .body(include_str!("../../public/manifest.webmanifest").to_owned())
-        .unwrap()
+    StaticFile(path)
 }
 
 
-async fn logo() -> impl IntoResponse {
-    let headers = [
-        (header::CONTENT_TYPE, "image/svg+xml"),
-        /*   (
-               header::CONTENT_DISPOSITION,
-               "attachment; filename=\"favicon.ico\"",
-           ), */
-    ];
-    (headers, include_bytes!("../../public/logo.svg").to_owned()).into_response()
+#[derive(RustEmbed)]
+#[folder = "public/"]
+struct Asset;
+
+pub struct StaticFile<T>(pub T);
+
+impl<T> IntoResponse for StaticFile<T>
+    where
+        T: Into<String>,
+{
+    fn into_response(self) -> Response {
+        let path = self.0.into();
+
+        match Asset::get(path.as_str()) {
+            Some(content) => {
+                let mime = mime_guess::from_path(path).first_or_octet_stream();
+                ([(header::CONTENT_TYPE, mime.as_ref())], content.data).into_response()
+            }
+            None => (StatusCode::NOT_FOUND, "404 Not Found").into_response(),
+        }
+    }
 }
-
-//TODO: try https://github.com/pyrossh/rust-embed/blob/master/examples/axum.rs
-async fn favicon() -> impl IntoResponse {
-    let headers = [
-        (header::CONTENT_TYPE, "image/x-icon"),
-        /*   (
-               header::CONTENT_DISPOSITION,
-               "attachment; filename=\"favicon.ico\"",
-           ), */
-    ];
-    (headers, include_bytes!("../../public/favicon.ico").to_owned()).into_response()
-}
-
-
-async fn bundle() -> impl IntoResponse {
-    Response::builder()
-        .status(StatusCode::OK)
-        .header("Content-Type", "text/javascript")
-        .body(include_str!("../../public/bundle.js").to_owned())
-        .unwrap()
-}
-
-

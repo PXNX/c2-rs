@@ -34,7 +34,7 @@ function showMap() {
             })
 
             // Enable pinch
-            this.hammer.get('pinch').set({ enable: true })
+            this.hammer.get('pinch').set({enable: true})
 
             // Handle double tap
             this.hammer.on('doubletap', function (ev) {
@@ -50,7 +50,7 @@ function showMap() {
                 }
 
                 // Pan only the difference
-                instance.panBy({ x: ev.deltaX - pannedX, y: ev.deltaY - pannedY })
+                instance.panBy({x: ev.deltaX - pannedX, y: ev.deltaY - pannedY})
                 pannedX = ev.deltaX
                 pannedY = ev.deltaY
             })
@@ -60,14 +60,16 @@ function showMap() {
                 // On pinch start remember initial zoom
                 if (ev.type === 'pinchstart') {
                     initialScale = instance.getZoom()
-                    instance.zoomAtPoint(initialScale * ev.scale, { x: ev.center.x, y: ev.center.y })
+                    instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y})
                 }
 
-                instance.zoomAtPoint(initialScale * ev.scale, { x: ev.center.x, y: ev.center.y })
+                instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y})
             })
 
             // Prevent moving the page on some devices when panning over SVG
-            options.svgElement.addEventListener('touchmove', function (e) { e.preventDefault(); });
+            options.svgElement.addEventListener('touchmove', function (e) {
+                e.preventDefault();
+            });
         }
 
         , destroy: function () {
@@ -87,7 +89,6 @@ function showMap() {
         , customEventsHandler: eventsHandler,
         beforePan: beforePan
     });
-
 
 
     document.getElementById("map").classList.remove("hidden");
@@ -110,5 +111,29 @@ function shareLink(title, url = window.location.href) {
 
 function replaceImg(img) {
     img.onerror = null;
-    img.src = "/icons/account.svg";
+    img.src = "/dist/icons/account.svg";
 }
+
+const registerServiceWorker = async () => {
+    if ("serviceWorker" in navigator) {
+        try {
+            const registration = await navigator.serviceWorker.register("/sw.js", {
+                scope: "/",
+            });
+            if (registration.installing) {
+                console.log("Service worker installing");
+            } else if (registration.waiting) {
+                console.log("Service worker installed");
+            } else if (registration.active) {
+                console.log("Service worker active");
+            }
+        } catch (error) {
+            console.error(`Registration failed with ${error}`);
+        }
+    }
+};
+
+registerServiceWorker();
+
+
+//https://www.digitalocean.com/community/tools/minify

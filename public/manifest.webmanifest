@@ -3,18 +3,17 @@
   "name": "PsyOps: Command & Control",
   "icons": [
     {
-      "src": "/logo.svg",
+      "src": "/dist/logo.svg",
       "type": "image/svg+xml",
-      "sizes": "512x512",
-      "purpose": "any maskable"
+      "sizes": "512x512"
     },
     {
-      "src": "/logo-192.png",
+      "src": "/dist/logo-192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "/logo-512.png",
+      "src": "/dist/logo-512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
