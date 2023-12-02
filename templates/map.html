@@ -60,6 +60,15 @@
 
 {% block main %}
 
+<div id="app">
+    Loading...
+</div>
+<script type="module">
+    import {sayHello} from '/dist/index.mjs';
+
+    document.getElementById('app').innerHTML = sayHello();
+</script>
+
 <div id="map"></div>
 
 <script src="/dist/main.js"></script>
