@@ -5,6 +5,7 @@ mod routes;
 
 mod auth;
 mod common;
+mod ws;
 
 pub async fn run(database_url: String) -> Result<(), Box<dyn std::error::Error>> {
     tracing_subscriber::registry()

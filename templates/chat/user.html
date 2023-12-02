@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block title %}Article Feed{% endblock %}
+{% block header %}
+
+<!-- bg-secondary -->
+<header class="sticky bg-base-100 top-0 ">
+
+    <!-- TODO: add TABS -->
+    <div role="tablist" class="tabs tabs-boxed">
+
+        <img alt="Tailwind CSS chat bubble component"
+             src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" class="w-10 rounded-full"/>
+        <h2 class="font-semibold text-xl overflow-ellipsis">Johnny</h2>
+    </div>
+
+    <hr class="divide-gray-200 dark:divide-gray-700">
+</header>
+
+{% endblock %}
+
+{% block main %}
+
+USER
+
+
+<div class="flex flex-col m-2">
+    <div class="chat chat-start m-2">
+
+        <div class="chat-bubble">You were the Chosen One!</div>
+        <div class="chat-footer opacity-50">
+            <time class="text-xs opacity-50">12:45</time>
+        </div>
+    </div>
+    <div class="chat chat-end">
+
+
+        <div class="chat-bubble chat-bubble-primary">I hate you!</div>
+        <div class="chat-footer opacity-50">
+            <time class="text-xs opacity-50">12:46</time>
+        </div>
+    </div>
+
+    <div hx-ext="ws" ws-connect="/chat/1/ws">
+        <div id="notifications"></div>
+        <div id="chat_messages">
+            ...
+        </div>
+        <form id="form" ws-send>
+            <input name="name">
+            <input name="message">
+            <input type="submit" value="Send Request"/>
+
+        </form>
+    </div>
+</div>
+{% endblock %}

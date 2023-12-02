@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+{% block title %}Article Feed{% endblock %}
+{% block header %}
+
+<!-- bg-secondary -->
+<header class="sticky bg-base-100 top-0 ">
+
+    <!-- TODO: add TABS -->
+    <div role="tablist" class="tabs tabs-boxed">
+
+        <a role="tab" class="tab" hx-get="/chat/en" hx-push-url="true">Global</a>
+        <a role="tab" class="tab " hx-get="/chat/team" hx-push-url="true">Team</a>
+        <a role="tab" class="tab tab-active" hx-get="/chat/" hx-push-url="true">Personal</a>
+    </div>
+
+    <hr class="divide-gray-200 dark:divide-gray-700">
+</header>
+
+{% endblock %}
+
+{% block main %}
+
+
+{% for chat in chats %}
+
+
+<!-- if no avatar, then initials and rounded-lg -->
+
+
+<a class="p-2 flex flinch  w-full no-underline text-current gap-2 label-text" href="/chat/{{chat.id }}"
+   oncontextmenu="return false">
+    <img alt="Article Image" onError="replaceImg(this);" class="rounded-lg" height="56" loading="lazy"
+         src="{{chat.user_avatar }}" width="56"/>
+    <!-- style="aspect-ratio: 100 / 100; object-fit: cover;" -->
+    <div>
+        <b class="text-lg block transition-all duration-3000 font-bold tracking-tight"
+           id="chat_user_name">{{chat.user_name }}</b>
+        <span class="text-primary block">{{chat.message_preview }}</span>
+        {{chat.sent_date}}
+    </div>
+</a>
+
+
+{% endfor %}
+
+
+<a class="p-2 flex flinch  w-full no-underline text-current gap-2 label-text" href="/a/1" oncontextmenu="return false">
+
+    <!-- style="aspect-ratio: 100 / 100; object-fit: cover;" -->
+    <div class="avatar online">
+        <div class="w-24 rounded-lg">
+            <img alt="Article Image" onError="replaceImg(this);" class="rounded-lg" height="56" loading="lazy"
+                 src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                 width="56"/>
+        </div>
+    </div>
+    <div>
+        <b class="text-lg block transition-all duration-3000 font-bold tracking-tight">Johnny
+            Doe</b>
+        <span class="text-primary block">Can we order pizza? ...</span>
+        23.11.2020, 04:26
+    </div>
+</a>
+
+<div class="flex flex-col m-2">
+    <div class="chat chat-start m-2">
+        <div class="chat-image avatar">
+            <div class="w-10 rounded-full">
+                <img alt="Tailwind CSS chat bubble component"
+                     src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" class="w-10"/>
+            </div>
+        </div>
+        <div class="chat-header">
+            Obi-Wan Kenobi
+        </div>
+        <div class="chat-bubble">You were the Chosen One!</div>
+        <div class="chat-footer opacity-50">
+            <time class="text-xs opacity-50">12:45</time>
+        </div>
+    </div>
+    <div class="chat chat-end">
+        <div class="chat-image avatar">
+            <div class="w-10 rounded-full">
+                <img alt="Tailwind CSS chat bubble component"
+                     src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" class="w-10"/>
+            </div>
+        </div>
+
+        <div class="chat-bubble chat-bubble-primary">I hate you!</div>
+        <div class="chat-footer opacity-50">
+            <time class="text-xs opacity-50">12:46</time>
+        </div>
+    </div>
+
+    <div hx-ext="ws" ws-connect="/chatroom">
+        <div id="notifications"></div>
+        <div id="chat_room">
+            ...
+        </div>
+        <form id="form" ws-send>
+            <input name="chat_message">
+        </form>
+    </div>
+</div>
+{% endblock %}
