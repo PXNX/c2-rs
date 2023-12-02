@@ -10,13 +10,18 @@ use axum::response::Redirect;
 use axum::routing::{get, put};
 use axum_htmx::{headers, HX_REDIRECT, HxRedirect};
 use oauth2::http::HeaderValue;
+use pulldown_cmark::{Options, Parser};
 use serde::{Deserialize, Serialize};
 use sqlx::{PgPool, query};
 
 use crate::auth::error_handling::AppError;
-use crate::common::tools::format_date;
+use crate::common::tools::{clean_html, format_date};
 
 use super::{AppState, UserData};
+
+use ammonia::clean;
+use pulldown_cmark::{html::push_html};
+
 
 #[derive(Debug, Clone, Serialize)]
 struct ArticlePreview {
@@ -95,12 +100,13 @@ async fn publish_article(
 ) -> Result<impl IntoResponse, AppError> {
     let user_id = user_data.unwrap().id;
 
+
     let query = query!(
         r#"INSERT INTO articles (author_id,title,content,newspaper_id)
     VALUES ($1,$2,$3, $4) returning id;"#,
         user_id,
         input.article_title,
-        input.article_content,
+           clean_html( input.article_content.as_str()),
         input.publisher
     )
         .fetch_one(&db_pool)

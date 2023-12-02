@@ -117,7 +117,7 @@ function replaceImg(img) {
 const registerServiceWorker = async () => {
     if ("serviceWorker" in navigator) {
         try {
-            const registration = await navigator.serviceWorker.register("/sw.js", {
+            const registration = await navigator.serviceWorker.register("/dist/sw.js", {
                 scope: "/",
             });
             if (registration.installing) {
@@ -137,3 +137,24 @@ registerServiceWorker();
 
 
 //https://www.digitalocean.com/community/tools/minify
+(function () {
+    const r = document.createElement("link").relList;
+    if (r && r.supports && r.supports("modulepreload")) return;
+    for (const e of document.querySelectorAll('link[rel="modulepreload"]')) n(e);
+    new MutationObserver(e => {
+        for (const t of e) if (t.type === "childList") for (const o of t.addedNodes) o.tagName === "LINK" && o.rel === "modulepreload" && n(o)
+    }).observe(document, {childList: !0, subtree: !0});
+
+    function i(e) {
+        const t = {};
+        return e.integrity && (t.integrity = e.integrity), e.referrerpolicy && (t.referrerPolicy = e.referrerpolicy), e.crossorigin === "use-credentials" ? t.credentials = "include" : e.crossorigin === "anonymous" ? t.credentials = "omit" : t.credentials = "same-origin", t
+    }
+
+    function n(e) {
+        if (e.ep) return;
+        e.ep = !0;
+        const t = i(e);
+        fetch(e.href, t)
+    }
+})();
+//# sourceMappingURL=index-c730f519.js.map

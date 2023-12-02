@@ -3,16 +3,30 @@
     "@panzoom/panzoom": "^4.5.1",
     "@tailwindcss/typography": "^0.5.10",
     "@thesoulfresh/pan-z": "^1.2.8",
+    "ol": "^8.2.0",
     "tailwindcss": "^3.3.5",
     "vanilla-js-wheel-zoom": "^8.1.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.23.5",
+    "@babel/register": "^7.22.15",
     "@iconify/json": "^2.2.142",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babelify": "^8.0.0",
+    "browserify": "^17.0.0",
     "daisyui": "^4.0.5",
+    "gulp": "^4.0.2",
+    "gulp-babel-minify": "^0.5.2",
+    "parcel": "^2.10.3",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.3.0"
   },
   "scripts": {
-    "format": "prettier --write --ignore-unknown ."
+    "format": "prettier --write --ignore-unknown .",
+    "build-js": " browserify main.cjs -o ./dist/bundle.js",
+    "build-js2": "browserify main.cjs -o /public/bundle.js -t [ babelify --presets [ @babel/preset-env @babel/preset-react ] --plugins [ @babel/plugin-transform-class-properties ] ]"
   }
 }

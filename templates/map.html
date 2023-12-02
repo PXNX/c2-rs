@@ -3,7 +3,6 @@
 {% block body %}
 
 
-
 <style>
     .province [d] {
         fill: #333;
@@ -39,14 +38,14 @@
     <form class="flex-1">
         <div class="relative">
             <svg class=" absolute left-2.5 top-2.5 h-4 w-4 text-zinc-500 dark:text-zinc-400" fill="none" height="24"
-                stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                 stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                 viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="11" cy="11" r="8"></circle>
                 <path d="m21 21-4.3-4.3"></path>
             </svg>
             <input
-                class="flex h-10 rounded-md border border-input px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-8 w-full bg-white"
-                placeholder="Search locations..." type="search" />
+                    class="flex h-10 rounded-md border border-input px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pl-8 w-full bg-white"
+                    placeholder="Search locations..." type="search"/>
         </div>
     </form>
 
@@ -61,11 +60,12 @@
 
 {% block main %}
 
+<div id="map"></div>
 
 
 <!--<span class="loading loading-ring loading-md align-center "></span>-->
 
-
+<!--
 <div id="limit-div" style="width: 100%; height: 100%; border:1px solid black; ">
     <svg id="limit-svg" xmlns="http://www.w3.org/2000/svg" style="overflow: hidden; display: inline;     cursor: move;
     touch-action: none; " width="100%" height="100%" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -17266,8 +17266,25 @@
             </path>
         </g>
     </svg>
-</div>
+</div> -->
 <script>
+
+    import Map from 'ol/Map.js';
+    import View from 'ol/View.js';
+    import OSM from 'ol/source/OSM.js';
+    import TileLayer from 'ol/layer/Tile.js';
+
+    new Map({
+        layers: [
+            new TileLayer({source: new OSM()}),
+        ],
+        view: new View({
+            center: [0, 0],
+            zoom: 2,
+        }),
+        target: 'map',
+    });
+
 
     var beforePan = function (oldPan, newPan) {
         var stopHorizontal = false
@@ -17306,7 +17323,7 @@
             })
 
             // Enable pinch
-            this.hammer.get('pinch').set({ enable: true })
+            this.hammer.get('pinch').set({enable: true})
 
 
             // Handle pan
@@ -17318,7 +17335,7 @@
                 }
 
                 // Pan only the difference
-                instance.panBy({ x: ev.deltaX - pannedX, y: ev.deltaY - pannedY })
+                instance.panBy({x: ev.deltaX - pannedX, y: ev.deltaY - pannedY})
                 pannedX = ev.deltaX
                 pannedY = ev.deltaY
             })
@@ -17328,14 +17345,16 @@
                 // On pinch start remember initial zoom
                 if (ev.type === 'pinchstart') {
                     initialScale = instance.getZoom()
-                    instance.zoomAtPoint(initialScale * ev.scale, { x: ev.center.x, y: ev.center.y })
+                    instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y})
                 }
 
-                instance.zoomAtPoint(initialScale * ev.scale, { x: ev.center.x, y: ev.center.y })
+                instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y})
             })
 
             // Prevent moving the page on some devices when panning over SVG
-            options.svgElement.addEventListener('touchmove', function (e) { e.preventDefault(); });
+            options.svgElement.addEventListener('touchmove', function (e) {
+                e.preventDefault();
+            });
         }
 
         , destroy: function () {
@@ -17367,9 +17386,6 @@
     console.log("svggg");
 
 </script>
-
-
-
 
 
 {% endblock %}

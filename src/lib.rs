@@ -1,5 +1,10 @@
+use std::env;
+
 use sqlx::postgres::PgPoolOptions;
+use tokio::net::TcpListener;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+use crate::routes::create_routes;
 
 mod routes;
 
@@ -31,9 +36,9 @@ pub async fn run(database_url: String) -> Result<(), Box<dyn std::error::Error>>
 
      */
 
-    let app = routes::create_routes(db_pool).await?;
+    let app = create_routes(db_pool).await?;
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3011")
+    let listener = TcpListener::bind(format!("0.0.0.0:{}", env::var("PORT").unwrap_or("3011".to_string())))
         .await
         .map_err(|e| format!("Failed to bind address: {}", e))?;
     axum::serve(listener, app)
