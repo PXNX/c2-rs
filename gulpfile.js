@@ -1,26 +1,24 @@
-const gulp = require("gulp");
-const minify = require("gulp-babel-minify");
+const browserify = require('browserify');
+const gulp = require('gulp');
+const log = require('gulplog');
+const plumber = require('gulp-plumber');
+const source = require('vinyl-source-stream');
 
-gulp.task("minify", () =>
-    gulp.src("./main.cjs")
-        .pipe(minify({
-            mangle: {
-                keepClassName: true
-            }
-        }))
-        .pipe(gulp.dest("./dist"))
-);
-
-
-function defaultTask(cb) {
-    gulp.src("./main.cjs")
-        .pipe(minify({
-            mangle: {
-                keepClassName: true
-            }
-        }))
-        .pipe(gulp.dest("./dist"))
-    cb();
+function minimalExample(done) {
+    return browserify({
+        entries: [
+            './main.ts'  // THIS LINE HAS CHANGED FROM THE QUESTION
+        ],
+        standalone: 'TestModule'
+    })
+        .transform('babelify')
+        .bundle()
+        .on('error', log.error)
+        .pipe(source('minimalExample.js'))
+        .pipe(plumber())
+        .pipe(gulp.dest('./dist'));
 }
 
-exports.default = defaultTask
+module.exports = {
+    minimalExample
+};

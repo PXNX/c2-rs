@@ -1,11 +1,12 @@
-function showMap() {
+/*
+function showMap(img:HTMLImageElement) {
     var beforePan = function (oldPan, newPan) {
         var stopHorizontal = false,
             stopVertical = false,
             gutterWidth = 100,
             gutterHeight = 100,
             // Computed variables
-            sizes = this.getSizes(),
+            sizes = img.getSizes(),
             leftLimit =
                 -((sizes.viewBox.x + sizes.viewBox.width) * sizes.realZoom) +
                 gutterWidth,
@@ -126,55 +127,54 @@ function shareLink(title, url = window.location.href) {
     } else {
         // fallback
     }
+} */
+
+import { Map, View } from "ol";
+import TileLayer from "ol/layer/Tile";
+
+import OSM from "ol/source/OSM";
+
+export function replaceImg(img: HTMLImageElement) {
+  img.onerror = null;
+  img.src = "/dist/icons/account.svg";
 }
 
-function replaceImg(img) {
-    img.onerror = null;
-    img.src = "/dist/icons/account.svg";
-}
-
-const registerServiceWorker = async () => {
-    if ("serviceWorker" in navigator) {
-        try {
-            const registration = await navigator.serviceWorker.register(
-                "/dist/sw.js",
-                {
-                    scope: "/",
-                }
-            );
-            if (registration.installing) {
-                console.log("Service worker installing");
-            } else if (registration.waiting) {
-                console.log("Service worker installed");
-            } else if (registration.active) {
-                console.log("Service worker active");
-            }
-        } catch (error) {
-            console.error(`Registration failed with ${error}`);
+export const registerServiceWorker = async () => {
+  if ("serviceWorker" in navigator) {
+    try {
+      const registration = await navigator.serviceWorker.register(
+        "/dist/sw.js",
+        {
+          scope: "/",
         }
+      );
+      if (registration.installing) {
+        console.log("Service worker installing");
+      } else if (registration.waiting) {
+        console.log("Service worker installed");
+      } else if (registration.active) {
+        console.log("Service worker active");
+      }
+    } catch (error) {
+      console.error(`Registration failed with ${error}`);
     }
+  }
 };
-
-registerServiceWorker();
 
 //https://www.digitalocean.com/community/tools/minify
 
 //const {ol} = require('ol');
 
-import {Map, View} from 'ol';
-import TileLayer from 'ol/layer/Tile';
-import OSM from 'ol/source/OSM';
-
-new Map({
-    layers: [
-        new TileLayer({source: new OSM()}),
-    ],
+export function showMap2() {
+  console.log("ma2p");
+  new Map({
+    layers: [new TileLayer({ source: new OSM() })],
     view: new View({
-        center: [0, 0],
-        zoom: 2,
+      center: [0, 0],
+      zoom: 2,
     }),
-    target: 'map',
-});
+    target: "map",
+  });
+}
 
-
-
+showMap2();
