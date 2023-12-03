@@ -10816,6 +10816,10 @@ details.collapse summary::-webkit-details-marker {
   margin-top: 2.5rem !important;
 }
 
+.mt-16 {
+  margin-top: 4rem !important;
+}
+
 .mt-2 {
   margin-top: 0.5rem !important;
 }

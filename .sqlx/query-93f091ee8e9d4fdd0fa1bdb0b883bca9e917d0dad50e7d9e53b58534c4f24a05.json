@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT newspapers.id,\n     newspapers.name ,\n    \n     newspapers.avatar\n FROM\n    journalists\n        LEFT OUTER JOIN newspapers ON (newspaper_id =newspapers.id) where user_id = $1;",
+  "query": "SELECT newspapers.id,\n     newspapers.name ,\n    newspapers.created_at,\n     newspapers.avatar\n    \n FROM\n    journalists\n        LEFT OUTER JOIN newspapers ON (newspaper_id =newspapers.id) where user_id = $1;",
   "describe": {
     "columns": [
       {
@@ -15,6 +15,11 @@
       },
       {
         "ordinal": 2,
+        "name": "created_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 3,
         "name": "avatar",
         "type_info": "Text"
       }
@@ -27,8 +32,9 @@
     "nullable": [
       false,
       false,
+      true,
       false
     ]
   },
-  "hash": "f485202f69857771a7222daf3fb3e55a9f2454dd484bed6068dfda2a4005bba1"
+  "hash": "93f091ee8e9d4fdd0fa1bdb0b883bca9e917d0dad50e7d9e53b58534c4f24a05"
 }
