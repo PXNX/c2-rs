@@ -2,6 +2,7 @@ use axum::{Extension,
            extract::FromRef,
            handler::HandlerWithoutStateExt, http::{header, StatusCode, Uri}, middleware, response::{Html, IntoResponse, Response}, Router, routing::get};
 use axum::routing::delete;
+use http::HeaderName;
 use rust_embed::RustEmbed;
 use serde::{de::DeserializeOwned, Deserialize};
 use sqlx::PgPool;
@@ -138,7 +139,15 @@ impl<T> IntoResponse for StaticFile<T>
         match Asset::get(path.as_str()) {
             Some(content) => {
                 let mime = mime_guess::from_path(path).first_or_octet_stream();
-                ([(header::CONTENT_TYPE, mime.as_ref())], content.data).into_response()
+
+
+                let encoding = if mime.to_string().contains("css") {
+                    "br"
+                } else {
+                    "utf-8"
+                };
+
+                ([(header::CONTENT_TYPE, mime.as_ref()), (header::CONTENT_ENCODING, encoding)], content.data).into_response()
             }
             None => (StatusCode::NOT_FOUND, "404 Not Found").into_response(),
         }
