@@ -45,13 +45,9 @@
 
 <!-- todo: if no avatar, then initials and rounded-lg. also: what about doing it like so? https://news.google.com/topstories?hl=de&gl=DE&ceid=DE:de -->
 
-<a class="p-2 flex flinch  w-full no-underline text-current gap-2 label-text" href="/a/{{article.id }}"
+<a class="p-2 flex flinch w-full no-underline text-current gap-2 label-text" href="/a/{{article.id }}"
     oncontextmenu="return false">
-    <img alt="Article Image" class="rounded-lg" height="56" loading="lazy" src="{{article.author_avatar }}"
-        width="56" />
-
-    <img alt="Article Image" class="rounded-lg" height="56" loading="lazy" src="{{article.author_avatar }}"
-        width="56" />
+    <img alt="Article Image" class="rounded-lg" height="56" loading="lazy" src="{{article.author_avatar}}" width="56" />
     <!-- style="aspect-ratio: 100 / 100; object-fit: cover;" -->
     <div>
         <h3 class="font-bold text-lg block transition-all duration-800" id="article_title">{{article.title }}</h3>

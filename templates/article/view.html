@@ -28,10 +28,7 @@
     </script> -->
 </div>
 
-
-
 <section class="p-4 flex w-full gap-2 ">
-
 
     <a class="flex flex-row flex-grow flinch gap-2 label-text" href="{{author_link}}" role="button">
         <img class="rounded-lg bg-cover" onError="replaceImg(this);" height="50" src="{{author_avatar}}" width="50" />
@@ -40,11 +37,6 @@
             <span class=" text-primary">Published</span><span> {{publish_date}}</span>
         </div>
     </a>
-
-
-
-
-
 
     {% if author_id == user_id %}
     <a class=" btn btn-square btn-primary" href="/a/{{article_id}}/edit" role="button" type="button">
@@ -69,10 +61,6 @@
         </svg>
         </svg>
     </button>
-
-
-
-
 </section>
 
 
