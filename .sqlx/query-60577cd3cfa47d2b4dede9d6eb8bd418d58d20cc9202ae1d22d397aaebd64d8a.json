@@ -1,0 +1,71 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT\n    articles.id,\n    articles.title,\n    articles.created_at,\n    articles.content,\n    articles.author_id,\n    articles.newspaper_id,\n    CASE WHEN  newspapers.name is NULL THEN users.name ELSE  newspapers.name END AS author_name,\n    CASE WHEN   newspapers.avatar  is NULL THEN   users.avatar ELSE  newspapers.avatar END AS author_avatar,\n    exists(select 1 from upvotes where article_id = articles.id and user_id = $1) as has_upvoted\n FROM\n    articles\n        LEFT OUTER JOIN newspapers ON (articles.newspaper_id =newspapers.id)\n         INNER JOIN users ON (articles.author_id = users.id) where articles.id = $2;",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "title",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "created_at",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 3,
+        "name": "content",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "author_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 5,
+        "name": "newspaper_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 6,
+        "name": "author_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 7,
+        "name": "author_avatar",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "has_upvoted",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      false,
+      false,
+      true,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "60577cd3cfa47d2b4dede9d6eb8bd418d58d20cc9202ae1d22d397aaebd64d8a"
+}

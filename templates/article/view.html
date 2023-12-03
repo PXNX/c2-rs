@@ -14,17 +14,18 @@
 
 
 <div class="transition-opacity ease-in fade_in duration-500  ">
-    <iframe allowtransparency="true" class="w-full  " id="article_view"></iframe>
+    <iframe allowtransparency="true" class="w-full  " id="article_view"
+            srcdoc="<link rel='stylesheet' type='text/css' href='https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.4.0/github-markdown.min.css'><div class='bg-base-100'>{{article_content}}</div>"></iframe>
     <!--TODO change url to be own, not relative-->
 
 
-    <script>
+  <!--  <script>
         const clean = DOMPurify.sanitize("{{article_content}}", { SAFE_FOR_TEMPLATES: true });
-        document.getElementById("article_view").setAttribute("srcdoc", "<link rel='stylesheet' type='text/css' href='/styles.css'><div class='bg-base-100'>" + clean + "</div>");
+        document.getElementById("article_view").setAttribute("srcdoc", ");
         var currentIFrame = 1;
 
 
-    </script>
+    </script> -->
 
     <section class=" m-2 p-2 mt-10 space-y-2  rounded-lg border select-bordered">
 

@@ -846,7 +846,7 @@ module.exports = debounce;
 
 /***/ "./node_modules/object-fit-math/dist/fitter.js":
 /*!*****************************************************!*\
-  !*** ./node_modules/object-fit-math/dist/fitter.js ***!
+  !*** ./node_modules/object-fit-math/public/fitter.js ***!
   \*****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -899,7 +899,7 @@ const lengthToPixels = (length, parent, child) => length.endsWith('%') ?
 
 /***/ "./node_modules/object-fit-math/dist/index.js":
 /*!****************************************************!*\
-  !*** ./node_modules/object-fit-math/dist/index.js ***!
+  !*** ./node_modules/object-fit-math/public/index.js ***!
   \****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -921,7 +921,7 @@ exports.isFit = predicates_1.isFit;
 
 /***/ "./node_modules/object-fit-math/dist/predicates.js":
 /*!*********************************************************!*\
-  !*** ./node_modules/object-fit-math/dist/predicates.js ***!
+  !*** ./node_modules/object-fit-math/public/predicates.js ***!
   \*********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -943,7 +943,7 @@ exports.isFit = (value) => value in fitModes;
 
 /***/ "./node_modules/object-fit-math/dist/transform-fitted-point.js":
 /*!*********************************************************************!*\
-  !*** ./node_modules/object-fit-math/dist/transform-fitted-point.js ***!
+  !*** ./node_modules/object-fit-math/public/transform-fitted-point.js ***!
   \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -967,7 +967,7 @@ exports.transformFittedPoint = (fittedPoint, parent, child, fitMode = 'fill', le
 
 /***/ "./node_modules/resize-observer-polyfill/dist/ResizeObserver.es.js":
 /*!*************************************************************************!*\
-  !*** ./node_modules/resize-observer-polyfill/dist/ResizeObserver.es.js ***!
+  !*** ./node_modules/resize-observer-polyfill/public/ResizeObserver.es.js ***!
   \*************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {

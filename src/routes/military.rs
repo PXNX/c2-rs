@@ -1,16 +1,12 @@
-use crate::auth::error_handling::AppError;
-use crate::common::tools::format_date;
 use askama::Template;
-use axum::extract::Path;
-use axum::response::Redirect;
-use axum::routing::{get, put};
 use axum::{
-    extract::{Extension, State},
+    extract::Extension,
     response::IntoResponse,
 };
-use axum::{Form, Router};
-use serde::{Deserialize, Serialize};
-use sqlx::{query, Executor, PgPool};
+use axum::Router;
+use axum::routing::get;
+
+use crate::auth::error_handling::AppError;
 
 use super::{AppState, UserData};
 

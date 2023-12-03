@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT\n     newspapers.name ,\n    newspapers.id\n    \n FROM\n    journalists\n        LEFT OUTER JOIN newspapers ON (newspaper_id =newspapers.id) where user_id = $1;",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "id",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "1272f3fb4cefbf45fd9f975fd29ba351da4adcaf2cf3f42db9977775fa38ec80"
+}

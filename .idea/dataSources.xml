@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:postgresql://localhost:5432/c2rs</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="postgres@FL0" uuid="40a6d68b-9827-4d6a-b486-221c78e8acec">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://ep-delicate-night-63455145.eu-central-1.aws.neon.fl0.io:5432/c2rs</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

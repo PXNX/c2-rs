@@ -2,7 +2,6 @@ use std::collections::HashMap;
 
 use askama::Template;
 use axum::extract::Query;
-
 use axum::response::IntoResponse;
 
 use super::error_handling::AppError;

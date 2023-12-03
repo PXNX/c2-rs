@@ -4,17 +4,54 @@
     "@panzoom/panzoom": "^4.5.1",
     "@tailwindcss/typography": "^0.5.10",
     "@thesoulfresh/pan-z": "^1.2.8",
+    "ol": "^8.2.0",
     "tailwindcss": "^3.3.5",
-    "vanilla-js-wheel-zoom": "^8.1.0"
+    "ts-node": "^10.9.1",
+    "vanilla-js-wheel-zoom": "^8.1.0",
+    "vinyl-source-stream": "^2.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.23.5",
+    "@babel/register": "^7.22.15",
     "@iconify/json": "^2.2.142",
-    "@wixc3/react-board": "^2.3.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babelify": "^8.0.0",
+    "browserify": "^17.0.0",
     "daisyui": "^4.0.5",
+    "gulp": "^4.0.2",
+    "gulp-babel-minify": "^0.5.2",
+    "gulp-plumber": "^1.0.0",
+    "ol": "^8.2.0",
+    "parcel": "^2.10.3",
     "prettier": "^2.8.8",
-    "prettier-plugin-tailwindcss": "^0.3.0"
+    "prettier-plugin-tailwindcss": "^0.3.0",
+    "rollup": "^4.6.1",
+    "terser": "^5.24.0",
+    "typescript": "^5.3.2",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
   },
   "scripts": {
-    "format": "prettier --write --ignore-unknown ."
-  }
+    "clean": "tsc --build --clean",
+    "build": "npm run clean  && tsc --project tsconfig.json && npm run bundle:esm && npm run bundle:esm:min && npm run bundle:umd && npm run bundle:umd:min && npm run build:stats",
+    "build:stats": "(echo '\\033[35;3m' ; cd dist ')",
+    "bundle:esm": "rollup dist/index.js --file dist/index.mjs --format esm",
+    "bundle:esm:min": "terser --ecma 6 --compress --mangle --module -o dist/index.min.mjs -- dist/index.mjs ",
+    "bundle:umd": "rollup dist/index.js --file dist/index.umd.js --format umd --name sayHello",
+    "bundle:umd:min": "terser --ecma 6 --compress --mangle -o dist/index.umd.min.js -- dist/index.umd.js ",
+    "format": "prettier --write --ignore-unknown .",
+    "build-js": "browserify main.ts -o ./dist/bundle.js",
+    "buildw": "webpack",
+    "build-js2": "browserify main.ts -o /public/bundle.js -t [ babelify --presets [ @babel/preset-env @babel/preset-react ] --plugins [ @babel/plugin-transform-class-properties ] ]"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.min.mjs",
+  "unpkg": "dist/index.umd.min.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ]
 }

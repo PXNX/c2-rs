@@ -1,16 +1,15 @@
 use askama::Template;
-use axum::extract::Path;
-use axum::http::StatusCode;
-use axum::response::Redirect;
-use axum::routing::get;
 use axum::{
     extract::{Extension, State},
     response::IntoResponse,
 };
 use axum::{Form, Router};
-
+use axum::extract::Path;
+use axum::http::StatusCode;
+use axum::response::Redirect;
+use axum::routing::get;
 use serde::{Deserialize, Serialize};
-use sqlx::{query, PgPool};
+use sqlx::{PgPool, query};
 
 use crate::auth::error_handling::AppError;
 
@@ -34,18 +33,18 @@ async fn own_profile(
         r#"SELECT name, skill_0,skill_1,skill_2,created_at FROM users WHERE id=$1;"#,
         &user_id
     )
-    .fetch_one(&db_pool)
-    .await
-    .map_err(|e| AppError {
-        code: StatusCode::NOT_FOUND,
-        message: format!("GET Profile: No user with id {user_id} was found: {e}"),
-        user_message: format!("No user with id {user_id} was found."),
-    })?;
+        .fetch_one(&db_pool)
+        .await
+        .map_err(|e| AppError {
+            code: StatusCode::NOT_FOUND,
+            message: format!("GET Profile: No user with id {user_id} was found: {e}"),
+            user_message: format!("No user with id {user_id} was found."),
+        })?;
 
     Ok(OwnProfileTemplate {
         user_id: user_id,
-        user_name: user.name.unwrap(),
-        skill_0: user.skill_0.unwrap(),
+        user_name: user.name.unwrap_or("Empty".to_owned()),
+        skill_0: user.skill_0.unwrap_or(100.to_owned()),
     })
 }
 
@@ -71,19 +70,19 @@ async fn profile(
         r#"SELECT name, skill_0,skill_1,skill_2,created_at FROM users WHERE id=$1;"#,
         &user_id
     )
-    .fetch_one(&db_pool)
-    .await
-    .map_err(|e| AppError {
-        code: StatusCode::NOT_FOUND,
-        message: format!("GET Profile: No user with id {user_id} was found: {e}"),
-        user_message: format!("No user with id {user_id} was found."),
-    })?;
+        .fetch_one(&db_pool)
+        .await
+        .map_err(|e| AppError {
+            code: StatusCode::NOT_FOUND,
+            message: format!("GET Profile: No user with id {user_id} was found: {e}"),
+            user_message: format!("No user with id {user_id} was found."),
+        })?;
 
     Ok(OtherProfileTemplate {
         user_name: user.name.unwrap(),
         skill_0: user.skill_0.unwrap(),
     }
-    .into_response())
+        .into_response())
 }
 
 #[derive(Template)]
@@ -106,7 +105,7 @@ async fn profile_settings(
     //todo: check unwraps nd use if in template to not display if None
     Ok(ProfileSettingsTemplate {
         user_name: user.name.unwrap(),
-        user_avatar: user.avatar.unwrap(),
+        user_avatar: user.avatar.unwrap_or("".to_string()),
     })
 }
 
@@ -129,8 +128,8 @@ async fn edit_profile(
         input.user_avatar,
         &user_id
     )
-    .execute(&db_pool)
-    .await?;
+        .execute(&db_pool)
+        .await?;
 
     Ok(Redirect::to("/")) //format!("/u/{user_id}")
 }
@@ -152,8 +151,8 @@ async fn check_voucher(
         input.voucher_code,
         &user_id
     )
-    .execute(&db_pool)
-    .await?;
+        .execute(&db_pool)
+        .await?;
 
     Ok(Redirect::to("/")) //format!("/u/{user_id}")
 }

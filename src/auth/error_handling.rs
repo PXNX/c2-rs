@@ -33,27 +33,10 @@ impl AppError {
 
 impl IntoResponse for AppError {
     fn into_response(self) -> axum::response::Response {
-        println!("AppError: {}", self.message);
+        println!("AppError: {}", self.message); //todo: nicer error page
         (
             self.code,
-            Html(format!(
-                r#"
-                <!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <meta charset="utf-8">
-                    <title>Oops!</title>
-                </head>
-                <body>
-                    <h1>Oops!</h1>
-                    <p>Sorry, but something went wrong.</p>
-                    <p>{}</p>
-                     <h2>If the issue persists, please let us know:</h1> https://t.me/+TEHh5GvOX6iYehnh
-                </body>
-                </html>
-                "#,
-                self.user_message
-            )),
+            Html(format!(include_str!("../../templates/error/500.html"), self.user_message)),
         )
             .into_response()
     }

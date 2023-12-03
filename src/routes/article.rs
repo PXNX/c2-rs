@@ -1,18 +1,27 @@
-use crate::auth::error_handling::AppError;
-use crate::common::tools::format_date;
 use askama::Template;
-use axum::extract::Path;
-use axum::response::Redirect;
-use axum::routing::{get, put};
 use axum::{
     extract::{Extension, State},
     response::IntoResponse,
 };
 use axum::{Form, Router};
+use axum::extract::Path;
+use axum::handler::HandlerWithoutStateExt;
+use axum::response::Redirect;
+use axum::routing::{get, put};
+use axum_htmx::{headers, HX_REDIRECT, HxRedirect};
+use oauth2::http::HeaderValue;
+use pulldown_cmark::{Options, Parser};
 use serde::{Deserialize, Serialize};
-use sqlx::{query, PgPool};
+use sqlx::{PgPool, query};
+
+use crate::auth::error_handling::AppError;
+use crate::common::tools::{clean_html, format_date};
 
 use super::{AppState, UserData};
+
+use ammonia::clean;
+use pulldown_cmark::{html::push_html};
+
 
 #[derive(Debug, Clone, Serialize)]
 struct ArticlePreview {
@@ -54,22 +63,22 @@ async fn articles(
  ORDER BY articles.created_at DESC
  LIMIT 30;"#,
     )
-    .fetch_all(&db_pool)
-    .await?
-    .iter()
-    .map(|a| {
-        ArticlePreview {
-            id: a.id,
-            title: a.title.clone(),
+        .fetch_all(&db_pool)
+        .await?
+        .iter()
+        .map(|a| {
+            ArticlePreview {
+                id: a.id,
+                title: a.title.clone(),
 
-            publish_date: format_date(a.created_at),
-            upvote_count: a.upvote_count.unwrap(),
-            author_avatar: a.author_avatar.clone().unwrap_or("".to_owned()),
-            author_name: a.author_name.clone().unwrap(),
-            //TODO: unwrap is not necessary, after making title not null in sql
-        }
-    })
-    .collect();
+                publish_date: format_date(a.created_at),
+                upvote_count: a.upvote_count.unwrap(),
+                author_avatar: a.author_avatar.clone().unwrap_or("".to_owned()),
+                author_name: a.author_name.clone().unwrap(),
+                //TODO: unwrap is not necessary, after making title not null in sql
+            }
+        })
+        .collect();
 
     Ok(ArticlesTemplate {
         user_id: user_data.unwrap().id,
@@ -91,17 +100,19 @@ async fn publish_article(
 ) -> Result<impl IntoResponse, AppError> {
     let user_id = user_data.unwrap().id;
 
+
     let query = query!(
         r#"INSERT INTO articles (author_id,title,content,newspaper_id)
     VALUES ($1,$2,$3, $4) returning id;"#,
         user_id,
         input.article_title,
-        input.article_content,
+           clean_html( input.article_content.as_str()),
         input.publisher
     )
-    .fetch_one(&db_pool)
-    .await?;
+        .fetch_one(&db_pool)
+        .await?;
 
+//TODO: redirect properly, don't swap
     Ok(Redirect::to(format!("/a/{}", query.id).as_str()))
 }
 
@@ -133,14 +144,14 @@ async fn create_article(
         LEFT OUTER JOIN newspapers ON (newspaper_id =newspapers.id) where user_id = $1;"#,
         &user_id
     )
-    .fetch_all(&db_pool)
-    .await?
-    .iter()
-    .map(|n| Newspaper {
-        newspaper_name: n.name.to_owned(),
-        newspaper_id: n.id,
-    })
-    .collect();
+        .fetch_all(&db_pool)
+        .await?
+        .iter()
+        .map(|n| Newspaper {
+            newspaper_name: n.name.to_owned(),
+            newspaper_id: n.id,
+        })
+        .collect();
 
     Ok(CreateArticleTemplate {
         newspapers: newspapers,
@@ -169,8 +180,8 @@ async fn edit_article(
     articles where id = $1;"#,
         &article_id
     )
-    .fetch_one(&db_pool)
-    .await?;
+        .fetch_one(&db_pool)
+        .await?;
 
     Ok(EditArticleTemplate {
         user_id: user_id,
@@ -199,8 +210,8 @@ async fn save_article(
         input.article_content,
         &article_id
     )
-    .execute(&db_pool)
-    .await?;
+        .execute(&db_pool)
+        .await?;
 
     Ok(Redirect::to(format!("/a/{}", article_id).as_str()))
 }
@@ -281,8 +292,8 @@ async fn upvote_article(
         user_data.unwrap().id,
         article_id,
     )
-    .execute(&db_pool)
-    .await?;
+        .execute(&db_pool)
+        .await?;
 
     Ok(UpvoteArticleTemplate {
         article_id: article_id,
@@ -306,8 +317,8 @@ where user_id = $1 and article_id = $2;"#,
         user_data.unwrap().id,
         article_id,
     )
-    .execute(&db_pool)
-    .await?;
+        .execute(&db_pool)
+        .await?;
 
     Ok(RemoveUpvoteTemplate {
         article_id: article_id,

@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO journalists (newspaper_id,user_id,rank)\n    VALUES ($1,$2,'owner');\n",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "ea4fb38d444668409bbd9c4bb628135432e572ee86512697428343f0aec69fc6"
+}

@@ -1,17 +1,18 @@
-use axum::response::Redirect;
-use axum::routing::get;
+use askama::Template;
 use axum::{
     extract::{Extension, State},
     http::Request,
     response::IntoResponse,
 };
 use axum::{Form, Router};
+use axum::response::Redirect;
+use axum::routing::get;
 use serde::{Deserialize, Serialize};
-use sqlx::{query, PgPool};
+use sqlx::{PgPool, query};
+
+use crate::auth::error_handling::AppError;
 
 use super::{AppState, UserData};
-use crate::auth::error_handling::AppError;
-use askama::Template;
 
 #[derive(Template)]
 #[template(path = "welcome/index.html")]
@@ -60,8 +61,8 @@ async fn create_profile(
         input.user_name,
         user_data.id
     )
-    .execute(&db_pool)
-    .await?;
+        .execute(&db_pool)
+        .await?;
 
     Ok(Redirect::to("/"))
 }

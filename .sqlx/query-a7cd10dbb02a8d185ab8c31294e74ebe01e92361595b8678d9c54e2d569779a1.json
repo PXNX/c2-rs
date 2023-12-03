@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "delete from upvotes\nwhere user_id = $1 and article_id = $2;",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "a7cd10dbb02a8d185ab8c31294e74ebe01e92361595b8678d9c54e2d569779a1"
+}
