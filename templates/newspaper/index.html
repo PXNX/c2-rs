@@ -32,15 +32,14 @@
 
 <!-- if no avatar, then initials and rounded-lg -->
 
-<a class="p-2 flex flinch  w-full no-underline text-current gap-2 label-text" href="/n/{{newspaper.newspaper_id }}"
+<a class="p-2 flex flinch  w-full no-underline text-current gap-2 label-text" href="/n/{{newspaper.id }}"
     oncontextmenu="return false">
-    <img alt="Newspaper Image" class="rounded-lg" height="56" loading="lazy" src="{{newspaper.newspaper_avatar }}"
-        width="56" />
+    <img alt="Newspaper Image" class="rounded-lg" height="56" loading="lazy" src="{{newspaper.avatar }}" width="56" />
     <!-- style="aspect-ratio: 100 / 100; object-fit: cover;" -->
     <div>
         <b class="text-lg block transition-all duration-3000 font-bold tracking-tight"
-            id="newspaper_title">{{newspaper.newspaper_name }}</b>
-        <span class="text-primary block transition-all">created at</span>
+            id="title">{{newspaper.name }}</b>
+        <span class="text-primary block transition-all">{{newspaper.rank }}</span> {{newspaper.created_at }}
 
     </div>
 </a>

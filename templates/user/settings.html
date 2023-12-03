@@ -7,7 +7,7 @@
         <h2 class="text-2xl font-bold mx-2">Appearance</h2>
 
 
-        <select class="select select-bordered w-full max-w-sm" data-choose-theme>
+        <select class="select select-bordered w-full" data-choose-theme>
             <option value="dark">Default</option>
             <option value="light">Light</option>
             <option value="cupcake">Pink</option>
@@ -46,29 +46,43 @@
         <div class="form-control w-full">
             <label class="label cursor-pointer">
                 <span class="label-text">Load images</span>
-                <input checked="checked" class="checkbox checkbox-primary" data-toggle-theme type="checkbox"/>
+                <input checked="checked" class="checkbox checkbox-primary" data-toggle-theme type="checkbox" />
             </label>
         </div>
 
 
-        <input class="input input-bordered w-full max-w-sm" name="user_name" placeholder="Username" required
-               type="text" value="{{user_name}}"/>
+        <input class="input input-bordered w-full" name="user_name" placeholder="Username" required type="text"
+            value="{{user_name}}" />
 
-        <input class="input input-bordered w-full max-w-sm" name="user_avatar" placeholder="Avatar Url" type="text"
-               value="{{user_avatar}}"/>
+        <input class="input input-bordered w-full" name="user_avatar" placeholder="Avatar Url" type="text"
+            value="{{user_avatar}}" />
 
         <a class="btn btn-primary w-full" hx-put="/u/settings" role="button">Edit profile</a>
     </section>
 
-    <section class="mt-20 space-y-2  w-full">
-        <h2 class="text-2xl font-bold mx-2">Account</h2>
+    <section class="mt-20 space-y-2 mx-2  w-full">
+        <h2 class="text-2xl font-bold">Account</h2>
 
-        <input class="input input-bordered w-full max-w-sm" placeholder="Enter voucher code..." type="text"/>
+        <input class="input input-bordered w-full" placeholder="Enter voucher code..." type="text" />
 
-        <a class="btn btn-primary w-full" href="/" role="button">Redeem code</a>
+
+
+        <a class="btn btn-secondary w-full" href="/" role="button">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <polyline points="20 12 20 22 4 22 4 12"></polyline>
+                <rect width="20" height="5" x="2" y="7"></rect>
+                <line x1="12" x2="12" y1="22" y2="7"></line>
+                <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+                <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+            </svg>
+            Redeem code
+        </a>
 
         <a class="btn w-full" href="/auth/logout" role="button">Logout</a>
     </section>
+
+    <a class="btn btn-primary w-full" href="/about" role="button">About</a>
 
 
 </div>

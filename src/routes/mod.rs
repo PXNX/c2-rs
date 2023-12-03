@@ -1,19 +1,28 @@
-use axum::{Extension,
-           extract::FromRef,
-           handler::HandlerWithoutStateExt, http::{header, StatusCode, Uri}, middleware, response::{Html, IntoResponse, Response}, Router, routing::get};
 use axum::routing::delete;
+use axum::{
+    extract::FromRef,
+    handler::HandlerWithoutStateExt,
+    http::{header, StatusCode, Uri},
+    middleware,
+    response::{Html, IntoResponse, Response},
+    routing::get,
+    Extension, Router,
+};
 use http::HeaderName;
 use rust_embed::RustEmbed;
 use serde::{de::DeserializeOwned, Deserialize};
 use sqlx::PgPool;
 use tokio::sync::broadcast::channel;
+use tower_http::trace::{
+    DefaultMakeSpan, DefaultOnFailure, DefaultOnRequest, DefaultOnResponse, TraceLayer,
+};
 use tower_http::LatencyUnit;
-use tower_http::trace::{DefaultMakeSpan, DefaultOnFailure, DefaultOnRequest, DefaultOnResponse, TraceLayer};
 use tracing::Level;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-use pages::{about, index};
+use pages::index;
 
+use crate::routes::meta::meta_router;
 use crate::{
     auth::{
         login::login,
@@ -21,21 +30,22 @@ use crate::{
         oauth::auth_router,
     },
     routes::{
-        article::article_router, chat::chat_router, map::map_router,
-        military::military_router, newspaper::newspaper_router, profile::profile_router, welcome::welcome_router,
+        article::article_router, chat::chat_router, map::map_router, military::military_router,
+        newspaper::newspaper_router, profile::profile_router, welcome::welcome_router,
     },
 };
 //use crate::ws::{handle_stream, TodoUpdate};
 
 mod article;
 //mod chat;
+mod chat;
 mod map;
+mod meta;
 mod military;
 mod newspaper;
 mod pages;
 mod profile;
 mod welcome;
-mod chat;
 
 #[derive(Clone, FromRef)]
 pub struct AppState {
@@ -47,7 +57,6 @@ pub struct UserData {
     pub id: i64,
 }
 
-
 pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error::Error>> {
     let app_state = AppState { db_pool };
 
@@ -55,15 +64,17 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
 
     async fn handle_404() -> impl IntoResponse {
         //TODO: utilize StaticAssets for that
-        (StatusCode::NOT_FOUND, Html(include_str!("../../templates/error/404.html").to_string())).into_response()
+        (
+            StatusCode::NOT_FOUND,
+            Html(include_str!("../../templates/error/404.html").to_string()),
+        )
+            .into_response()
     }
 
     //  let (tx, _rx) = channel::<TodoUpdate>(10);
 
     Ok(Router::new()
-
         .route("/", get(index))
-        .route("/about", get(about))
         .nest("/u", profile_router())
         .nest("/m", military_router())
         .nest("/map", map_router())
@@ -82,20 +93,14 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
             inject_user_data,
         ))
         .route("/login", get(login))
-
         /*  .route("/stream", get(crate::ws::stream))
-
-          .route("/todos", get(crate::ws::fetch_todos).post(crate::ws::create_todo))
-          .route("/todos/:id", delete(crate::ws::delete_todo))
-          .route("/todos/stream", get(handle_stream)) */
-
-
+        .route("/todos", get(crate::ws::fetch_todos).post(crate::ws::create_todo))
+        .route("/todos/:id", delete(crate::ws::delete_todo))
+        .route("/todos/stream", get(handle_stream)) */
         .with_state(app_state)
         .layer(Extension(user_data))
-
+        .nest("/", meta_router())
         //   .layer(Extension(tx))
-
-
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(DefaultMakeSpan::new().include_headers(true))
@@ -111,7 +116,6 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         .fallback_service(handle_404.into_service()))
 }
 
-
 async fn static_handler(uri: Uri) -> impl IntoResponse {
     let mut path = uri.path().trim_start_matches('/').to_string();
 
@@ -122,7 +126,6 @@ async fn static_handler(uri: Uri) -> impl IntoResponse {
     StaticFile(path)
 }
 
-
 #[derive(RustEmbed)]
 #[folder = "public/"]
 struct Asset;
@@ -130,8 +133,8 @@ struct Asset;
 pub struct StaticFile<T>(pub T);
 
 impl<T> IntoResponse for StaticFile<T>
-    where
-        T: Into<String>,
+where
+    T: Into<String>,
 {
     fn into_response(self) -> Response {
         let path = self.0.into();
@@ -140,14 +143,20 @@ impl<T> IntoResponse for StaticFile<T>
             Some(content) => {
                 let mime = mime_guess::from_path(path).first_or_octet_stream();
 
-
-                let encoding = if mime.to_string().contains("css") {
+                let encoding = if mime.to_string().contains(".min") {
                     "br"
                 } else {
-                    "utf-8"
+                    "utf-8" //TODO: just don't have any ncoding here?
                 };
 
-                ([(header::CONTENT_TYPE, mime.as_ref()), (header::CONTENT_ENCODING, encoding)], content.data).into_response()
+                (
+                    [
+                        (header::CONTENT_TYPE, mime.as_ref()),
+                        (header::CONTENT_ENCODING, encoding),
+                    ],
+                    content.data,
+                )
+                    .into_response()
             }
             None => (StatusCode::NOT_FOUND, "404 Not Found").into_response(),
         }
