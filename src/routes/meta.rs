@@ -1,11 +1,9 @@
 use askama::Template;
-use axum::routing::get;
+use axum::response::IntoResponse;
 use axum::Router;
-use axum::{extract::Extension, response::IntoResponse};
+use axum::routing::get;
 
 use crate::auth::error_handling::AppError;
-
-use super::{AppState, UserData};
 
 #[derive(Template)]
 #[template(path = "meta/cookies.html")]

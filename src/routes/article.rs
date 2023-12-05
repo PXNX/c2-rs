@@ -5,12 +5,8 @@ use axum::{
 };
 use axum::{Form, Router};
 use axum::extract::Path;
-use axum::handler::HandlerWithoutStateExt;
 use axum::response::Redirect;
 use axum::routing::{get, put};
-use axum_htmx::{headers, HX_REDIRECT, HxRedirect};
-use oauth2::http::HeaderValue;
-use pulldown_cmark::{Options, Parser};
 use serde::{Deserialize, Serialize};
 use sqlx::{PgPool, query};
 
@@ -18,10 +14,6 @@ use crate::auth::error_handling::AppError;
 use crate::common::tools::{clean_html, format_date};
 
 use super::{AppState, UserData};
-
-use ammonia::clean;
-use pulldown_cmark::{html::push_html};
-
 
 #[derive(Debug, Clone, Serialize)]
 struct ArticlePreview {

@@ -1,66 +1,67 @@
 <!doctype html>
 <html data-theme="dark" lang="en">
 
-    <head>
-        <meta charset="UTF-8" />
-        <meta content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
-            name="viewport">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+          name="viewport">
 
-        <meta content="#317EFB" name="theme-color" />
-        <link href="/dist/manifest.webmanifest" rel="manifest">
-        <link rel="icon" type="image/x-icon" href="/dist/favicon.ico" />
+    <meta content="#317EFB" name="theme-color"/>
+    <link href="/dist/styles.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
 
-        <!--   <script type="module" src="/dist/app.js"></script>
-       <script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
-       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.2.0/ol.css">
-   -->
-        <!--<script type="module" src="/dist/topojson.js"></script>
-  <script type="module" src="/dist/d3.v7.min.js"></script>
- -->
+    <link href="/dist/manifest.webmanifest" rel="manifest">
+    <link rel="icon" type="image/x-icon" href="/dist/favicon.ico"/>
 
-        <!-- <link href="https://rsms.me/inter/inter.css" rel="stylesheet"/> -->
-        <!-- <link href="/dist/styles2.min.css" rel="stylesheet" type="text/css">-->
+    <!--   <script type="module" src="/dist/app.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.2.0/ol.css">
+-->
+    <!--<script type="module" src="/dist/topojson.js"></script>
+<script type="module" src="/dist/d3.v7.min.js"></script>
+-->
 
-        <link href="/dist/styles.css" rel="stylesheet" type="text/css">
+    <!-- <link href="https://rsms.me/inter/inter.css" rel="stylesheet"/> -->
+    <!-- <link href="/dist/styles2.min.css" rel="stylesheet" type="text/css">-->
 
-        <script crossorigin="anonymous"
+
+    <script crossorigin="anonymous"
             integrity="sha384-rgjA7mptc2ETQqXoYC3/zJvkU7K/aP44Y+z7xQuJiVnB/422P/Ak+F/AqFR7E4Wr"
             src="https://unpkg.com/htmx.org@1.9.8"></script>
-        <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
 
-        <!--    <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/iconify-icon.min.js"></script>
+    <!--    <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/iconify-icon.min.js"></script>
 
 
 
 <script>document.addEventListener('contextmenu', event => event.preventDefault());</script> -->
 
 
-        <!--   <script src="/dist/hammer.js"></script>
-      <script src="/dist/svg-pan-zoom.min.js"></script> -->
+    <!--   <script src="/dist/hammer.js"></script>
+  <script src="/dist/svg-pan-zoom.min.js"></script> -->
 
 
-        <!-- <script >
+    <!-- <script >
 if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./sw.js");
+navigator.serviceWorker.register("./sw.js");
 }
 
 
 </script> -->
 
 
-        <title>{% block title %}{% endblock %} | PsyOps: Command & Control</title>
-    </head>
+    <title>{% block title %}{% endblock %} | PsyOps: Command & Control</title>
+</head>
 
-    {% block page %}{% endblock %}
-
-
-    <!--  <script src="https://unpkg.com/htmx.org/ext/debug.js"></script> -->
+{% block page %}{% endblock %}
 
 
-    <!-- TODO; replace with ammonium or so -->
-    <!--<script src="/dist/purify.min.js" type="text/javascript"></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
+<!--  <script src="https://unpkg.com/htmx.org/ext/debug.js"></script> -->
 
-    <!--<script type="module" src="/dist/app.js"></script>-->
+
+<!-- TODO; replace with ammonium or so -->
+<!--<script src="/dist/purify.min.js" type="text/javascript"></script> -->
+
+<!--<script type="module" src="/dist/app.js"></script>-->
 
 </html>

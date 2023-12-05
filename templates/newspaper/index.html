@@ -7,13 +7,13 @@
 
 
     <div class="flex space-x-2  p-2">
-        <input class="input w-full max-w-xs" placeholder="Search Newspapers..." type="text" />
+        <input class="input w-full max-w-xs" placeholder="Search Newspapers..." type="text"/>
 
 
-        <a class="btn btn-square " href="/n/create" role="button">
+        <a class="btn btn-square " href="/newspaper/create" role="button">
             <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path
-                    d="M4 7V19H19V21H4C2 21 2 19 2 19V7H4M21.3 3H7.7C6.76 3 6 3.7 6 4.55V15.45C6 16.31 6.76 17 7.7 17H21.3C22.24 17 23 16.31 23 15.45V4.55C23 3.7 22.24 3 21.3 3M8 5H13V11H8V5M21 15H8V13H21V15M21 11H15V9H21V11M21 7H15V5H21V7Z" />
+                        d="M4 7V19H19V21H4C2 21 2 19 2 19V7H4M21.3 3H7.7C6.76 3 6 3.7 6 4.55V15.45C6 16.31 6.76 17 7.7 17H21.3C22.24 17 23 16.31 23 15.45V4.55C23 3.7 22.24 3 21.3 3M8 5H13V11H8V5M21 15H8V13H21V15M21 11H15V9H21V11M21 7H15V5H21V7Z"/>
             </svg>
         </a>
     </div>
@@ -26,19 +26,18 @@
 {% block main %}
 
 
-
 {% for newspaper in newspapers %}
 
 
 <!-- if no avatar, then initials and rounded-lg -->
 
 <a class="p-2 flex flinch  w-full no-underline text-current gap-2 label-text" href="/n/{{newspaper.id }}"
-    oncontextmenu="return false">
-    <img alt="Newspaper Image" class="rounded-lg" height="56" loading="lazy" src="{{newspaper.avatar }}" width="56" />
+   oncontextmenu="return false">
+    <img alt="Newspaper Image" class="rounded-lg" height="56" loading="lazy" src="{{newspaper.avatar }}" width="56"/>
     <!-- style="aspect-ratio: 100 / 100; object-fit: cover;" -->
     <div>
         <b class="text-lg block transition-all duration-3000 font-bold tracking-tight"
-            id="title">{{newspaper.name }}</b>
+           id="title">{{newspaper.name }}</b>
         <span class="text-primary block transition-all">{{newspaper.rank }}</span> {{newspaper.created_at }}
 
     </div>

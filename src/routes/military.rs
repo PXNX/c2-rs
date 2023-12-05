@@ -11,7 +11,7 @@ use crate::auth::error_handling::AppError;
 use super::{AppState, UserData};
 
 #[derive(Template)]
-#[template(path = "military/index.html")]
+#[template(path = "training/index.html")]
 struct MilitaryTemplate {}
 
 pub async fn military(

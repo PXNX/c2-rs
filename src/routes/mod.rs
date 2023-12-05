@@ -1,22 +1,19 @@
-use axum::routing::delete;
 use axum::{
+    Extension,
     extract::FromRef,
     handler::HandlerWithoutStateExt,
     http::{header, StatusCode, Uri},
     middleware,
     response::{Html, IntoResponse, Response},
-    routing::get,
-    Extension, Router,
+    Router, routing::get,
 };
-use http::HeaderName;
 use rust_embed::RustEmbed;
 use serde::{de::DeserializeOwned, Deserialize};
 use sqlx::PgPool;
-use tokio::sync::broadcast::channel;
+use tower_http::LatencyUnit;
 use tower_http::trace::{
     DefaultMakeSpan, DefaultOnFailure, DefaultOnRequest, DefaultOnResponse, TraceLayer,
 };
-use tower_http::LatencyUnit;
 use tracing::Level;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
@@ -50,6 +47,7 @@ mod profile;
 mod region;
 mod welcome;
 mod country;
+mod team;
 
 #[derive(Clone, FromRef)]
 pub struct AppState {
@@ -79,13 +77,13 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
 
     Ok(Router::new()
         .route("/", get(index))
-        .nest("/u", profile_router())
+        .nest("/user", profile_router())
         .nest("/region", region_router())
-        .nest("/country",country_router())
-        .nest("/m", military_router())
+        .nest("/country", country_router())
+        .nest("/training", military_router())
         .nest("/map", map_router())
-        .nest("/n", newspaper_router())
-        .nest("/a", article_router())
+        .nest("/newspaper", newspaper_router())
+        .nest("/article", article_router())
         .nest("/chat", chat_router())
         //  .route("/stream", get(crate::ws::handle_stream))
         .route_layer(middleware::from_fn_with_state(
@@ -139,8 +137,8 @@ struct Asset;
 pub struct StaticFile<T>(pub T);
 
 impl<T> IntoResponse for StaticFile<T>
-where
-    T: Into<String>,
+    where
+        T: Into<String>,
 {
     fn into_response(self) -> Response {
         let path = self.0.into();
@@ -152,13 +150,14 @@ where
                 let encoding = if mime.to_string().contains(".min") {
                     "br"
                 } else {
-                    "utf-8" //TODO: just don't have any ncoding here?
+                    "utf-8" //TODO: just don't have any encoding here?
                 };
 
                 (
                     [
                         (header::CONTENT_TYPE, mime.as_ref()),
                         (header::CONTENT_ENCODING, encoding),
+                        (header::CACHE_CONTROL, "36000")
                     ],
                     content.data,
                 )

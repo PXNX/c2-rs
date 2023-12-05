@@ -1,18 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Error 404 - Ressource not found</title>
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
-          name="viewport">
-    <link href="/styles.css" rel="stylesheet" type="text/css">
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}404 - Resource not found{% endblock %}
+{% block page %}
+
 <h1>Oops!</h1>
 <p>The Url you entered could not be resolved. Make sure it was correct..</p>
 <h2>If the issue persists, please let us know!</h2>
 <a class="btn  btn-primary" href="https://t.me/+TEHh5GvOX6iYehnh" role="button">Contact us!</a>
-<input action="action" type="button" class="btn  btn-secondary" value="Back" onclick="window.history.go(-1); return false;" />
+<input action="action" type="button" class="btn  btn-secondary" value="Back"
+       onclick="window.history.go(-1); return false;"/>
 
-</body>
-</html>
+{% endblock %}

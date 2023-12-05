@@ -1,3 +1,4 @@
+use askama::Template;
 use axum::{
     http::StatusCode,
     response::{Html, IntoResponse},
@@ -31,12 +32,18 @@ impl AppError {
     // }
 }
 
+#[derive(Template)]
+#[template(path = "error/500.html")]
+struct InternalErrorTemplate {
+    error_message: String,
+}
+
 impl IntoResponse for AppError {
     fn into_response(self) -> axum::response::Response {
         println!("AppError: {}", self.message); //todo: nicer error page
-        (
-            self.code,
-            Html(format!(include_str!("../../templates/error/500.html"), self.user_message)),
+        ( //include_str!("../../templates/error/500.html")
+          self.code,
+          Html(format!("{}", self.user_message)),
         )
             .into_response()
     }

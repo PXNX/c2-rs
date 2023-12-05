@@ -1,18 +1,30 @@
+use std::{collections::HashMap, sync::Arc};
+
 use askama::Template;
-use axum::extract::Path;
-use axum::response::Redirect;
-use axum::routing::{get, put};
 use axum::{
     extract::{Extension, State},
-    response::{Html, IntoResponse},
+    response::IntoResponse,
 };
-use axum::{Form, Router};
-use mime_guess::mime::Params;
+use axum::Router;
+// dependencies
+use axum::{
+    extract::{
+        WebSocketUpgrade,
+        ws::{Message, WebSocket},
+    },
+    http::StatusCode,
+};
+use axum::extract::Path;
+use axum::routing::get;
+use futures::{SinkExt, StreamExt};
 use serde::{Deserialize, Serialize};
-use sqlx::{query, Executor, PgPool};
+use sqlx::PgPool;
+use tokio::sync::{
+    mpsc::{self, UnboundedReceiver, UnboundedSender},
+    RwLock,
+};
 
 use crate::auth::error_handling::AppError;
-use crate::common::tools::format_date;
 
 use super::{AppState, UserData};
 
@@ -428,25 +440,6 @@ async fn remove_upvote(
     Ok(Html(content))
 }
 */
-
-
-// dependencies
-use axum::{
-    extract::{
-        ws::{Message, WebSocket},
-        WebSocketUpgrade,
-    },
-    http::StatusCode,
-};
-use std::{collections::HashMap, path::PathBuf, sync::Arc};
-
-use futures::{SinkExt, StreamExt};
-
-
-use tokio::sync::{
-    mpsc::{self, UnboundedReceiver, UnboundedSender},
-    RwLock,
-};
 
 
 // The list of users needs to be a hashmap that can be shared safely across threads, hence an Arc with RwLock
