@@ -5,10 +5,10 @@
 {% block page %}
 
 
-<header class="sticky bg-base-100 top-0 ">
+<header class="sticky top-0 bg-base-100">
 
 
-    <div class="flex space-x-2  p-2">
+    <div class="flex space-x-2 p-2">
         <button class="btn" onclick="my_modal_2.showModal()">
             <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -21,52 +21,52 @@
 
 </header>
 
-<body >
+<body>
 
-<main class="m-2">
+    <main class="m-2">
 
-    <input class="input input-bordered w-full max-w-sm" form="publish_article" name="article_content"
-        placeholder="Write article" type="text" />
-
-
-<dialog class="modal" id="my_modal_2">
-    <div class="modal-box">
-        <h3 class="font-bold text-lg">Publish article?</h3>
-
-        <form class="form-control w-full max-w-sm space-y-4" hx-ext="debug" hx-post="/a/create"
-              id="publish_article">
+        <input class="input input-bordered w-full max-w-sm" form="publish_article" name="article_content"
+            placeholder="Write article" type="text" />
 
 
-            <div>
+        <dialog class="modal" id="my_modal_2">
+            <div class="modal-box">
+                <h3 class="text-lg font-bold">Publish article?</h3>
 
-                <label >
-                    Article Title
-                    <input class="input input-bordered w-full max-w-sm" name="article_title"
-                           placeholder="Enter the title..." required type="text" />
-                </label>
+                <form class="form-control w-full max-w-sm space-y-4" hx-ext="debug" hx-post="/a/create"
+                    id="publish_article">
+
+
+                    <div>
+
+                        <label>
+                            Article Title
+                            <input class="input input-bordered w-full max-w-sm" name="article_title"
+                                placeholder="Enter the title..." required type="text" />
+                        </label>
+                    </div>
+
+
+                    {% if newspapers.len() != 0 %}
+                    <select class="select select-bordered w-full max-w-sm" name="publisher">
+                        <option value="None">Yourself</option>
+                        {% for newspaper in newspapers %}
+                        <option value="{{newspaper.newspaper_id}}">{{newspaper.newspaper_name}}</option>
+
+                        {% endfor %}
+                    </select>
+                    {% endif %}
+
+
+                    <button class="btn btn-primary" hx-ext="debug">Publish article</button>
+                </form>
             </div>
 
 
-            {% if newspapers.len() != 0 %}
-            <select class="select select-bordered w-full max-w-sm" name="publisher">
-                <option value="None">Yourself</option>
-                {% for newspaper in newspapers %}
-                <option value="{{newspaper.newspaper_id}}">{{newspaper.newspaper_name}}</option>
-
-                {% endfor %}
-            </select>
-            {% endif %}
-
-
-            <button class="btn btn-primary" hx-ext="debug">Publish article</button>
-        </form>
-    </div>
-
-
-    <form class="modal-backdrop" method="dialog">
-        <button>close</button>
-    </form>
-</dialog>
-</main>
+            <form class="modal-backdrop" method="dialog">
+                <button>close</button>
+            </form>
+        </dialog>
+    </main>
 </body>
 {% endblock %}

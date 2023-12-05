@@ -3,10 +3,10 @@
 {% block header %}
 
 <!-- bg-secondary -->
-<header class="sticky bg-base-100 top-0 ">
+<header class="sticky top-0 bg-base-100">
 
 
-    <div class="flex space-x-2  p-2">
+    <div class="flex space-x-2 p-2">
         <a class="btn btn-square btn-primary" href="/a/create" role="button">
             <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -16,7 +16,7 @@
         <input class="input w-full max-w-xs" placeholder="Search Posts..." type="text" />
 
 
-        <a class="btn btn-square " href="/n" role="button">
+        <a class="btn btn-square" href="/n" role="button">
             <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path
                     d="M4 7V19H19V21H4C2 21 2 19 2 19V7H4M21.3 3H7.7C6.76 3 6 3.7 6 4.55V15.45C6 16.31 6.76 17 7.7 17H21.3C22.24 17 23 16.31 23 15.45V4.55C23 3.7 22.24 3 21.3 3M8 5H13V11H8V5M21 15H8V13H21V15M21 11H15V9H21V11M21 7H15V5H21V7Z" />
@@ -33,9 +33,9 @@
 
 <!--
 
-<a class="p-2 m-2 flex flex-col space-y-2 flinch  rounded-lg border select-bordered bg-primary text-primary-content" href="/a/1">
+<a class="flinch select-bordered m-2 flex flex-col space-y-2 rounded-lg border bg-primary p-2 text-primary-content" href="/a/1">
     <div class="badge badge-neutral">New Update 🎉</div>
-    <h3 class="font-bold text-lg">MVP Release, 0.0.1 28.11.2023</h3>
+    <h3 class="text-lg font-bold">MVP Release, 0.0.1 28.11.2023</h3>
     <p class="py-4">Click to see more details</p>
 </a>
 -->
@@ -45,13 +45,13 @@
 
 <!-- todo: if no avatar, then initials and rounded-lg. also: what about doing it like so? https://news.google.com/topstories?hl=de&gl=DE&ceid=DE:de -->
 
-<a class="p-2 flex flinch w-full no-underline text-current gap-2 label-text" href="/a/{{article.id }}"
+<a class="flinch label-text flex w-full gap-2 p-2 text-current no-underline" href="/a/{{article.id }}"
     oncontextmenu="return false">
     <img alt="Article Image" class="rounded-lg" height="56" loading="lazy" src="{{article.author_avatar}}" width="56" />
     <!-- style="aspect-ratio: 100 / 100; object-fit: cover;" -->
     <div>
-        <h3 class="font-bold text-lg block transition-all duration-800" id="article_title">{{article.title }}</h3>
-        <span class="text-primary block transition-all" id="author_name">{{article.author_name }}</span>
+        <h3 class="duration-800 block text-lg font-bold transition-all" id="article_title">{{article.title }}</h3>
+        <span class="block text-primary transition-all" id="author_name">{{article.author_name }}</span>
         {{article. publish_date}} | {{article.upvote_count }} Likes
     </div>
 </a>
@@ -65,15 +65,15 @@
 
 <!-- if no avatar, then initials and rounded-lg -->
 
-<a class="p-2 flex flinch  w-full no-underline text-current gap-2 label-text" href="/a/{{article.id }}"
+<a class="flinch label-text flex w-full gap-2 p-2 text-current no-underline" href="/a/{{article.id }}"
     oncontextmenu="return false">
     <img alt="Article Image" onError="replaceImg(this);" class="rounded-lg" height="56" loading="lazy"
         src="{{article.author_avatar }}" width="56" />
     <!-- style="aspect-ratio: 100 / 100; object-fit: cover;" -->
     <div>
-        <b class="text-lg block transition-all duration-3000 font-bold tracking-tight"
+        <b class="duration-3000 block text-lg font-bold tracking-tight transition-all"
             id="article_title">{{article.title }}</b>
-        <span class="text-primary block transition-all" id="author_name">{{article.author_name }}</span>
+        <span class="block text-primary transition-all" id="author_name">{{article.author_name }}</span>
         {{article. publish_date}} | {{article.upvote_count }} Likes
     </div>
 </a>
@@ -87,15 +87,15 @@
 
 <!-- if no avatar, then initials and rounded-lg -->
 
-<a class="p-2 flex flinch  w-full no-underline text-current gap-2 label-text" href="/a/{{article.id }}"
+<a class="flinch label-text flex w-full gap-2 p-2 text-current no-underline" href="/a/{{article.id }}"
     oncontextmenu="return false">
     <img alt="Article Image" class="rounded-lg" height="56" loading="lazy" src="{{article.author_avatar }}"
         width="56" />
     <!-- style="aspect-ratio: 100 / 100; object-fit: cover;" -->
     <div>
-        <b class="text-lg block transition-all duration-3000 font-bold tracking-tight"
+        <b class="duration-3000 block text-lg font-bold tracking-tight transition-all"
             id="article_title">{{article.title }}</b>
-        <span class="text-primary block transition-all" id="author_name">{{article.author_name }}</span>
+        <span class="block text-primary transition-all" id="author_name">{{article.author_name }}</span>
         {{article. publish_date}} | {{article.upvote_count }} Likes
     </div>
 </a>
@@ -109,15 +109,15 @@
 
 <!-- if no avatar, then initials and rounded-lg -->
 
-<a class="p-2 flex flinch  w-full no-underline text-current gap-2 label-text" href="/a/{{article.id }}"
+<a class="flinch label-text flex w-full gap-2 p-2 text-current no-underline" href="/a/{{article.id }}"
     oncontextmenu="return false">
     <img alt="Article Image" class="rounded-lg" height="56" loading="lazy" src="{{article.author_avatar }}"
         width="56" />
     <!-- style="aspect-ratio: 100 / 100; object-fit: cover;" -->
     <div>
-        <b class="text-lg block transition-all duration-3000 font-bold tracking-tight"
+        <b class="duration-3000 block text-lg font-bold tracking-tight transition-all"
             id="article_title">{{article.title }}</b>
-        <span class="text-primary block transition-all" id="author_name">{{article.author_name }}</span>
+        <span class="block text-primary transition-all" id="author_name">{{article.author_name }}</span>
         {{article. publish_date}} | {{article.upvote_count }} Likes
     </div>
 </a>
@@ -131,15 +131,15 @@
 
 <!-- if no avatar, then initials and rounded-lg -->
 
-<a class="p-2 flex flinch  w-full no-underline text-current gap-2 label-text" href="/a/{{article.id }}"
+<a class="flinch label-text flex w-full gap-2 p-2 text-current no-underline" href="/a/{{article.id }}"
     oncontextmenu="return false">
     <img alt="Article Image" class="rounded-lg" height="56" loading="lazy" src="{{article.author_avatar }}"
         width="56" />
     <!-- style="aspect-ratio: 100 / 100; object-fit: cover;" -->
     <div>
-        <b class="text-lg block transition-all duration-3000 font-bold tracking-tight"
+        <b class="duration-3000 block text-lg font-bold tracking-tight transition-all"
             id="article_title">{{article.title }}</b>
-        <span class="text-primary block transition-all" id="author_name">{{article.author_name }}</span>
+        <span class="block text-primary transition-all" id="author_name">{{article.author_name }}</span>
         {{article. publish_date}} | {{article.upvote_count }} Likes
     </div>
 </a>

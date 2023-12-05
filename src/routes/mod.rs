@@ -23,6 +23,7 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use pages::index;
 
 use crate::routes::meta::meta_router;
+use crate::routes::region::region_router;
 use crate::{
     auth::{
         login::login,
@@ -34,6 +35,7 @@ use crate::{
         newspaper::newspaper_router, profile::profile_router, welcome::welcome_router,
     },
 };
+use crate::routes::country::country_router;
 //use crate::ws::{handle_stream, TodoUpdate};
 
 mod article;
@@ -45,7 +47,9 @@ mod military;
 mod newspaper;
 mod pages;
 mod profile;
+mod region;
 mod welcome;
+mod country;
 
 #[derive(Clone, FromRef)]
 pub struct AppState {
@@ -76,6 +80,8 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
     Ok(Router::new()
         .route("/", get(index))
         .nest("/u", profile_router())
+        .nest("/region", region_router())
+        .nest("/country",country_router())
         .nest("/m", military_router())
         .nest("/map", map_router())
         .nest("/n", newspaper_router())
