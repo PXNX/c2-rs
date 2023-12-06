@@ -3,8 +3,6 @@
 {% block main %}
 
 
-
-
 <div class="w-full space-y-4 p-4 pt-8 min-h-screen flex flex-col items-center justify-start">
 
     <h2 class="text-xl font-bold mm-2">Military Units</h2>
@@ -13,8 +11,8 @@
             <div class="flex flex-col space-y-1.5 p-6">
                 <div class="flex items-center justify-start gap-4">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="h-8 w-8 text-gray-500 dark:text-gray-400">
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="h-8 w-8 text-gray-500 dark:text-gray-400">
                         <path d="M3 7V5c0-1.1.9-2 2-2h2"></path>
                         <path d="M17 3h2c1.1 0 2 .9 2 2v2"></path>
                         <path d="M21 17v2c0 1.1-.9 2-2 2h-2"></path>
@@ -41,8 +39,8 @@
             <div class="flex flex-col space-y-1.5 p-6">
                 <div class="flex items-center justify-start gap-4">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="h-8 w-8 text-gray-500 dark:text-gray-400">
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="h-8 w-8 text-gray-500 dark:text-gray-400">
                         <path d="M3 7V5c0-1.1.9-2 2-2h2"></path>
                         <path d="M17 3h2c1.1 0 2 .9 2 2v2"></path>
                         <path d="M21 17v2c0 1.1-.9 2-2 2h-2"></path>
@@ -69,8 +67,8 @@
             <div class="flex flex-col space-y-1.5 p-6">
                 <div class="flex items-center justify-start gap-4">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="h-8 w-8 text-gray-500 dark:text-gray-400">
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="h-8 w-8 text-gray-500 dark:text-gray-400">
                         <path d="M3 7V5c0-1.1.9-2 2-2h2"></path>
                         <path d="M17 3h2c1.1 0 2 .9 2 2v2"></path>
                         <path d="M21 17v2c0 1.1-.9 2-2 2h-2"></path>
@@ -92,10 +90,97 @@
             </div>
         </div>
     </div>
+</div>
 
+<!-- todo: show how many resources are currently lost/earned -->
+
+<div class="p-6 card ">
+
+<img
+        src="https://www.pngkit.com/png/full/128-1283150_bullet-transparent-m16-assault-rifle.png"
+        alt="item image"
+        height="100"
+        width="100"
+        class=" relativeopacity-100 mb-3 z-0 translate-x-2"
+        style="aspect-ratio: 100 / 100; object-fit: cover;"
+>
+
+
+<div class=" z-10 flex items-center justify-between">
+    <h3 class="font-medium">Assault Rifle</h3>
+    20.000 WarehouseIcon
+</div>
+
+<div class="w-full bg-gray-700 rounded-full relative h-4 mb-3">
+    <div class="h-full bg-green-500 rounded-full" style="width: 80%;">
+        <p class="text-xs text-white text-center">16 mins</p>
+    </div>
 </div>
 
 
+<div class="flex justify-between hover:bg-gray-100 p-2 rounded-md">
+
+
+    <div class="flex flex-col space-y-2 mt-2">
+        <div class="flex items-center space-x-2">
+            <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="h-4 w-4"
+            >
+                <path d="M18 12.5V10a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v1.4"></path>
+                <path d="M14 11V9a2 2 0 1 0-4 0v2"></path>
+                <path d="M10 10.5V5a2 2 0 1 0-4 0v9"></path>
+                <path d="m7 15-1.76-1.76a2 2 0 0 0-2.83 2.82l3.6 3.6C7.5 21.14 9.2 22 12 22h2a8 8 0 0 0 8-8V7a2 2 0 1 0-4 0v5"></path>
+            </svg>
+            <p>10</p>
+        </div>
+        <div class="flex items-center space-x-2">
+            <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="h-4 w-4"
+            >
+                <path d="M10 10v.2A3 3 0 0 1 8.9 16v0H5v0h0a3 3 0 0 1-1-5.8V10a3 3 0 0 1 6 0Z"></path>
+                <path d="M7 16v6"></path>
+                <path d="M13 19v3"></path>
+                <path d="M12 19h8.3a1 1 0 0 0 .7-1.7L18 14h.3a1 1 0 0 0 .7-1.7L16 9h.2a1 1 0 0 0 .8-1.7L13 3l-1.4 1.5"></path>
+            </svg>
+            <p>5</p>
+        </div>
+    </div>
+
+    <div class="flex items-center space-x-2">
+        <button class="inline-flex items-center justify-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3">
+            -
+        </button>
+        <p>2</p>
+        <button class="inline-flex items-center justify-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3">
+            +
+        </button>
+    </div>
+
+</div>
+
+    </img>
+
+</div>
+
+</div>
 
 
 {% endblock %}

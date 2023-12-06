@@ -205,7 +205,7 @@ async fn save_article(
         .execute(&db_pool)
         .await?;
 
-    Ok(Redirect::to(format!("/a/{}", article_id).as_str()))
+    Ok(Redirect::to(format!("/article/{}", article_id).as_str()))
 }
 
 #[derive(Template)]
@@ -248,8 +248,8 @@ async fn view_article(
         .await?;
 
     let author_link = match article.newspaper_id {
-        Some(newspaper_id) => format!("/n/{}", newspaper_id),
-        None => format!("/u/{}", article.author_id),
+        Some(newspaper_id) => format!("/newspaper/{}", newspaper_id),
+        None => format!("/user/{}", article.author_id),
     };
 
     Ok(ViewArticleTemplate {
