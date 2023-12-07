@@ -50,16 +50,17 @@ struct CreateProfile {
 }
 
 async fn create_profile(
-    Extension(user_data): Extension<Option<UserData>>,
     State(db_pool): State<PgPool>,
     Form(input): Form<CreateProfile>,
 ) -> Result<impl IntoResponse, AppError> {
-    let user_data = user_data.unwrap();
+
+
+    //todo: check if mail already exists, return error to user if so
 
     query!(
         r#"UPDATE users SET name = $1 WHERE id=$2;"#,
         input.user_name,
-        user_data.id
+        44
     )
         .execute(&db_pool)
         .await?;

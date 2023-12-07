@@ -38,13 +38,22 @@ struct InternalErrorTemplate {
     error_message: String,
 }
 
+#[derive(Template)]
+#[template(path = "error/404.html")]
+struct NotFoundTemplate {}
+
+pub async fn handle_404() -> axum::response::Response {
+    (StatusCode::NOT_FOUND,
+     Html(NotFoundTemplate {}.render().unwrap()))
+        .into_response()
+}
+
 impl IntoResponse for AppError {
     fn into_response(self) -> axum::response::Response {
-        println!("AppError: {}", self.message); //todo: nicer error page
-        ( //include_str!("../../templates/error/500.html")
-          self.code,
-          Html(format!("{}", self.user_message)),
-        )
+        println!("AppError: {}", self.message);
+
+        (self.code,
+         Html(InternalErrorTemplate { error_message: self.message }.render().unwrap()))
             .into_response()
     }
 }

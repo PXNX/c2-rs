@@ -32,7 +32,10 @@ use crate::{
         newspaper::newspaper_router, profile::profile_router, welcome::welcome_router,
     },
 };
+use crate::auth::error_handling::handle_404;
 use crate::routes::country::country_router;
+use crate::routes::docs::docs_router;
+use crate::routes::team::team_router;
 //use crate::ws::{handle_stream, TodoUpdate};
 
 mod article;
@@ -48,6 +51,7 @@ mod region;
 mod welcome;
 mod country;
 mod team;
+mod docs;
 
 #[derive(Clone, FromRef)]
 pub struct AppState {
@@ -64,15 +68,6 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
 
     let user_data: Option<UserData> = None;
 
-    async fn handle_404() -> impl IntoResponse {
-        //TODO: utilize StaticAssets for that
-        (
-            StatusCode::NOT_FOUND,
-            Html(include_str!("../../templates/error/404.html").to_string()),
-        )
-            .into_response()
-    }
-
     //  let (tx, _rx) = channel::<TodoUpdate>(10);
 
     Ok(Router::new()
@@ -84,25 +79,28 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         .nest("/map", map_router())
         .nest("/newspaper", newspaper_router())
         .nest("/article", article_router())
+        .nest("/team", team_router())
         .nest("/chat", chat_router())
         //  .route("/stream", get(crate::ws::handle_stream))
         .route_layer(middleware::from_fn_with_state(
             app_state.clone(),
             check_auth,
         ))
-        .nest("/welcome", welcome_router())
         .nest("/auth", auth_router())
         .route_layer(middleware::from_fn_with_state(
             app_state.clone(),
             inject_user_data,
         ))
         .route("/login", get(login))
+        .nest("/welcome", welcome_router())
+
         /*  .route("/stream", get(crate::ws::stream))
         .route("/todos", get(crate::ws::fetch_todos).post(crate::ws::create_todo))
         .route("/todos/:id", delete(crate::ws::delete_todo))
         .route("/todos/stream", get(handle_stream)) */
         .with_state(app_state)
         .layer(Extension(user_data))
+        .nest("/docs", docs_router())
         .nest("/", meta_router())
         //   .layer(Extension(tx))
         .layer(

@@ -29,7 +29,7 @@
 
 <script src="//d3js.org/d3.v7.min.js" charset="utf-8"></script>
 <script src="//d3js.org/topojson.v3.min.js"></script>
-
+<!--
 <script>
     d3.json("/dist/us.json", function (error, us) {
         const width = 975;
@@ -104,4 +104,87 @@
     });
 
 </script>
+-->
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="relative z-10 w-full max-h-400 overflow-hidden">
+        <svg class="w-full h-full" viewBox="0 0 400 400">
+            <rect x="0" y="0" width="400" height="400" fill="#ccc"></rect>
+        </svg>
+
+        <script>
+            // Create a selection for the SVG container
+            const svg = d3.select('.relative');
+
+            // Set the initial scale to 1
+            let scale = 1;
+
+            // Event handler for zooming with mouse wheel
+            svg.on('wheel', () => {
+                const delta = d3.event.wheelDeltaY;
+
+                // Zoom in if scrolled up
+                if (delta > 0) {
+                    scale *= 1.1;
+                }
+                // Zoom out if scrolled down
+                else if (delta < 0) {
+                    scale *= 0.9;
+                }
+
+                // Update the scale and translate the SVG accordingly
+                updateScaleAndTranslate();
+            });
+
+            // Event handler for panning with touch events
+            svg.on('touchstart', (event) => {
+                const touches = d3.touches(event);
+                const touch = touches[0];
+
+                // Store the initial touch position
+                const initialX = touch.x;
+                const initialY = touch.y;
+            });
+
+            svg.on('touchmove', (event) => {
+                const touches = d3.touches(event);
+                const touch = touches[0];
+
+                // Pan the SVG by the difference between the current touch position and the initial position
+                const panX = initialX - touch.x;
+                const panY = initialY - touch.y;
+
+                const translate = d3.transform.translate(panX, panY);
+                svg.attr('transform', translate);
+            });
+
+            // Event handler for panning with click and drag events
+            svg.on('mousedown', (event) => {
+                const mouseDownX = event.offsetX;
+                const mouseDownY = event.offsetY;
+            });
+
+            svg.on('mouseup', (event) => {
+                // Prevent default browser behavior to prevent the click event
+                event.preventDefault();
+            });
+
+            svg.on('mousemove', (event) => {
+                // Prevent default browser behavior to prevent the scroll event
+                event.preventDefault();
+
+                const offsetX = event.offsetX - mouseDownX;
+                const offsetY = event.offsetY - mouseDownY;
+
+                const translate = d3.transform.translate(offsetX, offsetY);
+                svg.attr('transform', translate);
+            });
+
+            // Function to update the scale and translate the SVG
+            function updateScaleAndTranslate() {
+                svg.attr('transform', d3.transform.scale(scale).translate(-200, -200));
+            }
+        </script>
+    </div>
+</div>
 {% endblock %}

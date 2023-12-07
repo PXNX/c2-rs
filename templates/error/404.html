@@ -2,11 +2,16 @@
 {% block title %}404 - Resource not found{% endblock %}
 {% block page %}
 
-<h1>Oops!</h1>
-<p>The Url you entered could not be resolved. Make sure it was correct..</p>
-<h2>If the issue persists, please let us know!</h2>
-<a class="btn  btn-primary" href="https://t.me/+TEHh5GvOX6iYehnh" role="button">Contact us!</a>
-<input action="action" type="button" class="btn  btn-secondary" value="Back"
-       onclick="window.history.go(-1); return false;"/>
+
+<div class="mx-auto w-full flex flex-col items-center pt-48">
+    <h1 class="text-4xl text-gray-900 font-bold">404</h1>
+    <p class="text-xl text-gray-600">The page you are looking for could not be found.</p>
+
+    <a href="https://t.me/+TEHh5GvOX6iYehnh" class="text-blue-500 font-bold py-2 px-4 rounded">Contact Us</a>
+
+    <a value="Back"
+       onclick="window.history.go(-1); return false;" class="text-gray-600 font-bold py-2 px-4 rounded ml-2">Navigate
+        Back</a>
+</div>
 
 {% endblock %}
