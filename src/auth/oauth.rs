@@ -15,18 +15,30 @@ use oauth2::{
     TokenResponse, TokenUrl,
 };
 use sqlx::PgPool;
+
+
 use uuid::Uuid;
 
 use crate::routes::{AppState, UserData};
 
 use super::error_handling::AppError;
 
+
+// ... (other imports remain unchanged)
+
+const GOOGLE_AUTH_URL: &str = "https://accounts.google.com/o/oauth2/v2/auth";
+const GOOGLE_TOKEN_URL: &str = "https://www.googleapis.com/oauth2/v3/token";
+const GOOGLE_REVOCATION_URL: &str = "https://oauth2.googleapis.com/revoke";
+const GOOGLE_USERINFO_SCOPE: &str = "https://www.googleapis.com/auth/userinfo.email";
+const SESSION_COOKIE_NAME: &str = "session_token";
+
+
 fn get_client(hostname: String) -> Result<BasicClient, AppError> {
     let google_client_id = ClientId::new(var("GOOGLE_CLIENT_ID")?);
     let google_client_secret = ClientSecret::new(var("GOOGLE_CLIENT_SECRET")?);
-    let auth_url = AuthUrl::new("https://accounts.google.com/o/oauth2/v2/auth".to_string())
+    let auth_url = AuthUrl::new(GOOGLE_AUTH_URL.to_string())
         .map_err(|_| "OAuth: invalid authorization endpoint URL")?;
-    let token_url = TokenUrl::new("https://www.googleapis.com/oauth2/v3/token".to_string())
+    let token_url = TokenUrl::new(GOOGLE_TOKEN_URL.to_string())
         .map_err(|_| "OAuth: invalid token endpoint URL")?;
 
     let protocol = if hostname.starts_with("localhost") || hostname.starts_with("127.0.0.1") {
@@ -44,9 +56,9 @@ fn get_client(hostname: String) -> Result<BasicClient, AppError> {
         auth_url,
         Some(token_url),
     )
-        .set_redirect_uri(RedirectUrl::new(redirect_url).map_err(|_| "OAuth: invalid redirect URL")?)
+        .set_redirect_uri(RedirectUrl::new(redirect_url)?)
         .set_revocation_uri(
-            RevocationUrl::new("https://oauth2.googleapis.com/revoke".to_string())
+            RevocationUrl::new(GOOGLE_REVOCATION_URL.to_string())
                 .map_err(|_| "OAuth: invalid revocation endpoint URL")?,
         );
     Ok(client)
@@ -73,7 +85,7 @@ async fn signin(
     let (authorize_url, csrf_state) = client
         .authorize_url(CsrfToken::new_random)
         .add_scope(Scope::new(
-            "https://www.googleapis.com/auth/userinfo.email".to_string(),
+            GOOGLE_USERINFO_SCOPE.to_string(),
         ))
         .set_pkce_challenge(pkce_code_challenge)
         .url();
@@ -139,8 +151,10 @@ async fn oauth_return(
     println!("pkce_verifier");
 
     // Get user info from Google
-    let url =
-        "https://www.googleapis.com/oauth2/v2/userinfo?oauth_token=".to_owned() + access_token;
+    let url = format!(
+        "https://www.googleapis.com/oauth2/v2/userinfo?oauth_token={}",
+        access_token
+    );
     let body = reqwest::get(url)
         .await
         .map_err(|_| "OAuth: reqwest failed to query userinfo")?
@@ -190,9 +204,10 @@ async fn oauth_return(
     let session_token = [session_token_p1.as_str(), "_", session_token_p2.as_str()].concat();
     let headers = axum::response::AppendHeaders([(
         axum::http::header::SET_COOKIE,
-        "session_token=".to_owned()
-            + &*session_token
-            + "; path=/; httponly; secure; samesite=strict",
+        format!(
+            "{}={}; path=/; httponly; secure; samesite=strict",
+            SESSION_COOKIE_NAME, session_token
+        ),
     )]);
     let now = Utc::now().timestamp();
 
@@ -232,10 +247,13 @@ async fn logout(
     }
     let headers = axum::response::AppendHeaders([
         (
-            axum::http::header::SET_COOKIE,
-            "session_token=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT",
+            http::header::SET_COOKIE,
+            format!(
+                "{}=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT",
+                SESSION_COOKIE_NAME
+            ),
         ),
-        (axum::http::header::REFERER, "/"),
+        (http::header::REFERER, "/"),
     ]);
     Ok((headers, Redirect::to("/")))
 }
@@ -245,4 +263,189 @@ pub fn auth_router() -> Router<AppState> {
         .route("/signin", get(signin))
         .route("/callback", get(oauth_return))
         .route("/logout", get(logout))
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use axum::{
+        body::Body,
+        http::{Request, StatusCode},
+    };
+    use tower::ServiceExt; // for `app.oneshot()`
+
+    // Mocks and helpers would be here
+
+    #[tokio::test]
+    async fn test_get_client_success() {
+        // Arrange
+        let hostname = "localhost".to_string();
+
+        // Act
+        let client_result = get_client(hostname);
+
+        // Assert
+        assert!(client_result.is_ok());
+    }
+
+    #[tokio::test]
+    async fn test_get_client_invalid_hostname() {
+        // Arrange
+        let hostname = "".to_string();
+
+        // Act
+        let client_result = get_client(hostname);
+
+        // Assert
+        assert!(client_result.is_err());
+    }
+
+    #[tokio::test]
+    async fn test_signin_redirects_when_already_signed_in() {
+        // Arrange
+        let user_data = Some(UserData { id: 0 });
+        let params = HashMap::new();
+        let db_pool = PgPool::new(/* connection string */).await.unwrap();
+        let hostname = Host::from_static("localhost");
+        let app_state = AppState { db_pool };
+        let app = auth_router().layer(Extension(app_state));
+
+        // Act
+        let response = app.oneshot(
+            Request::builder()
+                .extension(Extension(user_data))
+                .extension(Query(params))
+                .extension(State(db_pool))
+                .extension(hostname)
+                .body(Body::empty())
+                .unwrap(),
+        ).await.unwrap();
+
+        // Assert
+        assert_eq!(response.status(), StatusCode::FOUND);
+    }
+
+    #[tokio::test]
+    async fn test_signin_starts_oauth_flow() {
+        // Arrange
+        let user_data = None;
+        let mut params = HashMap::new();
+        params.insert("next".to_string(), "/dashboard".to_string());
+        let db_pool = PgPool::new(/* connection string */).await.unwrap();
+        let hostname = Host::from_static("localhost");
+        let app_state = AppState { db_pool };
+        let app = auth_router().layer(Extension(app_state));
+
+        // Act
+        let response = app.oneshot(
+            Request::builder()
+                .extension(Extension(user_data))
+                .extension(Query(params))
+                .extension(State(db_pool))
+                .extension(hostname)
+                .body(Body::empty())
+                .unwrap(),
+        ).await.unwrap();
+
+        // Assert
+        assert_eq!(response.status(), StatusCode::FOUND);
+        // Further assertions to check for the correct redirect URL would go here
+    }
+
+    #[tokio::test]
+    async fn test_oauth_return_success() {
+        // Arrange
+        let mut params = HashMap::new();
+        params.insert("state".to_string(), "valid_state".to_string());
+        params.insert("code".to_string(), "valid_code".to_string());
+        let db_pool = PgPool::new(/* connection string */).await.unwrap();
+        let hostname = Host::from_static("localhost");
+        let app_state = AppState { db_pool };
+        let app = auth_router().layer(Extension(app_state));
+
+        // Act
+        let response = app.oneshot(
+            Request::builder()
+                .extension(Query(params))
+                .extension(State(db_pool))
+                .extension(hostname)
+                .body(Body::empty())
+                .unwrap(),
+        ).await.unwrap();
+
+        // Assert
+        assert_eq!(response.status(), StatusCode::FOUND);
+        // Further assertions to check for the correct redirect URL and headers would go here
+    }
+
+    #[tokio::test]
+    async fn test_oauth_return_missing_state() {
+        // Arrange
+        let mut params = HashMap::new();
+        params.insert("code".to_string(), "valid_code".to_string());
+        let db_pool = PgPool::new(/* connection string */).await.unwrap();
+        let hostname = Host::from_static("localhost");
+        let app_state = AppState { db_pool };
+        let app = auth_router().layer(Extension(app_state));
+
+        // Act
+        let response = app.oneshot(
+            Request::builder()
+                .extension(Query(params))
+                .extension(State(db_pool))
+                .extension(hostname)
+                .body(Body::empty())
+                .unwrap(),
+        ).await.unwrap();
+
+        // Assert
+        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+    }
+
+    #[tokio::test]
+    async fn test_logout_success() {
+        // Arrange
+        let cookie = Some(TypedHeader(Cookie::from("session_token=valid_token")));
+        let db_pool = PgPool::new(/* connection string */).await.unwrap();
+        let app_state = AppState { db_pool: () };
+        let app = auth_router().layer(Extension(app_state));
+
+        // Act
+        let response = app.oneshot(
+            Request::builder()
+                .extension(cookie)
+                .extension(State(db_pool))
+                .body(Body::empty())
+                .unwrap(),
+        ).await.unwrap();
+
+        // Assert
+        assert_eq!(response.status(), StatusCode::FOUND);
+        // Further assertions to check for the correct headers would go here
+    }
+
+    #[tokio::test]
+    async fn test_logout_no_cookie() {
+        // Arrange
+        let cookie = None;
+        let db_pool = PgPool::new(/* connection string */).await.unwrap();
+        let app_state = AppState { db_pool };
+        let app = auth_router().layer(Extension(app_state));
+
+        // Act
+        let response = app.oneshot(
+            Request::builder()
+                .extension(cookie)
+                .extension(State(db_pool))
+                .body(Body::empty())
+                .unwrap(),
+        ).await.unwrap();
+
+        // Assert
+        assert_eq!(response.status(), StatusCode::FOUND);
+        // Further assertions to check for the correct headers would go here
+    }
+
+    // Additional tests would be added here to cover all branches and error cases
 }

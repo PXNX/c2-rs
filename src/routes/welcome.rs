@@ -16,32 +16,18 @@ use super::{AppState, UserData};
 
 #[derive(Template)]
 #[template(path = "welcome/index.html")]
-struct WelcomeTemplate {
-    login_return_url: String,
-}
+struct WelcomeTemplate {}
 
-pub async fn welcome<T>(
-    Extension(user_data): Extension<Option<UserData>>,
-    request: Request<T>,
-) -> Result<impl IntoResponse, AppError> {
-    Ok(WelcomeTemplate {
-        login_return_url: "?next=".to_owned() + &*request.uri().to_string(),
-    })
+pub async fn welcome<T>() -> Result<impl IntoResponse, AppError> {
+    Ok(WelcomeTemplate {})
 }
 
 #[derive(Template)]
 #[template(path = "welcome/signup.html")]
-struct SignupTemplate {
-    login_return_url: String,
-}
+struct SignupTemplate {}
 
-pub async fn signup<T>(
-    Extension(user_data): Extension<Option<UserData>>,
-    request: Request<T>,
-) -> Result<impl IntoResponse, AppError> {
-    Ok(SignupTemplate {
-        login_return_url: "?next=".to_owned() + &*request.uri().to_string(),
-    })
+pub async fn signup<T>() -> Result<impl IntoResponse, AppError> {
+    Ok(SignupTemplate {})
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -56,6 +42,8 @@ async fn create_profile(
 
 
     //todo: check if mail already exists, return error to user if so
+
+    let mail = query!(r"select mail_adress from users where mail_address = $1;"#, );
 
     query!(
         r#"UPDATE users SET name = $1 WHERE id=$2;"#,

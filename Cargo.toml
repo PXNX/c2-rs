@@ -41,7 +41,7 @@ tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 http-body = "1.0.0"
 
 #static files
-rust-embed = "8.0.0"
+rust-embed = "8.1.0"
 mime_guess = "2.0.4"
 
 #markdown support, maybe useful for docs and articles
@@ -52,6 +52,7 @@ futures-util = "0.3.29"
 futures = "0.3.29"
 http = "1.0.0"
 home = "0.5.5"
+cookie = { version = "0.18.0", features = [] }
 
 
 
