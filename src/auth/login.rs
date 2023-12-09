@@ -17,6 +17,6 @@ pub async fn login(
 ) -> Result<impl IntoResponse, AppError> {
     Ok(LoginTemplate {
         login_return_url: "?next=".to_owned()
-            + &*params.remove("next").unwrap_or_else(|| "/".to_string()),
+            + &*params.remove("next").unwrap_or("/".to_string()),
     })
 }

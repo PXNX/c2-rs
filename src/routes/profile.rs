@@ -1,13 +1,11 @@
 use askama::Template;
 use axum::{
-    extract::{Extension, State},
-    response::IntoResponse,
+    extract::{Extension, Path, State},
+    http::StatusCode,
+    response::{IntoResponse, Redirect},
+    routing::get,
+    Form, Router,
 };
-use axum::{Form, Router};
-use axum::extract::Path;
-use axum::http::StatusCode;
-use axum::response::Redirect;
-use axum::routing::get;
 use serde::{Deserialize, Serialize};
 use sqlx::{PgPool, query};
 

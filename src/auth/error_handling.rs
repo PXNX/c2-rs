@@ -57,33 +57,17 @@ impl IntoResponse for AppError {
             .into_response()
     }
 }
-
-impl From<askama::Error> for AppError {
-    fn from(err: askama::Error) -> Self {
-        AppError::new(format!("Template error: {:#}", err))
+macro_rules! from_error {
+    ($err_type:ty, $err_msg:expr) => {
+        impl From<$err_type> for AppError {
+            fn from(err: $err_type) -> Self {
+                AppError::new(format!($err_msg, err))
+            }
+        }
+    };
     }
-}
-
-impl From<dotenvy::Error> for AppError {
-    fn from(err: dotenvy::Error) -> Self {
-        AppError::new(format!("Dotenv error: {:#}", err))
-    }
-}
-
-impl From<sqlx::Error> for AppError {
-    fn from(err: sqlx::Error) -> Self {
-        AppError::new(format!("Database query error: {:#}", err))
-    }
-}
-
-impl From<String> for AppError {
-    fn from(err: String) -> Self {
-        AppError::new(err)
-    }
-}
-
-impl From<&str> for AppError {
-    fn from(err: &str) -> Self {
-        AppError::new(err)
-    }
-}
+from_error!(askama::Error, "Template error: {:#}");
+from_error!(dotenvy::Error, "Dotenv error: {:#}");
+from_error!(sqlx::Error, "Database query error: {:#}");
+from_error!(String, "{}");
+from_error!(&str, "{}");

@@ -6,6 +6,7 @@ use axum::{
     Router,
     routing::get,
 };
+use axum::response::AppendHeaders;
 use axum_extra::{headers::Cookie, TypedHeader};
 use chrono::Utc;
 use dotenvy::var;
@@ -17,6 +18,7 @@ use oauth2::{
 use sqlx::PgPool;
 use uuid::Uuid;
 
+use crate::auth::SESSION_TOKEN;
 use crate::routes::{AppState, UserData};
 
 use super::error_handling::AppError;
@@ -188,11 +190,9 @@ async fn oauth_return(
     let session_token_p1 = Uuid::new_v4().to_string();
     let session_token_p2 = Uuid::new_v4().to_string();
     let session_token = [session_token_p1.as_str(), "_", session_token_p2.as_str()].concat();
-    let headers = axum::response::AppendHeaders([(
-        axum::http::header::SET_COOKIE,
-        "session_token=".to_owned()
-            + &*session_token
-            + "; path=/; httponly; secure; samesite=strict",
+    let headers = AppendHeaders([(
+        http::header::SET_COOKIE,
+        format!("{SESSION_TOKEN}={session_token}; path=/; httponly; secure; samesite=strict")
     )]);
     let now = Utc::now().timestamp();
 
@@ -222,7 +222,7 @@ async fn logout(
     State(db_pool): State<PgPool>,
 ) -> Result<impl IntoResponse, AppError> {
     if let Some(cookie) = cookie {
-        if let Some(session_token) = cookie.get("session_token") {
+        if let Some(session_token) = cookie.get(SESSION_TOKEN) {
             let session_token: Vec<&str> = session_token.split('_').collect();
             let _ = sqlx::query("DELETE FROM user_sessions WHERE session_token_1 = $1;")
                 .bind(session_token[0])
@@ -230,12 +230,12 @@ async fn logout(
                 .await;
         }
     }
-    let headers = axum::response::AppendHeaders([
+    let headers = AppendHeaders([
         (
-            axum::http::header::SET_COOKIE,
+            http::header::SET_COOKIE,
             "session_token=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT",
         ),
-        (axum::http::header::REFERER, "/"),
+        (http::header::REFERER, "/"),
     ]);
     Ok((headers, Redirect::to("/")))
 }

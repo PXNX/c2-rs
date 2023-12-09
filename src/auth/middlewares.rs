@@ -7,10 +7,12 @@ use axum::body::Body;
 use axum_extra::{headers::Cookie, TypedHeader};
 use chrono::Utc;
 use sqlx::{PgPool, query};
+use crate::auth::SESSION_TOKEN;
 
 use crate::routes::UserData;
 
 use super::error_handling::AppError;
+
 
 pub async fn inject_user_data(
     State(db_pool): State<PgPool>,
@@ -19,44 +21,33 @@ pub async fn inject_user_data(
     next: Next,
 ) -> Result<impl IntoResponse, AppError> {
     if let Some(cookie) = cookie {
-        if let Some(session_token) = cookie.get("session_token") {
+        if let Some(session_token) = cookie.get(SESSION_TOKEN) {
             let session_token: Vec<&str> = session_token.split('_').collect();
             let query = query!(
                 r#"SELECT user_id,expires_at,session_token_p2 FROM user_sessions WHERE session_token_p1=$1;"#,
             session_token[0])
                 .fetch_one(&db_pool)
-                .await;
+                .await?;
 
             println!("inject--{:#?}", query);
 
-            if let Ok(query) = query {
-                println!("inject2");
+            let session_token_p2_db: &[u8; 36] = query.session_token_p2.as_bytes().try_into().unwrap();
+            let session_token_p2_cookie: &[u8; 36] = session_token
+                .get(1)
+                .copied()
+                .unwrap_or_default()
+                .as_bytes().try_into().unwrap();
 
-                if let Ok(session_token_p2_db) = query.session_token_p2.as_bytes().try_into() {
-                    println!("inject3");
+            if constant_time_eq::constant_time_eq_n::<36>(
+                session_token_p2_cookie,
+                session_token_p2_db,
+            ) {
+                println!("session active");
 
-                    if let Ok(session_token_p2_cookie) = session_token
-                        .get(1)
-                        .copied()
-                        .unwrap_or_default()
-                        .as_bytes()
-                        .try_into()
-                    {
-                        println!("inject4");
-
-                        if constant_time_eq::constant_time_eq_n::<36>(
-                            session_token_p2_cookie,
-                            session_token_p2_db,
-                        ) {
-                            println!("session active");
-
-                            if query.expires_at > Utc::now().timestamp() {
-                                request
-                                    .extensions_mut()
-                                    .insert(Some(UserData { id: query.user_id }));
-                            }
-                        }
-                    }
+                if query.expires_at > Utc::now().timestamp() {
+                    request
+                        .extensions_mut()
+                        .insert(Some(UserData { id: query.user_id }));
                 }
             }
         }
