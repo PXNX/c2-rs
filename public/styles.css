@@ -11558,6 +11558,10 @@ details.collapse summary::-webkit-details-marker {
   justify-items: stretch !important;
 }
 
+.gap-1 {
+  gap: 0.25rem !important;
+}
+
 .gap-2 {
   gap: 0.5rem !important;
 }
@@ -12130,9 +12134,21 @@ details.collapse summary::-webkit-details-marker {
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
 }
 
+.from-red-800 {
+  --tw-gradient-from: #991b1b var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(153 27 27 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
 .from-transparent {
   --tw-gradient-from: transparent var(--tw-gradient-from-position) !important;
   --tw-gradient-to: rgb(0 0 0 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.from-yellow-800 {
+  --tw-gradient-from: #854d0e var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(133 77 14 / 0) var(--tw-gradient-to-position) !important;
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
 }
 
@@ -12298,6 +12314,10 @@ details.collapse summary::-webkit-details-marker {
 
 .p-2 {
   padding: 0.5rem !important;
+}
+
+.p-4 {
+  padding: 1rem !important;
 }
 
 .p-5 {
