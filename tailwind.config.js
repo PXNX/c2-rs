@@ -1,4 +1,31 @@
-const { fontFamily } = require('tailwindcss/defaultTheme');
+const {fontFamily} = require('tailwindcss/defaultTheme');
+const plugin = require("tailwindcss/plugin");
+
+const backfaceVisibility = plugin(function ({addUtilities}) {
+    addUtilities({
+        ".my-rotate-y-180": {
+            transform: "rotateY(180deg)",
+        },
+        ".preserve-3d": {
+            transformStyle: "preserve-3d",
+        },
+        ".perspective": {
+            perspective: "1000px",
+        },
+        '.backface-visible': {
+            'backface-visibility': 'visible',
+            '-moz-backface-visibility': 'visible',
+            '-webkit-backface-visibility': 'visible',
+            '-ms-backface-visibility': 'visible'
+        },
+        '.backface-hidden': {
+            'backface-visibility': 'hidden',
+            '-moz-backface-visibility': 'hidden',
+            '-webkit-backface-visibility': 'hidden',
+            '-ms-backface-visibility': 'hidden'
+        }
+    });
+});
 
 
 /** @type {import('tailwindcss').Config} */
@@ -6,10 +33,11 @@ module.exports = {
     mode: 'jit',
     important: true,
     // mode: 'jit',
-    content: ["/templates/**/*.html", "./templates/*.html", './**/*.{html,js}', './**/*.html'],
+    content: ["./templates/**/*.html"],
     plugins: [
         require("@tailwindcss/typography"),
-        require("daisyui")
+        require("daisyui"),
+        backfaceVisibility
     ],
     theme: {
         extend: {
@@ -28,12 +56,11 @@ module.exports = {
             // that is actual animation
             keyframes: (theme) => ({
                 fadeOut: {
-                    "0%": { backgroundColor: theme("colors.amber.300") },
-                    "100%": { backgroundColor: theme("colors.transparent") },
+                    "0%": {backgroundColor: theme("colors.amber.300")},
+                    "100%": {backgroundColor: theme("colors.transparent")},
                 },
             }),
         },
-
 
 
     },

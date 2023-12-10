@@ -42,19 +42,20 @@
         <option value="sunset">Sunset</option>
     </select>
 
+
     <div class="form-control w-full">
-        <label class="label cursor-pointer">
+        <label class="cursor-pointer label">
             <span class="label-text">Load images</span>
-            <input checked="checked" class="checkbox checkbox-primary" data-toggle-theme type="checkbox" />
+            <input type="checkbox" class="toggle toggle-primary" checked/>
         </label>
     </div>
 
 
     <input class="input input-bordered w-full" name="user_name" placeholder="Username" required type="text"
-        value="{{user_name}}" />
+           value="{{user_name}}"/>
 
     <input class="input input-bordered w-full" name="user_avatar" placeholder="Avatar Url" type="text"
-        value="{{user_avatar}}" />
+           value="{{user_avatar}}"/>
 
     <a class="btn btn-primary w-full" hx-put="/u/settings" role="button">Edit profile</a>
 </section>
@@ -62,8 +63,7 @@
 <section class="mt-16 px-4 space-y-2 w-full">
     <h2 class="text-2xl font-bold">Account</h2>
 
-    <input class="input input-bordered w-full" placeholder="Enter voucher code..." type="text" />
-
+    <input class="input input-bordered w-full" placeholder="Enter voucher code..." type="text"/>
 
 
     <a class="btn btn-secondary w-full" href="/" role="button">
