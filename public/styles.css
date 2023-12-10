@@ -1898,6 +1898,12 @@ html {
     --tw-bg-opacity: 1;
     background-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-bg-opacity)));
   }
+
+  .table-zebra tr.hover:hover,
+  .table-zebra tr.hover:nth-child(even):hover {
+    --tw-bg-opacity: 1;
+    background-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-bg-opacity)));
+  }
 }
 
 .btn {
@@ -4026,6 +4032,10 @@ input.tab:checked + .tab-content,
   position: sticky !important;
 }
 
+.inset-0 {
+  inset: 0px !important;
+}
+
 .bottom-0 {
   bottom: 0px !important;
 }
@@ -4521,6 +4531,16 @@ input.tab:checked + .tab-content,
   background-color: rgb(0 0 0 / var(--tw-bg-opacity)) !important;
 }
 
+.bg-red-800 {
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(153 27 27 / var(--tw-bg-opacity)) !important;
+}
+
+.bg-blue-500 {
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(59 130 246 / var(--tw-bg-opacity)) !important;
+}
+
 .bg-\[url\(\'https\:\/\/source\.unsplash\.com\/random\.jpg\?soldier\'\)\] {
   background-image: url('https://source.unsplash.com/random.jpg?soldier') !important;
 }
@@ -4853,8 +4873,19 @@ input.tab:checked + .tab-content,
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
 }
 
+.shadow-xl {
+  --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1) !important;
+  --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color) !important;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
+}
+
 .shadow-violet-500 {
   --tw-shadow-color: #8b5cf6 !important;
+  --tw-shadow: var(--tw-shadow-colored) !important;
+}
+
+.shadow-black\/40 {
+  --tw-shadow-color: rgb(0 0 0 / 0.4) !important;
   --tw-shadow: var(--tw-shadow-colored) !important;
 }
 
@@ -4901,6 +4932,10 @@ input.tab:checked + .tab-content,
   transition-timing-function: cubic-bezier(0.4, 0, 1, 1) !important;
 }
 
+.ease-in-out {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
 .my-rotate-y-180 {
   transform: rotateY(180deg) !important;
 }
@@ -4918,6 +4953,18 @@ input.tab:checked + .tab-content,
   -moz-backface-visibility: hidden !important;
   -webkit-backface-visibility: hidden !important;
   -ms-backface-visibility: hidden !important;
+}
+
+.\[transform-style\:preserve-3d\] {
+  transform-style: preserve-3d;
+}
+
+.\[backface-visibility\:hidden\] {
+  backface-visibility: hidden;
+}
+
+.\[transform\:rotateY\(180deg\)\] {
+  transform: rotateY(180deg);
 }
 
 .htmx-settling img {
@@ -5029,6 +5076,21 @@ img {
   color: rgb(17 24 39 / var(--tw-text-opacity)) !important;
 }
 
+.hover\:my-rotate-y-180:hover {
+  transform: rotateY(180deg) !important;
+}
+
+.hover\:backface-hidden:hover {
+  backface-visibility: hidden !important;
+  -moz-backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+  -ms-backface-visibility: hidden !important;
+}
+
+.hover\:\[transform\:rotateY\(180deg\)\]:hover {
+  transform: rotateY(180deg);
+}
+
 .focus-visible\:outline-none:focus-visible {
   outline: 2px solid transparent !important;
   outline-offset: 2px !important;
@@ -5058,6 +5120,17 @@ img {
 
 .group:hover .group-hover\:my-rotate-y-180 {
   transform: rotateY(180deg) !important;
+}
+
+.group:hover .group-hover\:backface-hidden {
+  backface-visibility: hidden !important;
+  -moz-backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+  -ms-backface-visibility: hidden !important;
+}
+
+.group:hover .group-hover\:\[transform\:rotateY\(180deg\)\] {
+  transform: rotateY(180deg);
 }
 
 .peer\/skill_0:checked ~ .peer-checked\/skill_0\:text-secondary {
