@@ -1737,21 +1737,27 @@ html {
     } 
 }*/
 
+/*
 .my-rotate-y-180 {
-  transform: rotateY(180deg)
+    transform: rotateY(180deg)
+}
+
+.my-rotate-y-0 {
+    transform: rotateY(360deg)
 }
 
 .preserve-3d {
-  transform-style: preserve-3d
+    transform-style: preserve-3d
 }
 
 .perspective {
-  perspective: 1000px
+    perspective: 1000px
 }
 
 .backface-hidden {
-  backface-visibility: hidden
+    backface-visibility: hidden
 }
+*/
 
 .container {
   width: 100%;
@@ -1869,11 +1875,6 @@ html {
 }
 
 @media (hover:hover) {
-  .checkbox-primary:hover {
-    --tw-border-opacity: 1;
-    border-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
-  }
-
   .label a:hover {
     --tw-text-opacity: 1;
     color: var(--fallback-bc,oklch(var(--bc)/var(--tw-text-opacity)));
@@ -1897,12 +1898,6 @@ html {
   .table tr.hover:nth-child(even):hover {
     --tw-bg-opacity: 1;
     background-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-bg-opacity)));
-  }
-
-  .table-zebra tr.hover:hover,
-  .table-zebra tr.hover:nth-child(even):hover {
-    --tw-bg-opacity: 1;
-    background-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-bg-opacity)));
   }
 }
 
@@ -2568,6 +2563,48 @@ html {
   margin-top: 1rem;
 }
 
+.swap {
+  position: relative;
+  display: inline-grid;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  place-content: center;
+  cursor: pointer;
+}
+
+.swap > * {
+  grid-column-start: 1;
+  grid-row-start: 1;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  transition-property: transform, opacity;
+}
+
+.swap input {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+}
+
+.swap .swap-on,
+.swap .swap-indeterminate,
+.swap input:indeterminate ~ .swap-on {
+  opacity: 0;
+}
+
+.swap input:checked ~ .swap-off,
+.swap-active .swap-off,
+.swap input:indeterminate ~ .swap-off {
+  opacity: 0;
+}
+
+.swap input:checked ~ .swap-on,
+.swap-active .swap-on,
+.swap input:indeterminate ~ .swap-indeterminate {
+  opacity: 1;
+}
+
 .tabs {
   display: grid;
   align-items: flex-end;
@@ -2982,28 +3019,6 @@ input.tab:checked + .tab-content,
       linear-gradient(0deg, var(--chkbg) 43%, var(--chkfg) 43%, var(--chkfg) 57%, var(--chkbg) 57%);
 }
 
-.checkbox-primary {
-  --chkbg: var(--fallback-p,oklch(var(--p)/1));
-  --chkfg: var(--fallback-pc,oklch(var(--pc)/1));
-  --tw-border-opacity: 1;
-  border-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
-}
-
-.checkbox-primary:focus-visible {
-  outline-color: var(--fallback-p,oklch(var(--p)/1));
-}
-
-.checkbox-primary:checked,
-    .checkbox-primary[checked="true"],
-    .checkbox-primary[aria-checked="true"] {
-  --tw-border-opacity: 1;
-  border-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
-  --tw-bg-opacity: 1;
-  background-color: var(--fallback-p,oklch(var(--p)/var(--tw-bg-opacity)));
-  --tw-text-opacity: 1;
-  color: var(--fallback-pc,oklch(var(--pc)/var(--tw-text-opacity)));
-}
-
 .checkbox:disabled {
   cursor: not-allowed;
   border-color: transparent;
@@ -3326,6 +3341,49 @@ input.tab:checked + .tab-content,
 
 :is([dir="rtl"] .stats > :not([hidden]) ~ :not([hidden])) {
   --tw-divide-x-reverse: 1;
+}
+
+.swap-rotate .swap-on,
+.swap-rotate .swap-indeterminate,
+.swap-rotate input:indeterminate ~ .swap-on {
+  --tw-rotate: 45deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.swap-rotate input:checked ~ .swap-off,
+.swap-active:where(.swap-rotate) .swap-off,
+.swap-rotate input:indeterminate ~ .swap-off {
+  --tw-rotate: -45deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.swap-rotate input:checked ~ .swap-on,
+.swap-active:where(.swap-rotate) .swap-on,
+.swap-rotate input:indeterminate ~ .swap-indeterminate {
+  --tw-rotate: 0deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.swap-flip .swap-on,
+.swap-flip .swap-indeterminate,
+.swap-flip input:indeterminate ~ .swap-on {
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+  opacity: 1;
+}
+
+.swap-flip input:checked ~ .swap-off,
+.swap-active:where(.swap-flip) .swap-off,
+.swap-flip input:indeterminate ~ .swap-off {
+  transform: rotateY(-180deg);
+  backface-visibility: hidden;
+  opacity: 1;
+}
+
+.swap-flip input:checked ~ .swap-on,
+.swap-active:where(.swap-flip) .swap-on,
+.swap-flip input:indeterminate ~ .swap-indeterminate {
+  transform: rotateY(0deg);
 }
 
 .tabs-lifted .tab:focus-visible {
@@ -4032,10 +4090,6 @@ input.tab:checked + .tab-content,
   position: sticky !important;
 }
 
-.inset-0 {
-  inset: 0px !important;
-}
-
 .bottom-0 {
   bottom: 0px !important;
 }
@@ -4267,10 +4321,6 @@ input.tab:checked + .tab-content,
 
 .h-full {
   height: 100% !important;
-}
-
-.h-60 {
-  height: 15rem !important;
 }
 
 .w-1\/2 {
@@ -4526,21 +4576,6 @@ input.tab:checked + .tab-content,
   background-color: rgb(255 255 255 / var(--tw-bg-opacity)) !important;
 }
 
-.bg-black {
-  --tw-bg-opacity: 1 !important;
-  background-color: rgb(0 0 0 / var(--tw-bg-opacity)) !important;
-}
-
-.bg-red-800 {
-  --tw-bg-opacity: 1 !important;
-  background-color: rgb(153 27 27 / var(--tw-bg-opacity)) !important;
-}
-
-.bg-blue-500 {
-  --tw-bg-opacity: 1 !important;
-  background-color: rgb(59 130 246 / var(--tw-bg-opacity)) !important;
-}
-
 .bg-\[url\(\'https\:\/\/source\.unsplash\.com\/random\.jpg\?soldier\'\)\] {
   background-image: url('https://source.unsplash.com/random.jpg?soldier') !important;
 }
@@ -4563,6 +4598,10 @@ input.tab:checked + .tab-content,
 
 .bg-gradient-to-t {
   background-image: linear-gradient(to top, var(--tw-gradient-stops)) !important;
+}
+
+.bg-gradient-to-tl {
+  background-image: linear-gradient(to top left, var(--tw-gradient-stops)) !important;
 }
 
 .from-black\/75 {
@@ -4873,19 +4912,8 @@ input.tab:checked + .tab-content,
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
 }
 
-.shadow-xl {
-  --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1) !important;
-  --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color) !important;
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
-}
-
 .shadow-violet-500 {
   --tw-shadow-color: #8b5cf6 !important;
-  --tw-shadow: var(--tw-shadow-colored) !important;
-}
-
-.shadow-black\/40 {
-  --tw-shadow-color: rgb(0 0 0 / 0.4) !important;
   --tw-shadow: var(--tw-shadow-colored) !important;
 }
 
@@ -4920,51 +4948,12 @@ input.tab:checked + .tab-content,
   transition-duration: 150ms !important;
 }
 
-.duration-1000 {
-  transition-duration: 1000ms !important;
-}
-
 .duration-500 {
   transition-duration: 500ms !important;
 }
 
 .ease-in {
   transition-timing-function: cubic-bezier(0.4, 0, 1, 1) !important;
-}
-
-.ease-in-out {
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-.my-rotate-y-180 {
-  transform: rotateY(180deg) !important;
-}
-
-.preserve-3d {
-  transform-style: preserve-3d !important;
-}
-
-.perspective {
-  perspective: 1000px !important;
-}
-
-.backface-hidden {
-  backface-visibility: hidden !important;
-  -moz-backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
-  -ms-backface-visibility: hidden !important;
-}
-
-.\[transform-style\:preserve-3d\] {
-  transform-style: preserve-3d;
-}
-
-.\[backface-visibility\:hidden\] {
-  backface-visibility: hidden;
-}
-
-.\[transform\:rotateY\(180deg\)\] {
-  transform: rotateY(180deg);
 }
 
 .htmx-settling img {
@@ -5026,6 +5015,34 @@ img {
   transition-delay: 75ms;
 }
 
+.active\:focus\:swap-active:focus:active .swap-off {
+  opacity: 0;
+}
+
+.active\:focus\:swap-active:focus:active .swap-on {
+  opacity: 1;
+}
+
+.active\:focus\:swap-active:focus:active:where(.swap-rotate) .swap-off {
+  --tw-rotate: -45deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.active\:focus\:swap-active:focus:active:where(.swap-rotate) .swap-on {
+  --tw-rotate: 0deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.active\:focus\:swap-active:focus:active:where(.swap-flip) .swap-off {
+  transform: rotateY(-180deg);
+  backface-visibility: hidden;
+  opacity: 1;
+}
+
+.active\:focus\:swap-active:focus:active:where(.swap-flip) .swap-on {
+  transform: rotateY(0deg);
+}
+
 .file\:border-0::file-selector-button {
   border-width: 0px !important;
 }
@@ -5076,21 +5093,6 @@ img {
   color: rgb(17 24 39 / var(--tw-text-opacity)) !important;
 }
 
-.hover\:my-rotate-y-180:hover {
-  transform: rotateY(180deg) !important;
-}
-
-.hover\:backface-hidden:hover {
-  backface-visibility: hidden !important;
-  -moz-backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
-  -ms-backface-visibility: hidden !important;
-}
-
-.hover\:\[transform\:rotateY\(180deg\)\]:hover {
-  transform: rotateY(180deg);
-}
-
 .focus-visible\:outline-none:focus-visible {
   outline: 2px solid transparent !important;
   outline-offset: 2px !important;
@@ -5116,21 +5118,6 @@ img {
 
 .disabled\:opacity-50:disabled {
   opacity: 0.5 !important;
-}
-
-.group:hover .group-hover\:my-rotate-y-180 {
-  transform: rotateY(180deg) !important;
-}
-
-.group:hover .group-hover\:backface-hidden {
-  backface-visibility: hidden !important;
-  -moz-backface-visibility: hidden !important;
-  -webkit-backface-visibility: hidden !important;
-  -ms-backface-visibility: hidden !important;
-}
-
-.group:hover .group-hover\:\[transform\:rotateY\(180deg\)\] {
-  transform: rotateY(180deg);
 }
 
 .peer\/skill_0:checked ~ .peer-checked\/skill_0\:text-secondary {
