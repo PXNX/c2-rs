@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
 {% block title %}User Profile{% endblock %}
-{% block main %}
 
+{% block header %}
 
 <!-- todo: show how many resources are currently lost/earned -->
-<header class="sticky top-0 bg-base-100 p-2">
+<header class="sticky top-0 bg-base-100 z-10 ">
 
     <a href="/market"
-       class="rounded-lg border select-bordered text-card-foreground shadow-sm shadow-violet-500 grid grid-cols-3 gap-4 p-2 ">
+       class="rounded-md drop-shadow-md border flinch select-bordered text-card-foreground shadow-sm shadow-violet-500 grid grid-cols-3 gap-2 p-4 ">
 
 
         <div class="flex flex-row  items-center gap-2">
@@ -118,6 +118,12 @@
 
     </a>
 </header>
+
+{% endblock %}
+
+
+{% block main %}
+
 
 <!--
 <div class="p-6 card ">
@@ -1220,12 +1226,12 @@
     </div>
 </div>
 
-<div class="swap   m-2
- p-2 flinch" onclick="this.classList.toggle('swap-active')"
+<div class="swap z-0  m-2
+ flinch" onclick="this.classList.toggle('swap-active')"
 >
 
 
-    <div class="swap-off  bg-gradient-to-br from-green-800 via-gray-900 to-black rounded-lg">
+    <div class="swap-off  bg-gradient-to-br from-green-800 via-gray-900 to-black rounded-lg w-full h-full p-2 ">
 
 
         <div class="flex w-full justify-between">
@@ -1297,7 +1303,7 @@
     </div>
 
 
-    <div class="swap-on bg-gradient-to-tl from-green-800 via-gray-900 to-black rounded-lg ">
+    <div class="swap-on bg-gradient-to-tl from-green-800 via-gray-900 to-black rounded-lg w-full h-full p-2">
 
 
         <h3 class="font-semibold text-lg ">VSHORAD <span class="text-white">// 1</span></h3>
