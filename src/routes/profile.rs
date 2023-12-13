@@ -102,7 +102,7 @@ async fn profile_settings(
 
     //todo: check unwraps nd use if in template to not display if None
     Ok(ProfileSettingsTemplate {
-        user_name: user.name.unwrap(),
+        user_name: user.name.unwrap_or("".to_string()),
         user_avatar: user.avatar.unwrap_or("".to_string()),
     })
 }

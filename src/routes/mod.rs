@@ -4,7 +4,7 @@ use axum::{
     handler::HandlerWithoutStateExt,
     http::{header, StatusCode, Uri},
     middleware,
-    response::{Html, IntoResponse, Response},
+    response::{IntoResponse, Response},
     Router, routing::get,
 };
 use rust_embed::RustEmbed;
@@ -19,23 +19,21 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 use pages::index;
 
-use crate::routes::meta::meta_router;
-use crate::routes::region::region_router;
 use crate::{
     auth::{
+        error_handling::handle_404,
         login::login,
         middlewares::{check_auth, inject_user_data},
         oauth::auth_router,
     },
     routes::{
-        article::article_router, chat::chat_router, map::map_router, military::military_router,
-        newspaper::newspaper_router, profile::profile_router, welcome::welcome_router,
+        article::article_router, chat::chat_router, country::country_router, docs::docs_router,
+        map::map_router, meta::meta_router, newspaper::newspaper_router,
+        production::production_router, profile::profile_router, region::region_router,
+        team::team_router, training::training_router, welcome::welcome_router,
     },
 };
-use crate::auth::error_handling::handle_404;
-use crate::routes::country::country_router;
-use crate::routes::docs::docs_router;
-use crate::routes::team::team_router;
+
 //use crate::ws::{handle_stream, TodoUpdate};
 
 mod article;
@@ -43,7 +41,7 @@ mod article;
 mod chat;
 mod map;
 mod meta;
-mod military;
+mod training;
 mod newspaper;
 mod pages;
 mod profile;
@@ -52,6 +50,7 @@ mod welcome;
 mod country;
 mod team;
 mod docs;
+mod production;
 
 #[derive(Clone, FromRef)]
 pub struct AppState {
@@ -75,7 +74,8 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         .nest("/user", profile_router())
         .nest("/region", region_router())
         .nest("/country", country_router())
-        .nest("/training", military_router())
+        .nest("/production", production_router())
+        .nest("/training", training_router())
         .nest("/map", map_router())
         .nest("/newspaper", newspaper_router())
         .nest("/article", article_router())

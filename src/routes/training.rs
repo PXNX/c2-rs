@@ -12,14 +12,14 @@ use super::{AppState, UserData};
 
 #[derive(Template)]
 #[template(path = "training/index.html")]
-struct MilitaryTemplate {}
+struct TrainingTemplate {}
 
-pub async fn military(
+pub async fn training(
     Extension(user_data): Extension<Option<UserData>>,
 ) -> Result<impl IntoResponse, AppError> {
-    Ok(MilitaryTemplate {})
+    Ok(TrainingTemplate {})
 }
 
-pub fn military_router() -> Router<AppState> {
-    Router::new().route("/", get(military))
+pub fn training_router() -> Router<AppState> {
+    Router::new().route("/", get(training))
 }
