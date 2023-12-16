@@ -54,7 +54,7 @@ ammonia = "3.3.0"
 futures-util = "0.3.29"
 futures = "0.3.29"
 http = "1.0.0"
-home = "0.5.5"
+home = "0.5.9"
 
 
 

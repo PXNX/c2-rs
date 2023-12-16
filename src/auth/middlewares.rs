@@ -48,6 +48,7 @@ pub async fn inject_user_data(
                     request
                         .extensions_mut()
                         .insert(Some(UserData { id: query.user_id }));
+                    //todo: also add language of user, his role (admin/mod) here
                 }
             }
         }

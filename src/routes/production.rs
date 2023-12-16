@@ -7,6 +7,7 @@ use axum::Router;
 use axum::routing::get;
 
 use crate::auth::error_handling::AppError;
+use crate::common::models::{Equipment, get_producible_equipment};
 
 use super::{AppState, UserData};
 
@@ -22,15 +23,19 @@ pub async fn production(
 
 #[derive(Template)]
 #[template(path = "production/new.html")]
-struct NewProductionTemplate {}
+struct NewProductionTemplate {
+    equipments: Vec<Equipment>,
+}
 
 pub async fn new_production(
     Extension(user_data): Extension<Option<UserData>>,
 ) -> Result<impl IntoResponse, AppError> {
-    Ok(NewProductionTemplate {})
+    Ok(NewProductionTemplate {
+        equipments: get_producible_equipment()
+    })
 }
 
 pub fn production_router() -> Router<AppState> {
-    Router::new().route("/", get(production)).route("/:id", get(new_production),
+    Router::new().route("/", get(production)).route("/new", get(new_production),
     )
 }
