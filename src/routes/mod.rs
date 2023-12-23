@@ -7,6 +7,9 @@ use axum::{
     response::{IntoResponse, Response},
     Router, routing::get,
 };
+use axum_htmx::HX_REDIRECT;
+use http::header::{CACHE_CONTROL, CONTENT_ENCODING, CONTENT_TYPE};
+use http::HeaderMap;
 use rust_embed::RustEmbed;
 use serde::{de::DeserializeOwned, Deserialize};
 use sqlx::PgPool;
@@ -151,15 +154,13 @@ impl<T> IntoResponse for StaticFile<T>
                     "utf-8" //TODO: just don't have any encoding here?
                 };
 
-                (
-                    [
-                        (header::CONTENT_TYPE, mime.as_ref()),
-                        (header::CONTENT_ENCODING, encoding),
-                        (header::CACHE_CONTROL, "36000")
-                    ],
-                    content.data,
-                )
-                    .into_response()
+                let mut headers = HeaderMap::new();
+                //   headers.insert(HX_TRIGGER, "close".parse().unwrap());
+                headers.insert(CONTENT_TYPE, mime.to_string().parse().unwrap());
+                headers.insert(CONTENT_ENCODING, encoding.parse().unwrap());
+                headers.insert(CACHE_CONTROL, "public, max-age=604800, s-maxage=43200".parse().unwrap());
+                //  headers.insert(StatusCode::CREATED)
+                (headers, content.data).into_response()
             }
             None => (StatusCode::NOT_FOUND, "404 Not Found").into_response(),
         }

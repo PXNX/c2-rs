@@ -1,4 +1,5 @@
 use askama::Template;
+use askama_axum::Response;
 use axum::{
     extract::{Extension, Path, State},
     http::StatusCode,
@@ -6,6 +7,9 @@ use axum::{
     routing::get,
     Form, Router,
 };
+use axum_htmx::{HX_REDIRECT, HX_TRIGGER};
+use http::HeaderMap;
+use oauth2::HttpResponse;
 use serde::{Deserialize, Serialize};
 use sqlx::{PgPool, query};
 
@@ -90,6 +94,13 @@ struct ProfileSettingsTemplate {
     user_avatar: String,
 }
 
+#[derive(Template)]
+#[template(path = "user/settings_wrong_input.html")]
+struct ProfileSettingsInputWrongTemplate {
+    user_name: String,
+    user_avatar: String,
+}
+
 async fn profile_settings(
     Extension(user_data): Extension<Option<UserData>>,
     State(db_pool): State<PgPool>,
@@ -117,8 +128,20 @@ async fn edit_profile(
     Extension(user_data): Extension<Option<UserData>>,
     State(db_pool): State<PgPool>,
     Form(input): Form<EditProfile>,
-) -> Result<impl IntoResponse, AppError> {
+) -> Response {
     let user_id = user_data.unwrap().id;
+
+    if input.user_name.len() < 5 {
+        let mut headers = HeaderMap::new();
+        //   headers.insert(HX_TRIGGER, "close".parse().unwrap());
+
+        //  headers.insert(StatusCode::CREATED)
+        return ProfileSettingsInputWrongTemplate {
+            user_name: input.user_name,
+
+            user_avatar: input.user_avatar,
+        }.render().unwrap().into_response();
+    }
 
     query!(
         r#"UPDATE users SET name = $1, avatar = $2 WHERE id=$3;"#,
@@ -127,9 +150,17 @@ async fn edit_profile(
         &user_id
     )
         .execute(&db_pool)
-        .await?;
+        .await.unwrap();
 
-    Ok(Redirect::to("/")) //format!("/u/{user_id}")
+    let mut headers = HeaderMap::new();
+    //   headers.insert(HX_TRIGGER, "close".parse().unwrap());
+    headers.insert(HX_REDIRECT, "/user/settings".to_string().parse().unwrap());
+    //  headers.insert(StatusCode::CREATED)
+
+
+    [
+        (HX_REDIRECT, "/user/settings".to_string()),
+    ].into_response()
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

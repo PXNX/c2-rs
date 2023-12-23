@@ -79,17 +79,18 @@
         </svg>
         Edit profile
     </button>
+
+
     <dialog id="my_modal_3" class="modal">
+
         <div class="modal-box">
             <form method="dialog">
                 <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
             </form>
             <h3 class="font-bold text-lg">Edit profile</h3>
 
-
-            <form class="form-control w-full max-w-xs space-y-4" hx-ext="debug" hx-put="/user/settings">
-
-
+            <form class="form-control w-full max-w-xs space-y-4" hx-ext="debug"
+                  hx-put="/user/settings">
                 <label>Username
                     <input class="input input-bordered w-full" name="user_name" placeholder="Username" required
                            type="text"
@@ -106,7 +107,19 @@
                 </button>
             </form>
         </div>
+
     </dialog>
+
+
+    <script>
+
+        htmx.on("htmx:beforeSwap", (e) => {
+            // Empty response targeting #dialog => hide the modal
+            if (e.detail.target.id === "my_modal_3" && !e.detail.xhr.response) {
+                my_modal_3.hideModal()
+                e.detail.shouldSwap = false
+            }
+        })</script>
 
     <button class="btn btn-secondary w-full justify-start" onclick="my_modal_4.showModal()">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

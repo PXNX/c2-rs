@@ -7,6 +7,8 @@ use axum::{Form, Router};
 use axum::extract::Path;
 use axum::response::Redirect;
 use axum::routing::{get, put};
+use axum_htmx::HX_REDIRECT;
+use http::HeaderMap;
 use serde::{Deserialize, Serialize};
 use sqlx::{PgPool, query};
 
@@ -104,8 +106,11 @@ async fn publish_article(
         .fetch_one(&db_pool)
         .await?;
 
-//TODO: redirect properly, don't swap
-    Ok(Redirect::to(format!("/a/{}", query.id).as_str()))
+
+    let mut headers = HeaderMap::new();
+    headers.insert(HX_REDIRECT, format!("/article/{}", query.id).parse().unwrap());
+
+    Ok((headers, ))
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

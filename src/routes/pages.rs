@@ -15,3 +15,4 @@ pub async fn index<T>(
 ) -> Result<impl IntoResponse, AppError> {
     Ok(IndexTemplate {})
 }
+
