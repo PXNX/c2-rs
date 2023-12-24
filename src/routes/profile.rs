@@ -1,19 +1,17 @@
 use askama::Template;
 use askama_axum::Response;
-use axum::{
-    extract::{Extension, Path, State},
-    http::StatusCode,
-    response::{IntoResponse, Redirect},
-    routing::get,
-    Form, Router,
-};
-use axum_htmx::{HX_REDIRECT, HX_TRIGGER};
+use axum::{extract::{Extension, Path, State}, http::StatusCode, response::{IntoResponse, Redirect}, routing::get, Form, Router, async_trait};
+use axum_extra::headers;
+use axum_htmx::{HX_REDIRECT, HX_RESWAP, HX_RETARGET, HX_TRIGGER};
 use http::HeaderMap;
 use oauth2::HttpResponse;
+use reqwest::Client;
+use reqwest::header::CONTENT_TYPE;
 use serde::{Deserialize, Serialize};
 use sqlx::{PgPool, query};
-
+use validator::{Validate, ValidationError};
 use crate::auth::error_handling::AppError;
+use crate::auth::middlewares::ValidatedForm;
 
 use super::{AppState, UserData};
 
@@ -99,6 +97,8 @@ struct ProfileSettingsTemplate {
 struct ProfileSettingsInputWrongTemplate {
     user_name: String,
     user_avatar: String,
+
+    error_message: String,
 }
 
 async fn profile_settings(
@@ -118,16 +118,19 @@ async fn profile_settings(
     })
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Validate, Deserialize)]
 struct EditProfile {
+    #[validate(length(min = 10, message = "too short"))]
     user_name: String,
+    #[validate(length(min = 3, message = "Can not be empty"))]
     user_avatar: String,
 }
+
 
 async fn edit_profile(
     Extension(user_data): Extension<Option<UserData>>,
     State(db_pool): State<PgPool>,
-    Form(input): Form<EditProfile>,
+    ValidatedForm(input): ValidatedForm<EditProfile>,
 ) -> Response {
     let user_id = user_data.unwrap().id;
 
@@ -140,8 +143,48 @@ async fn edit_profile(
             user_name: input.user_name,
 
             user_avatar: input.user_avatar,
+            error_message: "Username has to be at least 5 characters long.".to_string(),
         }.render().unwrap().into_response();
     }
+
+    if !input.user_avatar.is_empty() && !vec![".png", ".jpg", ".jpeg"].iter().any(|e| input.user_avatar.ends_with(e)) {
+        /*   return ProfileSettingsInputWrongTemplate {
+               user_name: input.user_name,
+
+               user_avatar: input.user_avatar,
+               error_message: "Avatar is not a valid image url.".to_string(),
+           }.render().unwrap().into_response();
+
+         */
+        ///     ([(HX_RETARGET, "#my_modal_4")], "testT").into_response();
+        //  return (StatusCode::BAD_REQUEST, "Test").into_response();
+
+        let line = stringify!(input.user_avatar);
+
+        let start_bytes = line.find(".").unwrap_or(0) + 1; //index where "pattern" starts
+        // or beginning of line if
+        // "pattern" not found
+        let end_bytes = line.find(":").unwrap_or(line.len()); //index where "<" is found
+        // or end of line
+
+        let result = &line[start_bytes..end_bytes];
+
+
+        //   let elem: &str = stringify!(input.user_avatar).split_once(':').unwrap().rsplit_once(".").unwrap();
+
+        let mut headers = HeaderMap::new();
+        //   headers.insert(HX_TRIGGER, "close".parse().unwrap());
+        headers.insert(HX_RETARGET, format!(r#"input[name="{}"]"#, result).to_string().parse().unwrap());
+        headers.insert(HX_RESWAP, "afterend".to_string().parse().unwrap());
+        //  headers.insert(StatusCode::CREATED)
+
+
+        return
+            (headers, r#"
+    <span class="label label-text-alt text-error">Bottom Left label</span>"#.to_string())
+                .into_response();
+    }
+
 
     query!(
         r#"UPDATE users SET name = $1, avatar = $2 WHERE id=$3;"#,

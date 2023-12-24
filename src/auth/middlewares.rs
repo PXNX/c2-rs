@@ -1,18 +1,20 @@
-use axum::{
-    extract::{Request, State},
-    middleware::Next,
-    response::{IntoResponse, Redirect},
-};
+use askama::Template;
+use axum::{async_trait, extract::{Request, State}, Form, middleware::Next, response::{IntoResponse, Redirect}};
 use axum::body::Body;
+use axum::extract::{rejection::FormRejection};
 use axum_extra::{headers::Cookie, TypedHeader};
 use chrono::Utc;
+use serde::de::DeserializeOwned;
 use sqlx::{PgPool, query};
+use validator::{Validate, ValidationErrors};
+use axum::extract::FromRequest;
+use axum::response::Response;
+use axum_htmx::{HX_RESWAP, HX_RETARGET};
+use http::{HeaderMap, StatusCode};
 use crate::auth::SESSION_TOKEN;
-
 use crate::routes::UserData;
-
+use thiserror::Error;
 use super::error_handling::AppError;
-
 
 pub async fn inject_user_data(
     State(db_pool): State<PgPool>,
@@ -71,4 +73,95 @@ pub async fn check_auth(request: Request, next: Next) -> Result<impl IntoRespons
         let login_url = "/login?next=".to_owned() + &*request.uri().to_string();
         Ok(Redirect::to(login_url.as_str()).into_response())
     }
+}
+
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct ValidatedForm<T>(pub T);
+
+#[async_trait]
+impl<T, S> FromRequest<S> for ValidatedForm<T>
+    where
+        T: DeserializeOwned + Validate,
+        S: Send + Sync,
+        Form<T>: FromRequest<S, Rejection=FormRejection>,
+{
+    type Rejection = Response;
+
+    async fn from_request(req: Request, state: &S) -> Result<Self, Self::Rejection> {
+        let Form(value) = Form::<T>::from_request(req, state).await.unwrap();
+        match value.validate() {
+            Ok(_) => Ok(ValidatedForm(value)),
+            Err(e) => {
+                let e: ValidationErrors = e;
+
+                let line = stringify!(value);
+
+                let start_bytes = line.find(".").unwrap_or(0) + 1; //index where "pattern" starts
+                // or beginning of line if
+                // "pattern" not found
+                let end_bytes = line.find(":").unwrap_or(line.len()); //index where "<" is found
+                // or end of line
+
+                let result = &line[start_bytes..end_bytes];
+
+                //  e.field_errors().keys().iterator().next(); //.join(";")
+
+                //  ValidationErrors::new()
+
+                //   let elem: &str = stringify!(input.user_avatar).split_once(':').unwrap().rsplit_once(".").unwrap();
+
+                let mut headers = HeaderMap::new();
+                //   headers.insert(HX_TRIGGER, "close".parse().unwrap());
+                headers.insert(HX_RETARGET, format!(r#"input[name="{}"]"#, &e.field_errors().keys().map(|s| &**s).collect::<Vec<_>>().join(r#""];input[name=""#)).to_string().parse().unwrap());
+                headers.insert(HX_RESWAP, "afterend".to_string().parse().unwrap());
+                //  headers.insert(StatusCode::CREATED)
+
+
+                let er = &e.field_errors().get("user_name").unwrap()[0].message.clone().unwrap();
+
+                return Err((headers, format!(r#" <span class="label label-text-alt text-error">{}</span>"#, er.to_string())).into_response())
+                ;
+
+                /*        Err(ProfileSettingsInputWrongTemplate {
+                            user_name: "dd".to_string(),
+                            user_avatar: "d".to_string(),
+                            error_message: "ddddd".to_string(),
+                        }.render().unwrap()) */
+            }
+        }
+    }
+}
+
+
+#[derive(Debug, Error)]
+pub enum ServerError {
+    #[error(transparent)]
+    ValidationError(#[from] validator::ValidationErrors),
+
+    #[error(transparent)]
+    AxumFormRejection(#[from] FormRejection),
+}
+
+impl IntoResponse for ServerError {
+    fn into_response(self) -> Response {
+        match self {
+            ServerError::ValidationError(_) => {
+                let message = format!("Input validation error: [{self}]").replace('\n', ", ");
+                (StatusCode::BAD_REQUEST, message)
+            }
+            ServerError::AxumFormRejection(_) => (StatusCode::BAD_REQUEST, self.to_string()),
+        }
+            .into_response()
+    }
+}
+
+
+#[derive(Template)]
+#[template(path = "user/settings_wrong_input.html")]
+struct ProfileSettingsInputWrongTemplate {
+    user_name: String,
+    user_avatar: String,
+
+    error_message: String,
 }
