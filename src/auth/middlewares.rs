@@ -113,14 +113,18 @@ impl<T, S> FromRequest<S> for ValidatedForm<T>
 
                 let mut headers = HeaderMap::new();
                 //   headers.insert(HX_TRIGGER, "close".parse().unwrap());
-                headers.insert(HX_RETARGET, format!(r#"input[name="{}"]"#, &e.field_errors().keys().map(|s| &**s).collect::<Vec<_>>().join(r#""];input[name=""#)).to_string().parse().unwrap());
-                headers.insert(HX_RESWAP, "afterend".to_string().parse().unwrap());
+                headers.insert(HX_RETARGET, format!(r#"input[name="{}"]"#, &e.field_errors().keys().map(|s| &**s).collect::<Vec<_>>().join(r#""],input[name=""#)).to_string().parse().unwrap());
+                headers.insert(HX_RESWAP, "afterend".parse().unwrap());
                 //  headers.insert(StatusCode::CREATED)
 
 
-                let er = &e.field_errors().get("user_name").unwrap()[0].message.clone().unwrap();
+                let mut txt: String = "".to_string();
 
-                return Err((headers, format!(r#" <span class="label label-text-alt text-error">{}</span>"#, er.to_string())).into_response())
+                for x in e.field_errors() {
+                    txt += &*format!(r#" <span class="label label-text-alt text-error">{}</span>"#, x.1[0].message.as_ref().unwrap())
+                }
+
+                return Err((headers, txt).into_response())
                 ;
 
                 /*        Err(ProfileSettingsInputWrongTemplate {
