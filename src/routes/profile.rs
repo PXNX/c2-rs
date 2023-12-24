@@ -157,7 +157,10 @@ async fn edit_profile(
         }
         Err(e) => {
             let mut fruits: HashMap<String, String> = HashMap::new();
-            fruits.insert("user_name".to_string(), "NO".to_string());
+            for x in e.field_errors() {
+                fruits.insert(x.0.to_string(), x.1[0].message.as_ref().unwrap().to_string());
+            }
+
 
             Ok(ProfileSettingsEditTemplate {
                 user_name: input.user_name,
