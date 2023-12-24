@@ -1,3 +1,4 @@
+use std::collections::BTreeMap;
 use askama::Template;
 use axum::{async_trait, extract::{Request, State}, Form, middleware::Next, response::{IntoResponse, Redirect}};
 use axum::body::Body;
@@ -162,10 +163,10 @@ impl IntoResponse for ServerError {
 
 
 #[derive(Template)]
-#[template(path = "user/settings_wrong_input.html")]
-struct ProfileSettingsInputWrongTemplate {
+#[template(path = "user/partial/settings_edit.html")]
+struct ProfileSettingsInputWrongTemplate<'a> {
     user_name: String,
     user_avatar: String,
 
-    error_message: String,
+    errors: &'a BTreeMap<String, String>,
 }

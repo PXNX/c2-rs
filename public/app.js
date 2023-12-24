@@ -111,7 +111,7 @@ function showMap(img:HTMLImageElement) {
     });
 
     document.getElementById("map").classList.remove("hidden");
-}
+}*/
 
 function shareLink(title, url = window.location.href) {
     if (navigator.share) {
@@ -127,47 +127,50 @@ function shareLink(title, url = window.location.href) {
     } else {
         // fallback
     }
-} */
-import { Map, View } from "ol";
+}
+
+import {Map, View} from "ol";
 import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
+
 export function replaceImg(img) {
-  img.onerror = null;
-  img.src = "/dist/icons/account.svg";
+    img.onerror = null;
+    img.src = "/dist/icons/account.svg";
 }
+
 export const registerServiceWorker = async () => {
-  if ("serviceWorker" in navigator) {
-    try {
-      const registration = await navigator.serviceWorker.register(
-        "/dist/sw.js",
-        {
-          scope: "/",
+    if ("serviceWorker" in navigator) {
+        try {
+            const registration = await navigator.serviceWorker.register(
+                "/dist/sw.js",
+                {
+                    scope: "/",
+                }
+            );
+            if (registration.installing) {
+                console.log("Service worker installing");
+            } else if (registration.waiting) {
+                console.log("Service worker installed");
+            } else if (registration.active) {
+                console.log("Service worker active");
+            }
+        } catch (error) {
+            console.error(`Registration failed with ${error}`);
         }
-      );
-      if (registration.installing) {
-        console.log("Service worker installing");
-      } else if (registration.waiting) {
-        console.log("Service worker installed");
-      } else if (registration.active) {
-        console.log("Service worker active");
-      }
-    } catch (error) {
-      console.error(`Registration failed with ${error}`);
     }
-  }
 };
 //https://www.digitalocean.com/community/tools/minify
 //const {ol} = require('ol');
 export function showMap2() {
-  console.log("ma2p");
-  new Map({
-    layers: [new TileLayer({ source: new OSM() })],
-    view: new View({
-      center: [0, 0],
-      zoom: 2,
-    }),
-    target: "map",
-  });
+    console.log("ma2p");
+    new Map({
+        layers: [new TileLayer({source: new OSM()})],
+        view: new View({
+            center: [0, 0],
+            zoom: 2,
+        }),
+        target: "map",
+    });
 }
 
 showMap2();

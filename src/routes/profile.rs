@@ -1,3 +1,4 @@
+use std::collections::{BTreeMap, HashMap};
 use askama::Template;
 use askama_axum::Response;
 use axum::{extract::{Extension, Path, State}, http::StatusCode, response::{IntoResponse, Redirect}, routing::get, Form, Router, async_trait};
@@ -9,7 +10,7 @@ use reqwest::Client;
 use reqwest::header::CONTENT_TYPE;
 use serde::{Deserialize, Serialize};
 use sqlx::{PgPool, query};
-use validator::{Validate, ValidationError};
+use validator::{Validate, ValidationError, ValidationErrors};
 use crate::auth::error_handling::AppError;
 use crate::auth::middlewares::ValidatedForm;
 
@@ -90,16 +91,9 @@ async fn profile(
 struct ProfileSettingsTemplate {
     user_name: String,
     user_avatar: String,
+    errors: BTreeMap<String, String>,
 }
 
-#[derive(Template)]
-#[template(path = "user/settings_wrong_input.html")]
-struct ProfileSettingsInputWrongTemplate {
-    user_name: String,
-    user_avatar: String,
-
-    error_message: String,
-}
 
 async fn profile_settings(
     Extension(user_data): Extension<Option<UserData>>,
@@ -115,7 +109,18 @@ async fn profile_settings(
     Ok(ProfileSettingsTemplate {
         user_name: user.name.unwrap_or("".to_string()),
         user_avatar: user.avatar.unwrap_or("".to_string()),
+        errors: Default::default(),
     })
+}
+
+#[derive(Template)]
+#[template(path = "user/partial/settings_edit.html")]
+struct ProfileSettingsEditTemplate {
+    user_name: String,
+    user_avatar: String,
+
+    //   error_message: String,
+    errors: HashMap<String, String>,
 }
 
 #[derive(Clone, Debug, Validate, Deserialize)]
@@ -130,80 +135,39 @@ struct EditProfile {
 async fn edit_profile(
     Extension(user_data): Extension<Option<UserData>>,
     State(db_pool): State<PgPool>,
-    ValidatedForm(input): ValidatedForm<EditProfile>,
-) -> Response {
+    Form(input): Form<EditProfile>,
+) -> Result<Response, AppError> {
     let user_id = user_data.unwrap().id;
 
-    if input.user_name.len() < 5 {
-        let mut headers = HeaderMap::new();
-        //   headers.insert(HX_TRIGGER, "close".parse().unwrap());
-
-        //  headers.insert(StatusCode::CREATED)
-        return ProfileSettingsInputWrongTemplate {
-            user_name: input.user_name,
-
-            user_avatar: input.user_avatar,
-            error_message: "Username has to be at least 5 characters long.".to_string(),
-        }.render().unwrap().into_response();
-    }
-
-    if !input.user_avatar.is_empty() && !vec![".png", ".jpg", ".jpeg"].iter().any(|e| input.user_avatar.ends_with(e)) {
-        /*   return ProfileSettingsInputWrongTemplate {
-               user_name: input.user_name,
-
-               user_avatar: input.user_avatar,
-               error_message: "Avatar is not a valid image url.".to_string(),
-           }.render().unwrap().into_response();
-
-         */
-        ///     ([(HX_RETARGET, "#my_modal_4")], "testT").into_response();
-        //  return (StatusCode::BAD_REQUEST, "Test").into_response();
-
-        let line = stringify!(input.user_avatar);
-
-        let start_bytes = line.find(".").unwrap_or(0) + 1; //index where "pattern" starts
-        // or beginning of line if
-        // "pattern" not found
-        let end_bytes = line.find(":").unwrap_or(line.len()); //index where "<" is found
-        // or end of line
-
-        let result = &line[start_bytes..end_bytes];
-
-
-        //   let elem: &str = stringify!(input.user_avatar).split_once(':').unwrap().rsplit_once(".").unwrap();
-
-        let mut headers = HeaderMap::new();
-        //   headers.insert(HX_TRIGGER, "close".parse().unwrap());
-        headers.insert(HX_RETARGET, format!(r#"input[name="{}"]"#, result).to_string().parse().unwrap());
-        headers.insert(HX_RESWAP, "afterend".to_string().parse().unwrap());
-        //  headers.insert(StatusCode::CREATED)
-
-
-        return
-            (headers, r#"
-    <span class="label label-text-alt text-error">Bottom Left label</span>"#.to_string())
-                .into_response();
-    }
-
-
-    query!(
+    match input.validate() {
+        Ok(_) => {
+            query!(
         r#"UPDATE users SET name = $1, avatar = $2 WHERE id=$3;"#,
         input.user_name,
         input.user_avatar,
         &user_id
     )
-        .execute(&db_pool)
-        .await.unwrap();
-
-    let mut headers = HeaderMap::new();
-    //   headers.insert(HX_TRIGGER, "close".parse().unwrap());
-    headers.insert(HX_REDIRECT, "/user/settings".to_string().parse().unwrap());
-    //  headers.insert(StatusCode::CREATED)
+                .execute(&db_pool)
+                .await.unwrap();
 
 
-    [
-        (HX_REDIRECT, "/user/settings".to_string()),
-    ].into_response()
+            Ok([
+                (HX_REDIRECT, "/user/settings".to_string()),
+            ].into_response())
+        }
+        Err(e) => {
+            let mut fruits: HashMap<String, String> = HashMap::new();
+            fruits.insert("user_name".to_string(), "NO".to_string());
+
+            Ok(ProfileSettingsEditTemplate {
+                user_name: input.user_name,
+
+                user_avatar: input.user_avatar,
+                //     error_message: "Username has to be at least 5 characters long.".to_string(),
+                errors: fruits,
+            }.render().unwrap().into_response())
+        }
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

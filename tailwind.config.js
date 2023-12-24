@@ -30,7 +30,7 @@ const backfaceVisibility = plugin(function ({addUtilities}) {
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    mode: 'jit',
+    //  mode: 'jit',
     important: true,
     // mode: 'jit',
     content: ["./templates/**/*.html"],
