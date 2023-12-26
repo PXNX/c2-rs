@@ -157,3 +157,31 @@ img {
     font-size: 1.2em;
     pointer-events: none;
 }
+
+.htmx-indicator {
+    display: none;
+    transition: opacity 500ms ease-in;
+}
+
+/*
+.icon {
+    display: inline;
+    transition: opacity 500ms ease-out;
+}*/
+
+.htmx-request .htmx-indicator {
+    display: inline;
+}
+
+.htmx-request.htmx-indicator {
+    display: inline;
+}
+
+/*
+.htmx-request .icon {
+    display: none;
+}
+
+.htmx-request.icon {
+    display: none;
+}*/

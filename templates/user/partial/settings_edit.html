@@ -1,60 +1,34 @@
+<label class="label-text">Username
+    <input class="input input-bordered w-full   {% if errors.contains_key(" user_name") %} input-error{% else %}
+    input-primary{% endif %}" name="user_name" placeholder="Username"
+    required
+    type="text"
+    value="{{user_name}}"/>
+    {% if errors.contains_key("user_name") %}
+    <span class="label label-text-alt text-error">{{errors["user_name"]}}</span>
+    {% endif %}
+</label>
 
-    <label class="label-text">Username
-        <input class="input input-bordered w-full   {% if errors.contains_key("user_name") %} input-error{% else %}  input-primary{% endif %}" name="user_name" placeholder="Username"
-               required
-               type="text"
-               value="{{user_name}}"/>
-        {% if errors.contains_key("user_name") %}
-        <span class="label label-text-alt text-error">{{errors["user_name"]}}</span>
-        {% endif %}
-    </label>
+<label>Avatar URL
+    <input class="input input-bordered w-full {% if errors.contains_key(" user_avatar") %} input-error{% else %}
+    input-primary{% endif %}" name="user_avatar" placeholder="Avatar Url" type="text"
+    value="{{user_avatar}}"/>
+    {% if errors.contains_key("user_avatar") %}
+    <span class="label label-text-alt text-error">{{errors["user_avatar"]}}</span>
+    {% endif %}
+</label>
+<button class="btn btn-primary btn-wide" hx-ext="debug" hx-indicator="#spinner"   hx-disable-element="self" data-loading-class="bg-gray-100 opacity-80">
+
+           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 icon" fill="currentColor" viewBox="0 0 24 24"
+                stroke="none">
+        <path d="M21.1,12.5L22.5,13.91L15.97,20.5L12.5,17L13.9,15.59L15.97,17.67L21.1,12.5M11,4A4,4 0 0,1 15,8A4,4 0 0,1 11,12A4,4 0 0,1 7,8A4,4 0 0,1 11,4M11,6A2,2 0 0,0 9,8A2,2 0 0,0 11,10A2,2 0 0,0 13,8A2,2 0 0,0 11,6M11,13C11.68,13 12.5,13.09 13.41,13.26L11.74,14.93L11,14.9C8.03,14.9 4.9,16.36 4.9,17V18.1H11.1L13,20H3V17C3,14.34 8.33,13 11,13Z"/>
+    </svg>
+
+    Save changes
 
 
-    <label>Avatar URL
-        <input class="input input-bordered w-full {% if errors.contains_key("user_avatar") %} input-error{% else %}  input-primary{% endif %}" name="user_avatar" placeholder="Avatar Url" type="text"
-               value="{{user_avatar}}"/>
-        {% if errors.contains_key("user_avatar") %}
-        <span class="label label-text-alt text-error">{{errors["user_avatar"]}}</span>
-        {% endif %}
-    </label>
-    <button class="btn btn-primary btn-wide" hx-ext="debug"   hx-indicator="#spinner">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 icon" fill="currentColor" viewBox="0 0 24 24"
-             stroke="none">
-            <path d="M21.1,12.5L22.5,13.91L15.97,20.5L12.5,17L13.9,15.59L15.97,17.67L21.1,12.5M11,4A4,4 0 0,1 15,8A4,4 0 0,1 11,12A4,4 0 0,1 7,8A4,4 0 0,1 11,4M11,6A2,2 0 0,0 9,8A2,2 0 0,0 11,10A2,2 0 0,0 13,8A2,2 0 0,0 11,6M11,13C11.68,13 12.5,13.09 13.41,13.26L11.74,14.93L11,14.9C8.03,14.9 4.9,16.36 4.9,17V18.1H11.1L13,20H3V17C3,14.34 8.33,13 11,13Z"/>
-        </svg>
 
-        <svg  id="spinner" class="htmx-indicator h-6 w-6" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
-        <circle cx="50" cy="50" r="0" fill="none" stroke="#009ef7" stroke-width="1">
-            <animate attributeName="r" repeatCount="indefinite" dur="0.8928571428571428s" values="0;40" keyTimes="0;1" keySplines="0 0.2 0.8 1" calcMode="spline" begin="0s"></animate>
-            <animate attributeName="opacity" repeatCount="indefinite" dur="0.8928571428571428s" values="1;0" keyTimes="0;1" keySplines="0.2 0 0.8 1" calcMode="spline" begin="0s"></animate>
-        </circle><circle cx="50" cy="50" r="0" fill="none" stroke="#ffffff" stroke-width="1">
-        <animate attributeName="r" repeatCount="indefinite" dur="0.8928571428571428s" values="0;40" keyTimes="0;1" keySplines="0 0.2 0.8 1" calcMode="spline" begin="-0.4464285714285714s"></animate>
-        <animate attributeName="opacity" repeatCount="indefinite" dur="0.8928571428571428s" values="1;0" keyTimes="0;1" keySplines="0.2 0 0.8 1" calcMode="spline" begin="-0.4464285714285714s"></animate>
-    </circle>
-   </svg>
+    <object type="image/svg+xml" data="/dist/loading.svg" id="spinner" class="htmx-indicator h-6 w-6"></object>
+</button>
 
-        Save changes
-    </button>
 
-    <style>
-        .htmx-indicator{
-            display:none;
-            transition: opacity 500ms ease-in;
-        }
-        .icon{
-            display:inline;
-            transition: opacity 500ms ease-out;
-        }
-        .htmx-request .htmx-indicator{
-            display:inline;
-        }
-        .htmx-request.htmx-indicator{
-            display:inline;
-        }
-        .htmx-request .icon{
-            display:none;
-        }
-        .htmx-request.icon{
-            display:none;
-        }
-    </style>
