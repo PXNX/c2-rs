@@ -27,6 +27,18 @@
 
 {% block main %}
 
+
+<div id="map"></div>
+
+<style>
+    #map {
+        height: 150vh;
+        width: 70vw;
+        background: linear-gradient(blue, green);
+        touch-action: pinch-zoom pan-x pan-y;
+    }
+</style>
+
 <script src="//d3js.org/d3.v7.min.js" charset="utf-8"></script>
 <script src="//d3js.org/topojson.v3.min.js"></script>
 <!--
@@ -106,6 +118,7 @@
 </script>
 -->
 
+<!--
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="relative z-10 w-full max-h-400 overflow-hidden">
         <svg class="w-full h-full" viewBox="0 0 400 400">
@@ -186,5 +199,5 @@
             }
         </script>
     </div>
-</div>
+</div> ->
 {% endblock %}

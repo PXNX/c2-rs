@@ -4836,10 +4836,6 @@ input.tab:checked + .tab-content,
   background-image: url('https://victorypark.com.ua/wp-content/uploads/2023/04/banner_azov.jpeg') !important;
 }
 
-.bg-\[url\(\'https\:\/\/wallpapers\.com\/images\/featured\/tank-16m4grmxq22z6mao\.jpg\'\)\] {
-  background-image: url('https://wallpapers.com/images/featured/tank-16m4grmxq22z6mao.jpg') !important;
-}
-
 .bg-gradient-to-b {
   background-image: linear-gradient(to bottom, var(--tw-gradient-stops)) !important;
 }

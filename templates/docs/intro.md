@@ -28,8 +28,7 @@ The game is played in real-time. You can do the following:
 - Form alliances: Form alliances with other states to share resources and troops.
 - Conquer states: Send your troops to conquer new states.
 
-The game is over when one player has conquered all of the states on the map.
-Game Strategy
+# Game Strategy
 
 There are a few key strategies that you can use to win the game:
 
