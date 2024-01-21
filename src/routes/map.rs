@@ -13,13 +13,17 @@ use super::{AppState, UserData};
 
 #[derive(Template)]
 #[template(path = "map.html")]
-struct MapTemplate {}
+struct MapTemplate {
+    map: String
+}
 
 async fn map(
     Extension(user_data): Extension<Option<UserData>>,
     State(db_pool): State<PgPool>,
 ) -> Result<impl IntoResponse, AppError> {
-    Ok(MapTemplate {})
+    Ok(MapTemplate {
+        map: include_str!("../../templates/map.svg").parse().unwrap()
+    })
 }
 
 pub fn map_router() -> Router<AppState> {

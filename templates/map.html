@@ -28,7 +28,7 @@
 {% block main %}
 
 
-<div id="map"></div>
+
 
 <style>
     #map {
@@ -37,10 +37,41 @@
         background: linear-gradient(blue, green);
         touch-action: pinch-zoom pan-x pan-y;
     }
-</style>
 
+
+    .container {
+        width: 500px;
+        height: 400px;
+        overflow: hidden;
+        border: solid 1px black;
+    }
+
+
+
+    #svg {
+        border: 2px #333;
+        border-style: solid none;
+        box-sizing: border-box;
+        overflow: hidden;
+        width: 100%;
+        height: calc(100dvh - 128px);
+    }
+
+    #info {
+        box-sizing: border-box;
+        border: 1px solid #DEDEDE;
+        padding: 10px;
+        width: 600px;
+    }
+
+    #info p {
+        margin: 0;
+        padding: 1px;
+    }
+</style>
+<!--
 <script src="//d3js.org/d3.v7.min.js" charset="utf-8"></script>
-<script src="//d3js.org/topojson.v3.min.js"></script>
+<script src="//d3js.org/topojson.v3.min.js"></script> -->
 <!--
 <script>
     d3.json("/dist/us.json", function (error, us) {
@@ -117,6 +148,11 @@
 
 </script>
 -->
+
+
+{% include "map.svg" %}
+
+<script type="text/javascript" src="/dist/script.js"></script>
 
 <!--
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
