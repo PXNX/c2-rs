@@ -49,7 +49,7 @@
 
 
     #svg {
-        border: 2px #333;
+        border: 1px #333;
         border-style: solid none;
         box-sizing: border-box;
         overflow: hidden;
@@ -64,176 +64,36 @@
         width: 600px;
     }
 
+    .province{stroke:#1d232a;stroke-width:.5;opacity:1}
+    path:hover{
+        fill:#fff
+    }
+
+    .city{fill:#a59890}
+    .wasteland{fill:#91847c}
+
+    .uncolonized{fill:#a59890}
+
     #info p {
         margin: 0;
         padding: 1px;
     }
 </style>
-<!--
-<script src="//d3js.org/d3.v7.min.js" charset="utf-8"></script>
-<script src="//d3js.org/topojson.v3.min.js"></script> -->
-<!--
-<script>
-    d3.json("/dist/us.json", function (error, us) {
-        const width = 975;
-        const height = 610;
 
-        const zoom = d3.zoom()
-            .scaleExtent([1, 8])
-            .on("zoom", zoomed);
+<div class="flex">
 
-        const svg = d3.select("main").append("svg")
-            .attr("viewBox", [0, 0, width, height])
-            .attr("width", width)
-            .attr("height", height)
-            .attr("style", "max-width: 100%; height: auto;")
-            .on("click", reset);
-
-        const path = d3.geoPath();
-
-        const g = svg.append("g");
-
-
-        const states = g.append("g")
-            .attr("fill", "#444")
-            .attr("cursor", "pointer")
-            .selectAll("path")
-            .data(topojson.feature(us, us.objects.states).features)
-            .join("path")
-            .on("click", clicked)
-            .attr("d", path);
-
-
-        states.append("title")
-            .text(d => d.properties.name);
-
-        g.append("path")
-            .attr("fill", "none")
-            .attr("stroke", "white")
-            .attr("stroke-linejoin", "round")
-            .attr("d", path(topojson.mesh(us, us.objects.states, (a, b) => a !== b)));
-
-        svg.call(zoom);
-
-        function reset() {
-            states.transition().style("fill", null);
-            svg.transition().duration(750).call(
-                zoom.transform,
-                d3.zoomIdentity,
-                d3.zoomTransform(svg.node()).invert([width / 2, height / 2])
-            );
-        }
-
-        function clicked(event, d) {
-            const [[x0, y0], [x1, y1]] = path.bounds(d);
-            event.stopPropagation();
-            states.transition().style("fill", null);
-            d3.select(this).transition().style("fill", "red");
-            svg.transition().duration(750).call(
-                zoom.transform,
-                d3.zoomIdentity
-                    .translate(width / 2, height / 2)
-                    .scale(Math.min(8, 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height)))
-                    .translate(-(x0 + x1) / 2, -(y0 + y1) / 2),
-                d3.pointer(event, svg.node())
-            );
-        }
-
-        function zoomed(event) {
-            const {transform} = event;
-            g.attr("transform", transform);
-            g.attr("stroke-width", 1 / transform.k);
-        }
-    });
-
-</script>
--->
 
 
 {% include "map.svg" %}
 
+<dialog id="dia" open class="bg-red-400 h-64 w-1/2 z-10">
+
+
+
+</dialog>
+</div>
 <script type="text/javascript" src="/dist/script.js"></script>
 
-<!--
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="relative z-10 w-full max-h-400 overflow-hidden">
-        <svg class="w-full h-full" viewBox="0 0 400 400">
-            <rect x="0" y="0" width="400" height="400" fill="#ccc"></rect>
-        </svg>
 
-        <script>
-            // Create a selection for the SVG container
-            const svg = d3.select('.relative');
 
-            // Set the initial scale to 1
-            let scale = 1;
-
-            // Event handler for zooming with mouse wheel
-            svg.on('wheel', () => {
-                const delta = d3.event.wheelDeltaY;
-
-                // Zoom in if scrolled up
-                if (delta > 0) {
-                    scale *= 1.1;
-                }
-                // Zoom out if scrolled down
-                else if (delta < 0) {
-                    scale *= 0.9;
-                }
-
-                // Update the scale and translate the SVG accordingly
-                updateScaleAndTranslate();
-            });
-
-            // Event handler for panning with touch events
-            svg.on('touchstart', (event) => {
-                const touches = d3.touches(event);
-                const touch = touches[0];
-
-                // Store the initial touch position
-                const initialX = touch.x;
-                const initialY = touch.y;
-            });
-
-            svg.on('touchmove', (event) => {
-                const touches = d3.touches(event);
-                const touch = touches[0];
-
-                // Pan the SVG by the difference between the current touch position and the initial position
-                const panX = initialX - touch.x;
-                const panY = initialY - touch.y;
-
-                const translate = d3.transform.translate(panX, panY);
-                svg.attr('transform', translate);
-            });
-
-            // Event handler for panning with click and drag events
-            svg.on('mousedown', (event) => {
-                const mouseDownX = event.offsetX;
-                const mouseDownY = event.offsetY;
-            });
-
-            svg.on('mouseup', (event) => {
-                // Prevent default browser behavior to prevent the click event
-                event.preventDefault();
-            });
-
-            svg.on('mousemove', (event) => {
-                // Prevent default browser behavior to prevent the scroll event
-                event.preventDefault();
-
-                const offsetX = event.offsetX - mouseDownX;
-                const offsetY = event.offsetY - mouseDownY;
-
-                const translate = d3.transform.translate(offsetX, offsetY);
-                svg.attr('transform', translate);
-            });
-
-            // Function to update the scale and translate the SVG
-            function updateScaleAndTranslate() {
-                svg.attr('transform', d3.transform.scale(scale).translate(-200, -200));
-            }
-        </script>
-    </div>
-</div> ->
 {% endblock %}
