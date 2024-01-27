@@ -189,7 +189,7 @@ struct NewspaperPreview {
 }
 
 #[derive(Template)]
-#[template(path = "newspaper/index.html")]
+#[template(path = "newspaper/index.html",print = "all")]
 struct NewspapersTemplate {
     newspapers: Vec<NewspaperPreview>,
 }

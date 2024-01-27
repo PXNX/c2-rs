@@ -40,7 +40,9 @@ struct InternalErrorTemplate {
 
 #[derive(Template)]
 #[template(path = "error/404.html")]
-struct NotFoundTemplate {}
+struct NotFoundTemplate {
+
+}
 
 pub async fn handle_404() -> axum::response::Response {
     (StatusCode::NOT_FOUND,

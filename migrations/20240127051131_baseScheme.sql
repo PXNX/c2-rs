@@ -1,3 +1,6 @@
+-- Add migration script here
+-- Add migration script here
+
 CREATE TABLE
     users
 (
@@ -127,4 +130,17 @@ create table conversations
     primary key (user_id, chat_id),
     CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users (id),
     CONSTRAINT fk_article_id FOREIGN KEY (chat_id) REFERENCES articles (id)
+);
+
+
+
+create table docs (
+                      id text primary key ,
+
+                      title text NOT NULL,
+                      content text NOT NULL,
+                      changed_at  bigint NOT NULL,
+                      changed_by bigint NOT NULL,
+
+                      CONSTRAINT fk_user_id FOREIGN KEY (changed_by) REFERENCES users (id)
 );

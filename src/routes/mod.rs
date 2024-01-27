@@ -84,6 +84,7 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         .nest("/article", article_router())
         .nest("/team", team_router())
         .nest("/chat", chat_router())
+        .nest("/docs", docs_router())
         //  .route("/stream", get(crate::ws::handle_stream))
         .route_layer(middleware::from_fn_with_state(
             app_state.clone(),
@@ -97,13 +98,14 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         .route("/login", get(login))
         .nest("/welcome", welcome_router())
 
+
         /*  .route("/stream", get(crate::ws::stream))
         .route("/todos", get(crate::ws::fetch_todos).post(crate::ws::create_todo))
         .route("/todos/:id", delete(crate::ws::delete_todo))
         .route("/todos/stream", get(handle_stream)) */
         .with_state(app_state)
         .layer(Extension(user_data))
-        .nest("/docs", docs_router())
+
         .nest("/", meta_router())
         //   .layer(Extension(tx))
         .layer(

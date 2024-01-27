@@ -1,37 +1,75 @@
+use std::fs;
+use std::ops::Deref;
+
 use askama::Template;
 use askama_axum::IntoResponse;
-use axum::Router;
+use axum::{Extension, Router};
 use axum::routing::get;
 use crate::auth::error_handling::AppError;
-use crate::routes::meta::{about, cookies, privacy, terms};
 use ammonia::clean;
+use axum::extract::{Path, State};
 use axum_extra::response::Html;
+use http::StatusCode;
 use pulldown_cmark::{Parser, Options, html::push_html};
+use sqlx::{PgPool, query};
+use tracing::error;
+use crate::routes::{AppState, UserData};
 
-#[derive(Template)]
+#[derive(Template,Clone)]
 #[template(path = "docs/index.html")]
-struct DocsTemplate {}
+struct DocsTemplate {
 
-pub async fn docs() -> Result<impl IntoResponse, AppError> {
-    Ok(DocsTemplate {})
+    title: String,
+    content:  String,
+   changed_at: i64,
+    changed_id: i64,
+    changed_name: String
+
+
 }
 
-pub async fn intro() -> Result<impl IntoResponse, AppError> {
-    let mut options = Options::empty();
-    options.insert(Options::ENABLE_TABLES);
 
-    //TODO: use database
-    let md_parse = Parser::new_ext(include_str!("../../templates/docs/intro.md"), options);
-    let mut unsafe_html = String::new();
-    push_html(&mut unsafe_html, md_parse);
 
-    let safe_html = clean(&*unsafe_html);
+pub async fn docs(  Extension(user_data): Extension<Option<UserData>>,
+                    Path(blob): Path<String>,
+                     State(db_pool): State<PgPool>) -> Result<impl IntoResponse, AppError> {
 
-    Ok(Html(safe_html))
+    println!("{}", &blob);
+
+
+    let docs_result = query!(
+        r#"SELECT title,content, changed_at, changed_by FROM docs WHERE id=$1;"#,
+        &blob
+    )
+        .fetch_one(&db_pool)
+        .await
+        .map_err(|e| AppError {
+            code: StatusCode::NOT_FOUND,
+            message: format!("GET Profile: No documentation entry with id {blob} was found: {e}"),
+            user_message: format!("No user with id {blob} was found."),
+        })?;
+
+
+
+
+
+
+
+
+
+
+
+    Ok(DocsTemplate {
+        title: docs_result.title,
+        content: docs_result.content,
+        changed_at: docs_result.changed_at,
+        changed_id: docs_result.changed_by,
+        changed_name: "".to_string(),
+    })
 }
 
-pub fn docs_router() -> Router {
+pub fn docs_router() -> Router<AppState> {
     Router::new()
-        .route("/", get(docs))
-        .route("/intro", get(intro))
+        .route("/:blob", get(docs))
+
 }
