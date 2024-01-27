@@ -16,9 +16,9 @@
         </div>
     </form>
 
-    <select class="select select-bordered flex-1">
-        <option disabled selected>Apply Filter</option>
-        <option>Politicial</option>
+    <select class="select select-bordered">
+        <option disabled selected>Filter</option>
+        <option>Political</option>
         <option>Geology</option>
     </select>
 
@@ -86,10 +86,13 @@
 
 {% include "map.svg" %}
 
-<dialog id="dia" open class="bg-red-400 h-64 w-1/2 z-10">
+<dialog id="dia" class="bg-red-400 h-64 w-1/2 z-10">
+<a id="region_link">
 
 
-
+<h2 id="region_name"></h2>
+    <img id="region_logo"   alt="Region Logo">
+</a>
 </dialog>
 </div>
 <script type="text/javascript" src="/dist/script.js"></script>

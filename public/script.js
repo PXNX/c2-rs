@@ -4,8 +4,6 @@ const svgElement = document.getElementById("svg");
 
 for (const child of document.getElementById("province").children) {
     child.setAttribute("onclick", `clickMap(${child.id});`);
-    child.setAttribute("hx-get", `/map/region/${child.id}`);
-    child.setAttribute("hx-target", `#dia`);
 }
 
 
@@ -188,8 +186,11 @@ function pinchend(e) {
 }
 
 
-function clickMap(evt) {
-    console.log(evt)
+function clickMap(region_id) {
+    console.log(region_id)
 
-
+    document.getElementById("region_name").textContent = `Test ${region_id}`;
+    document.getElementById("region_logo").src = `https://picsum.photos/seed/${region_id}/40`;
+    document.getElementById("region_link").href = `/region/${region_id}`;
+    document.getElementById("dia").showModal();
 }
