@@ -3,7 +3,9 @@ const svgElement = document.getElementById("svg");
 
 
 for (const child of document.getElementById("province").children) {
-    child.setAttribute("onclick", `clickMap(${child.id})`);
+    child.setAttribute("onclick", `clickMap(${child.id});`);
+    child.setAttribute("hx-get", `/map/region/${child.id}`);
+    child.setAttribute("hx-target", `#dia`);
 }
 
 
@@ -188,5 +190,6 @@ function pinchend(e) {
 
 function clickMap(evt) {
     console.log(evt)
+
 
 }
