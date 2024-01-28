@@ -54,7 +54,7 @@
         box-sizing: border-box;
         overflow: hidden;
         width: 100%;
-        height: calc(100dvh - 128px);
+        height: calc(100dvh - 184px);
     }
 
     #info {
@@ -86,17 +86,19 @@
 
 {% include "map.svg" %}
 
-<dialog id="dia" class="bg-red-400 h-64 w-1/2 z-10">
-<a id="region_link">
 
-
-<h2 id="region_name"></h2>
-    <img id="region_logo"   alt="Region Logo">
-</a>
-</dialog>
 </div>
 <script type="text/javascript" src="/dist/script.js"></script>
 
+
+
+    <a id="region_link" class="bg-red-400 h-56 w-full z-8 sticky p-2 ">
+
+
+        <h2 id="region_name">Kyiv</h2>
+        <img id="region_logo"   alt="Region Logo" class="h-40 w-40">
+    </a>
+</dialog>
 
 
 {% endblock %}

@@ -4333,16 +4333,16 @@ input.tab:checked + .tab-content,
   height: 1.25rem !important;
 }
 
+.h-56 {
+  height: 14rem !important;
+}
+
 .h-6 {
   height: 1.5rem !important;
 }
 
 .h-60 {
   height: 15rem !important;
-}
-
-.h-64 {
-  height: 16rem !important;
 }
 
 .h-8 {
@@ -4367,6 +4367,10 @@ input.tab:checked + .tab-content,
 
 .h-full {
   height: 100% !important;
+}
+
+.h-40 {
+  height: 10rem !important;
 }
 
 .min-h-screen {
@@ -4428,6 +4432,10 @@ input.tab:checked + .tab-content,
 
 .w-full {
   width: 100% !important;
+}
+
+.w-40 {
+  width: 10rem !important;
 }
 
 .max-w-7xl {

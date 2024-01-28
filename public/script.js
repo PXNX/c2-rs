@@ -191,6 +191,6 @@ function clickMap(region_id) {
 
     document.getElementById("region_name").textContent = `Test ${region_id}`;
     document.getElementById("region_logo").src = `https://picsum.photos/seed/${region_id}/40`;
-    document.getElementById("region_link").href = `/region/${region_id}`;
-    document.getElementById("dia").showModal();
+   document.getElementById("region_link").href = `/region/${region_id}`;
+
 }
