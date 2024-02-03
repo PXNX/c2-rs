@@ -1,24 +1,13 @@
 use std::{collections::HashMap, sync::Arc};
 
 use askama::Template;
-use axum::{
-    extract::{Extension, State},
-    response::IntoResponse,
-};
-use axum::Router;
-// dependencies
-use axum::{
-    extract::{
-        WebSocketUpgrade,
-        ws::{Message, WebSocket},
-    },
-    http::StatusCode,
-};
-use axum::extract::Path;
-use axum::routing::get;
+use askama_axum::Response;
+use axum::{extract::{Extension, Path, State}, Form, http::StatusCode, response::{IntoResponse, Redirect}, Router, routing::get};
+use axum::extract::WebSocketUpgrade;
+use axum::extract::ws::{Message, WebSocket};
 use futures::{SinkExt, StreamExt};
 use serde::{Deserialize, Serialize};
-use sqlx::PgPool;
+use sqlx::{PgPool, query};
 use tokio::sync::{
     mpsc::{self, UnboundedReceiver, UnboundedSender},
     RwLock,
@@ -94,13 +83,34 @@ async fn chats(
 
 #[derive(Template)]
 #[template(path = "chat/user.html")]
-struct UserChatTemplate {}
+struct UserChatTemplate {
+    user_name:String
+}
 
 async fn chat_user(
     Extension(user_data): Extension<Option<UserData>>,
     State(db_pool): State<PgPool>,
-    Path(receiver_id): Path<i64>,
+    Path(user_id): Path<i64>,
 ) -> Result<impl IntoResponse, AppError> {
+    let user_data = user_data.unwrap();
+
+    if user_data.id == user_id {
+        return Ok(Redirect::to("/chat").into_response());
+    }
+
+    let user = query!(
+        r#"SELECT name, avatar FROM users WHERE id=$1;"#,
+        &user_id
+    )
+        .fetch_one(&db_pool)
+        .await
+        .map_err(|e| AppError {
+            code: StatusCode::NOT_FOUND,
+            message: format!("GET Profile: No user with id {user_id} was found: {e}"),
+            user_message: format!("No user with id {user_id} was found."),
+        })?;
+
+
     /*    let chats: Vec<ChatPreview> = query!(
             r#"SELECT chats.id,
             chats.title,
@@ -134,7 +144,9 @@ async fn chat_user(
         })
         .collect(); */
 
-    Ok(UserChatTemplate {})
+    Ok(UserChatTemplate {
+        user_name: user.name.unwrap_or("USERNAME".to_string()),
+    }.into_response())
 }
 
 
@@ -224,7 +236,7 @@ async fn chat_region(
         })
         .collect(); */
 
-    Ok(crate::routes::chat::RegionChatTemplate {})
+    Ok(RegionChatTemplate {})
 }
 
 
@@ -524,8 +536,9 @@ fn enrich_result(result: Message, id: usize) -> Result<Message, serde_json::Erro
 async fn broadcast_msg(msg: Message, users: &Users) {
     println!("broadcast msg");
     if let Message::Text(msg) = msg {
-        for (&_uid, tx) in users.read().await.iter() {
-            tx.send(Message::Text(format!("<div hx-swap-oob='beforeend:#chat_messages'><p><b>{:?}</b>: {:?}</p></div>", &msg, msg).to_owned()
+        for (&uid, tx) in users.read().await.iter() {
+
+            tx.send(Message::Text(format!("<div hx-swap-oob='beforeend:#chat_messages'><p><b>{:?}</b>{:?}: {:?}</p></div>", &msg,uid, msg).to_owned()
             )
             )
                 .expect("Failed to send Message")

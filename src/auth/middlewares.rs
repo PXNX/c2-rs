@@ -1,20 +1,23 @@
 use std::collections::BTreeMap;
+
 use askama::Template;
 use axum::{async_trait, extract::{Request, State}, Form, middleware::Next, response::{IntoResponse, Redirect}};
 use axum::body::Body;
-use axum::extract::{rejection::FormRejection};
+use axum::extract::FromRequest;
+use axum::extract::rejection::FormRejection;
+use axum::response::Response;
 use axum_extra::{headers::Cookie, TypedHeader};
+use axum_htmx::{HX_RESWAP, HX_RETARGET};
 use chrono::Utc;
+use http::{HeaderMap, StatusCode};
 use serde::de::DeserializeOwned;
 use sqlx::{PgPool, query};
+use thiserror::Error;
 use validator::{Validate, ValidationErrors};
-use axum::extract::FromRequest;
-use axum::response::Response;
-use axum_htmx::{HX_RESWAP, HX_RETARGET};
-use http::{HeaderMap, StatusCode};
+
 use crate::auth::SESSION_TOKEN;
 use crate::routes::UserData;
-use thiserror::Error;
+
 use super::error_handling::AppError;
 
 pub async fn inject_user_data(

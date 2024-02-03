@@ -6,11 +6,10 @@ use askama_axum::IntoResponse;
 use axum::{Extension, Router};
 use axum::routing::get;
 use crate::auth::error_handling::AppError;
-use ammonia::clean;
+
 use axum::extract::{Path, State};
 use axum_extra::response::Html;
 use http::StatusCode;
-use pulldown_cmark::{Parser, Options, html::push_html};
 use sqlx::{PgPool, query};
 use tracing::error;
 use crate::routes::{AppState, UserData};

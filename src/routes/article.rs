@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::{PgPool, query};
 
 use crate::auth::error_handling::AppError;
-use crate::common::tools::{clean_html, format_date};
+use crate::common::tools::{ format_date};
 
 use super::{AppState, UserData};
 
@@ -68,7 +68,7 @@ async fn articles(
                 publish_date: format_date(a.created_at),
                 upvote_count: a.upvote_count.unwrap(),
                 author_avatar: a.author_avatar.clone().unwrap_or("".to_owned()),
-                author_name: a.author_name.clone().unwrap(),
+                author_name: a.author_name.clone().unwrap_or("Author".to_string()),
                 //TODO: unwrap is not necessary, after making title not null in sql
             }
         })
@@ -100,7 +100,7 @@ async fn publish_article(
     VALUES ($1,$2,$3, $4) returning id;"#,
         user_id,
         input.article_title,
-           clean_html( input.article_content.as_str()),
+         input.article_content,
         input.publisher
     )
         .fetch_one(&db_pool)
@@ -263,7 +263,7 @@ async fn view_article(
         article_title: article.title,
         article_content: article.content,
         publish_date: format_date(article.created_at),
-        author_name: article.author_name.unwrap(),
+        author_name: article.author_name.unwrap_or("Author".to_string()),
         author_avatar: article.author_avatar.unwrap_or("".to_string()),
         author_link: author_link,
         author_id: article.author_id,

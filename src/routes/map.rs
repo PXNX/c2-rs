@@ -15,7 +15,7 @@ use super::{AppState, UserData};
 #[derive(Template)]
 #[template(path = "map.html")]
 struct MapTemplate {
-    map: String
+    map: String,
 }
 
 async fn map(
@@ -31,17 +31,18 @@ async fn map(
 #[template(path = "preview.html")]
 struct RegionPreviewTemplate {
     name: String,
-    id:u32,
+    id: u32,
 }
+
 async fn region_preview(
     Extension(user_data): Extension<Option<UserData>>,
     State(db_pool): State<PgPool>,
-    Path(region_id):Path<u32>
+    Path(region_id): Path<u32>,
 ) -> Result<impl IntoResponse, AppError> {
-Ok(RegionPreviewTemplate{
-    name: "".to_string(),
-    id: region_id,
-})
+    Ok(RegionPreviewTemplate {
+        name: "".to_string(),
+        id: region_id,
+    })
 }
 
 pub fn map_router() -> Router<AppState> {

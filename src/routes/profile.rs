@@ -1,18 +1,14 @@
 use std::collections::{BTreeMap, HashMap};
+
 use askama::Template;
 use askama_axum::Response;
-use axum::{extract::{Extension, Path, State}, http::StatusCode, response::{IntoResponse, Redirect}, routing::get, Form, Router, async_trait};
-use axum_extra::headers;
-use axum_htmx::{HX_REDIRECT, HX_RESWAP, HX_RETARGET, HX_TRIGGER};
-use http::HeaderMap;
-use oauth2::HttpResponse;
-use reqwest::Client;
-use reqwest::header::CONTENT_TYPE;
+use axum::{extract::{Extension, Path, State}, Form, http::StatusCode, response::{IntoResponse, Redirect}, Router, routing::get};
+use axum_htmx::HX_REDIRECT;
 use serde::{Deserialize, Serialize};
 use sqlx::{PgPool, query};
-use validator::{Validate, ValidationError, ValidationErrors};
+use validator::Validate;
+
 use crate::auth::error_handling::AppError;
-use crate::auth::middlewares::ValidatedForm;
 
 use super::{AppState, UserData};
 
@@ -64,7 +60,7 @@ async fn profile(
     let user_data = user_data.unwrap();
 
     if user_data.id == user_id {
-        return Ok(Redirect::to("/u").into_response());
+        return Ok(Redirect::to("/user").into_response());
     }
 
     let user = query!(
