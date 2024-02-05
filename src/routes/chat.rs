@@ -191,7 +191,7 @@ async fn chat_team(
         })
         .collect(); */
 
-    Ok(crate::routes::chat::TeamChatTemplate {})
+    Ok(TeamChatTemplate {})
 }
 
 
@@ -584,3 +584,5 @@ pub fn chat_router() -> Router<AppState> {
 
      */
 }
+
+
