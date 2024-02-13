@@ -25,6 +25,8 @@
 </header>
 {% endblock %}
 
+
+
 {% block main %}
 
 
@@ -88,7 +90,7 @@
 
 
 </div>
-<script type="text/javascript">showMap();</script>
+<!--<script type="text/javascript">showMap();</script> -->
 
 
 
@@ -99,6 +101,25 @@
         <img id="region_logo"   alt="Region Logo" class="h-40 w-40">
     </a>
 </dialog>
+
+
+<script>
+    const elem = document.getElementById('panzoom-element')
+    const panzoom = Panzoom(elem, {
+        maxScale: 5,  contain: 'inside'
+    })
+    panzoom.pan(10, 10)
+    panzoom.zoom(2, { animate: true })
+
+    // Panning and pinch zooming are bound automatically (unless disablePan is true).
+    // There are several available methods for zooming
+    // that can be bound on button clicks or mousewheel.
+
+    elem.parentElement.addEventListener('wheel', function(event) {
+        if (!event.shiftKey) return
+        panzoom.zoomWithWheel(event)
+    })
+</script>
 
 
 {% endblock %}

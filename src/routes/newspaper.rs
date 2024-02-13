@@ -176,7 +176,7 @@ async fn publish_newspaper(
     .execute(&db_pool)
     .await?;
 
-    Ok(Redirect::to(format!("/n/{}", newspaper.id).as_str()))
+    Ok(Redirect::to(format!("/newspaper/{}", newspaper.id).as_str()))
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -232,6 +232,7 @@ pub fn newspaper_router() -> Router<AppState> {
     Router::new()
         .route("/", get(newspapers))
         .route("/create", get(create_newspaper).post(publish_newspaper))
-        .route("/:id", get(newspaper))
         .route("/:id/settings", get(newspaper_settings))
+        .route("/:id", get(newspaper))
+
 }

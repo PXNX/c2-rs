@@ -79,7 +79,6 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         .nest("/country", country_router())
         .nest("/production", production_router())
         .nest("/training", training_router())
-        .nest("/map", map_router())
         .nest("/newspaper", newspaper_router())
         .nest("/article", article_router())
         .nest("/team", team_router())
@@ -99,12 +98,18 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         .nest("/welcome", welcome_router())
 
 
+
+        .nest("/map", map_router()) //todo: place back up again
+
         /*  .route("/stream", get(crate::ws::stream))
         .route("/todos", get(crate::ws::fetch_todos).post(crate::ws::create_todo))
         .route("/todos/:id", delete(crate::ws::delete_todo))
         .route("/todos/stream", get(handle_stream)) */
         .with_state(app_state)
         .layer(Extension(user_data))
+
+
+
 
         .nest("/", meta_router())
         //   .layer(Extension(tx))

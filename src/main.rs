@@ -2,6 +2,7 @@ use dotenvy::var;
 
 use c2::run;
 
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let database_url =

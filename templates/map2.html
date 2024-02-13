@@ -7,8 +7,7 @@
             content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.js"></script>
-        <script src="https://hammerjs.github.io/dist/hammer-time.min.js"></script>
+        <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
 
         <!-- or from a CDN -->
 
@@ -44,14 +43,14 @@
 
     </head>
 
-    <body>
+    <body style="background:cyan">
 
 
 
 
 
 
-        <svg id="svg" width="600" height="300" viewBox="0 0 600 300">
+        <svg id="panzoom-element" width="600" height="300" viewBox="0 0 600 300">
             <rect x="0" y="0" fill="none" stroke="#EB7B2D" stroke-width="2" width="600" height="300" />
 
             <rect x="50" y="50" width="300" height="200" fill="#0077cc" />
@@ -63,6 +62,19 @@
 
     </body>
 
-    <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript" >
+        const elem = document.getElementById('panzoom-element')
+        const panzoom = Panzoom(elem, {
+            maxScale: 5,  contain: 'inside'
+        })
+        panzoom.pan(10, 10)
+        panzoom.zoom(2, { animate: true })
+
+        // Panning and pinch zooming are bound automatically (unless disablePan is true).
+        // There are several available methods for zooming
+        // that can be bound on button clicks or mousewheel.
+
+        elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
+    </script>
 
 </html>
