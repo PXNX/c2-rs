@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}Newspapaer {{newspaper_name}}{% endblock %}
+{% block title %}Newspaper {{newspaper_name}}{% endblock %}
 {% block main %}
 
 
@@ -45,6 +45,8 @@
     <!-- todo: add additional info-->
 
     <h2 class="text-xl font-bold mx-2 mt-20 mb-4">Articles by {{newspaper_name}}</h2>
+
+
     {% for article in articles %}
     <a class="p-2 flinch  w-full no-underline text-current gap-2 label-text  " href="/article/{{article.id }}"
        oncontextmenu="return false">
@@ -57,7 +59,6 @@
 
 
     {% endfor %}
-
 </div>
 
 

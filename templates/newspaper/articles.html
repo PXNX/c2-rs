@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block title %}Newspaper Articles {{newspaper_name}}{% endblock %}
+{% block main %}
+
+
+{% for article in articles %}
+<a class="p-2 flinch  w-full no-underline text-current gap-2 label-text  " href="/article/{{article.id }}"
+   oncontextmenu="return false">
+
+    <b class="text-lg block transition-all duration-3000 font-bold tracking-tight"
+       id="article_title">{{article.title }}</b>
+    {{article. publish_date}} | <span class="text-primary">{{article.upvote_count }} Likes</span>
+
+</a>
+
+
+{% endfor %}
+
+
+
+{% endblock %}

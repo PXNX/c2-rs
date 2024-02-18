@@ -21,7 +21,7 @@ askama_axum = { git = "https://github.com/djc/askama.git", rev = "50c64bc"}
 axum = { version = "0.7.4", features = ["macros", "ws"] }
 axum-extra = { version = "0.9.2", features = ["typed-header", "cookie"] }
 axum-htmx = "0.5.0"
-chrono = { version = "0.4.33", features = ["serde"] }
+chrono = { version = "0.4.34", features = ["serde"] }
 serde = { version = "1.0.196", features = ["derive"] }
 serde_json = "1.0.113"
 serde_with = "3.6.1"
@@ -57,4 +57,4 @@ futures-util = "0.3.30"
 futures = "0.3.30"
 http = "1.0.0"
 home = "0.5.9"
-thiserror = "1.0.56"
+thiserror = "1.0.57"
