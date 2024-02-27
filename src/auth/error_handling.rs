@@ -3,6 +3,7 @@ use axum::{
     http::StatusCode,
     response::{Html, IntoResponse},
 };
+use http::Uri;
 
 pub struct AppError {
     pub code: StatusCode,
@@ -40,11 +41,19 @@ struct InternalErrorTemplate {
 
 #[derive(Template)]
 #[template(path = "error/404.html")]
-struct NotFoundTemplate {}
+struct NotFoundTemplate {
+    uri:String
+}
 
 pub async fn handle_404() -> axum::response::Response {
     (StatusCode::NOT_FOUND,
-     Html(NotFoundTemplate {}.render().unwrap()))
+     Html(NotFoundTemplate {uri: "Test".parse().unwrap() }.render().unwrap()))
+        .into_response()
+}
+
+pub async fn fallback(uri: Uri) -> axum::response::Response {
+        (StatusCode::NOT_FOUND,
+         Html(NotFoundTemplate {uri:uri.to_string()}.render().unwrap()))
         .into_response()
 }
 

@@ -1,5 +1,6 @@
 use std::env;
 
+use anyhow::{anyhow, Context, Result};
 use sqlx::postgres::PgPoolOptions;
 use tokio::net::TcpListener;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
@@ -12,23 +13,13 @@ mod auth;
 mod common;
 mod ws;
 
-
-pub async fn run(database_url: String) -> Result<(), Box<dyn std::error::Error>> {
-    tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "example_validator=debug".into()),
-        )
-        .with(tracing_subscriber::fmt::layer())
-        .init();
-
-    //   tracing_subscriber::fmt::init();
-
+pub async fn run(database_url: String) -> Result<()> {
     let db_pool = PgPoolOptions::new()
         .max_connections(5)
         .connect(database_url.as_str())
         .await
-        .map_err(|e| format!("DB connection failed: {}", e))?;
+
+        .map_err(|e| anyhow!("DB connection failed: {}", e))?;
 
     /*     sqlx::migrate!("./migrations")
       .run(&db_pool)
@@ -41,10 +32,10 @@ pub async fn run(database_url: String) -> Result<(), Box<dyn std::error::Error>>
 
     let listener = TcpListener::bind(format!("0.0.0.0:{}", env::var("PORT").unwrap_or("3011".to_string())))
         .await
-        .map_err(|e| format!("Failed to bind address: {}", e))?;
+        .map_err(|e| anyhow!("Failed to bind address: {}", e))?;
     axum::serve(listener, app)
         .await
-        .map_err(|e| format!("Server error: {}", e))?;
+        .map_err(|e| anyhow!("Server error: {}", e))?;
 
     Ok(())
 }

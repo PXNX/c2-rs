@@ -6,8 +6,8 @@ CREATE TABLE
 (
     id         BIGSERIAL PRIMARY KEY,
     email      text NOT NULL UNIQUE,
-    avatar     text,
-    name       varchar(40),
+    avatar     text ,
+    name       varchar(40)  NOT NULL,
     skill_0    smallint  default 0,
     skill_1    smallint  default 0,
     skill_2    smallint  default 0,

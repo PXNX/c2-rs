@@ -8,6 +8,8 @@ use axum::{
     response::IntoResponse,
 };
 use axum::{Form, Router};
+use axum_htmx::HX_REDIRECT;
+use http::HeaderMap;
 use serde::{Deserialize, Serialize};
 use sqlx::{query, PgPool};
 
@@ -95,7 +97,7 @@ async fn newspaper(
         newspaper_created_at: format_date(newspaper.created_at),
         articles: articles,
         owner_id: newspaper_owner.id,
-        owner_name: newspaper_owner.name.unwrap(),
+        owner_name: newspaper_owner.name.unwrap_or("OWNER".to_string()),
         owner_avatar: newspaper_owner.avatar.unwrap_or("".to_owned()),
     })
 }
@@ -176,7 +178,11 @@ async fn publish_newspaper(
     .execute(&db_pool)
     .await?;
 
-    Ok(Redirect::to(format!("/newspaper/{}", newspaper.id).as_str()))
+
+
+    let mut headers = HeaderMap::new();
+    headers.insert(HX_REDIRECT, format!("/newspaper/{}", newspaper.id).parse().unwrap());
+    Ok(headers.into_response())
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

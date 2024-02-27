@@ -1,13 +1,13 @@
+use anyhow::Result;
 use axum::{
     Extension,
     extract::FromRef,
     handler::HandlerWithoutStateExt,
-    http::{header, StatusCode, Uri},
+    http::{StatusCode, Uri},
     middleware,
     response::{IntoResponse, Response},
     Router, routing::get,
 };
-use axum_htmx::HX_REDIRECT;
 use http::header::{CACHE_CONTROL, CONTENT_ENCODING, CONTENT_TYPE};
 use http::HeaderMap;
 use rust_embed::RustEmbed;
@@ -36,6 +36,7 @@ use crate::{
         team::team_router, training::training_router, welcome::welcome_router,
     },
 };
+use crate::auth::error_handling::fallback;
 
 //use crate::ws::{handle_stream, TodoUpdate};
 
@@ -65,7 +66,7 @@ pub struct UserData {
     pub id: i64,
 }
 
-pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error::Error>> {
+pub async fn create_routes(db_pool: PgPool) -> Result<Router> {
     let app_state = AppState { db_pool };
 
     let user_data: Option<UserData> = None;
@@ -98,7 +99,6 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         .nest("/welcome", welcome_router())
 
 
-
         .nest("/map", map_router()) //todo: place back up again
 
         /*  .route("/stream", get(crate::ws::stream))
@@ -107,8 +107,6 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
         .route("/todos/stream", get(handle_stream)) */
         .with_state(app_state)
         .layer(Extension(user_data))
-
-
 
 
         .nest("/", meta_router())
@@ -125,7 +123,10 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router, Box<dyn std::error
                 .on_failure(DefaultOnFailure::new().level(Level::ERROR)),
         )
         .route("/dist/*file", get(static_handler))
-        .fallback_service(handle_404.into_service()))
+
+        .fallback(fallback)
+    )
+   //     .fallback_service(handle_404.into_service()))
 }
 
 async fn static_handler(uri: Uri) -> impl IntoResponse {
@@ -142,7 +143,7 @@ async fn static_handler(uri: Uri) -> impl IntoResponse {
 #[folder = "public/"]
 struct Asset;
 
-pub struct StaticFile<T>(pub T);
+struct StaticFile<T>(pub T);
 
 impl<T> IntoResponse for StaticFile<T>
     where

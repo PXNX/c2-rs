@@ -2,7 +2,6 @@
 {% block title %}Newspaper Articles {{newspaper_name}}{% endblock %}
 {% block main %}
 
-
 {% for article in articles %}
 <a class="p-2 flinch  w-full no-underline text-current gap-2 label-text  " href="/article/{{article.id }}"
    oncontextmenu="return false">

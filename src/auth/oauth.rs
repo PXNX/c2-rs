@@ -17,6 +17,7 @@ use oauth2::{
 };
 use sqlx::PgPool;
 use uuid::Uuid;
+use random_word::Lang;
 
 use crate::auth::SESSION_TOKEN;
 use crate::routes::{AppState, UserData};
@@ -177,8 +178,9 @@ async fn oauth_return(
         user_query.0
     } else {
         let query: (i64, ) =
-            sqlx::query_as(r#"INSERT INTO users (email) VALUES ($1) RETURNING id;"#)
+            sqlx::query_as(r#"INSERT INTO users (email,name) VALUES ($1,$2) RETURNING id;"#)
                 .bind(email)
+                .bind( random_word::gen(Lang::En))
                 .fetch_one(&db_pool)
                 .await?;
         query.0
