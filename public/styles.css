@@ -46,7 +46,7 @@ html,
   -o-tab-size: 4;
      tab-size: 4;
   /* 3 */
-  font-family: Inter var, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: Kiona-Regular, Inter var, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   /* 4 */
   font-feature-settings: normal;
   /* 5 */
@@ -4231,6 +4231,10 @@ input.tab:checked + .tab-content,
   margin-inline-start: 0.25rem !important;
 }
 
+.mt-1 {
+  margin-top: 0.25rem !important;
+}
+
 .mt-10 {
   margin-top: 2.5rem !important;
 }
@@ -4265,14 +4269,6 @@ input.tab:checked + .tab-content,
 
 .mt-auto {
   margin-top: auto !important;
-}
-
-.ml-1 {
-  margin-left: 0.25rem !important;
-}
-
-.mt-1 {
-  margin-top: 0.25rem !important;
 }
 
 .block {
@@ -4325,10 +4321,6 @@ input.tab:checked + .tab-content,
 
 .h-10 {
   height: 2.5rem !important;
-}
-
-.h-12 {
-  height: 3rem !important;
 }
 
 .h-16 {
@@ -4391,14 +4383,6 @@ input.tab:checked + .tab-content,
   height: 100% !important;
 }
 
-.h-24 {
-  height: 6rem !important;
-}
-
-.h-14 {
-  height: 3.5rem !important;
-}
-
 .min-h-screen {
   min-height: 100vh !important;
 }
@@ -4413,10 +4397,6 @@ input.tab:checked + .tab-content,
 
 .w-10 {
   width: 2.5rem !important;
-}
-
-.w-12 {
-  width: 3rem !important;
 }
 
 .w-16 {
@@ -4462,14 +4442,6 @@ input.tab:checked + .tab-content,
 
 .w-full {
   width: 100% !important;
-}
-
-.w-14 {
-  width: 3.5rem !important;
-}
-
-.max-w-7xl {
-  max-width: 80rem !important;
 }
 
 .max-w-md {
@@ -4979,10 +4951,6 @@ input.tab:checked + .tab-content,
   padding-top: 12rem !important;
 }
 
-.pt-8 {
-  padding-top: 2rem !important;
-}
-
 .text-center {
   text-align: center !important;
 }
@@ -4994,11 +4962,6 @@ input.tab:checked + .tab-content,
 .text-2xl {
   font-size: 1.5rem !important;
   line-height: 2rem !important;
-}
-
-.text-3xl {
-  font-size: 1.875rem !important;
-  line-height: 2.25rem !important;
 }
 
 .text-4xl {
@@ -5115,11 +5078,6 @@ input.tab:checked + .tab-content,
   color: rgb(113 113 122 / var(--tw-text-opacity)) !important;
 }
 
-.text-blue-600 {
-  --tw-text-opacity: 1 !important;
-  color: rgb(37 99 235 / var(--tw-text-opacity)) !important;
-}
-
 .no-underline {
   text-decoration-line: none !important;
 }
@@ -5157,12 +5115,6 @@ input.tab:checked + .tab-content,
 .shadow-sm {
   --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
   --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color) !important;
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
-}
-
-.shadow {
-  --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !important;
-  --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color) !important;
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
 }
 
@@ -5337,11 +5289,6 @@ img {
   stroke-width: 2 !important;
 }
 
-.hover\:text-blue-500:hover {
-  --tw-text-opacity: 1 !important;
-  color: rgb(59 130 246 / var(--tw-text-opacity)) !important;
-}
-
 .hover\:text-gray-900:hover {
   --tw-text-opacity: 1 !important;
   color: rgb(17 24 39 / var(--tw-text-opacity)) !important;
@@ -5438,11 +5385,6 @@ img {
     padding-right: 1rem !important;
   }
 
-  .sm\:px-6 {
-    padding-left: 1.5rem !important;
-    padding-right: 1.5rem !important;
-  }
-
   .sm\:py-12 {
     padding-top: 3rem !important;
     padding-bottom: 3rem !important;
@@ -5454,10 +5396,6 @@ img {
 
   .sm\:ps-4 {
     padding-inline-start: 1rem !important;
-  }
-
-  .sm\:pt-12 {
-    padding-top: 3rem !important;
   }
 
   .sm\:text-2xl {
@@ -5530,11 +5468,6 @@ img {
 
   .lg\:h-\[80vh\] {
     height: 80vh !important;
-  }
-
-  .lg\:px-8 {
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
   }
 
   .lg\:py-32 {

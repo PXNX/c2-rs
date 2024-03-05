@@ -46,7 +46,7 @@ tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 http-body = "1.0.0"
 
-validator = { version = "0.16.1", features = ["derive"] }
+validator = { version = "0.17.0", features = ["derive"] }
 
 
 #static files
@@ -55,7 +55,7 @@ mime_guess = "2.0.4"
 
 futures-util = "0.3.30"
 futures = "0.3.30"
-http = "1.0.0"
+http = "1.1.0"
 home = "0.5.9"
 thiserror = "1.0.57"
 anyhow = "1.0.80"

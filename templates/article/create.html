@@ -9,14 +9,17 @@
 
 
     <div class="flex space-x-2 p-2">
-        <button class="btn" onclick="my_modal_2.showModal()">
+        <button class="btn " onclick="my_modal_2.showModal()">
             <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path
                         d="M5 19V5H12V12H19V13C19.7 13 20.37 13.13 21 13.35V9L15 3H5C3.89 3 3 3.89 3 5V19C3 20.1 3.89 21 5 21H13.35C13.13 20.37 13 19.7 13 19H5M14 4.5L19.5 10H14V4.5M22.5 17.25L17.75 22L15 19L16.16 17.84L17.75 19.43L21.34 15.84L22.5 17.25Z"/>
             </svg>
         </button>
 
-
+        <button class="btn btn-circle" onclick="history.back()">
+            <img class="h-6 w-6"  src="/dist/window-close.svg" alt="">
+                           
+        </button>
     </div>
 
 </header>
@@ -127,13 +130,24 @@
             </div>
         </div>
         <div class="px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800">
-            <label for="editor" class="sr-only">Publish post</label>
-            <textarea id="editor" rows="8"
+            <label for="editor2" class="sr-only">Publish post</label>
+            <textarea id="editor2" rows="8"
                       class="block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
                       placeholder="Write an article..." required form="publish_article"
                       name="article_content"></textarea>
         </div>
     </div>
+
+    <div id="editor">
+        <h2>Demo Content</h2>
+        <p>Preset build with <code>snow</code> theme, and some common formats.</p>
+    </div>
+
+    <script>
+        const quill = new Quill('#editor', {
+            theme: 'snow'
+        });
+    </script>
 
 
     <dialog class="modal" id="my_modal_2">

@@ -15,5 +15,12 @@
       <jdbc-url>jdbc:postgresql://ep-delicate-night-63455145.eu-central-1.aws.neon.fl0.io:5432/c2rs</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="c2rs@ep-delicate-night-63455145.eu-central-1.aws.neon.fl0.io" uuid="6c05b642-a784-487c-a2b5-ca807fd47226">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://ep-delicate-night-63455145.eu-central-1.aws.neon.fl0.io/c2rs</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

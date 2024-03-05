@@ -29,6 +29,7 @@ struct ArticlePreview {
 #[derive(Template)]
 #[template(path = "newspaper/view.html")]
 struct NewspaperTemplate {
+    newspaper_id:i64,
     newspaper_name: String,
     newspaper_avatar: String,
     newspaper_created_at: String,
@@ -92,6 +93,7 @@ async fn newspaper(
         .await?;
 
     Ok(NewspaperTemplate {
+        newspaper_id: newspaper_id,
         newspaper_name: newspaper.name,
         newspaper_avatar: newspaper.avatar,
         newspaper_created_at: format_date(newspaper.created_at),
@@ -129,7 +131,7 @@ async fn newspaper_settings(
     Ok(NewspaperSettingsTemplate {
         newspaper_name: newspaper.name,
         newspaper_avatar: newspaper.avatar,
-        newspaper_background: newspaper.background.unwrap(),
+        newspaper_background: newspaper.background.unwrap_or("https://media.istockphoto.com/id/1345527119/de/video/graphical-modern-digital-world-news-studio-loop-hintergrund.jpg?s=640x640&k=20&c=F-svW0LO45RBQ9rP7S5_qkncm2fvYNmId2Zzgpk0XM0=".to_string()),
         newspaper_created_at: format_date(newspaper.created_at),
         newspaper_id: newspaper_id,
     })

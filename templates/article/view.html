@@ -3,14 +3,14 @@
 {% block body %}
 
 <header class="sticky top-0 flex w-full items-center justify-center bg-base-100 p-2">
-    <h2 class="overflow-ellipsis text-xl font-semibold" id="article_title">{{article_title}}</h2>
+    <h2 class="overflow-ellipsis text-xl font-semibold fade_in transition-opacity duration-500 ease-in" id="article_title">{{article_title}}</h2>
 </header>
 {% endblock %}
 
 {% block main %}
 
 
-<section class="fade_in transition-opacity duration-500 ease-in">
+<section class="fade_in transition  transition-opacity duration-500 ease-in">
     {{article_content|markdown}}
 </section>
 

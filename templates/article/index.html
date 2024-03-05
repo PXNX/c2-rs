@@ -77,129 +77,27 @@
 
 <!-- todo: if no avatar, then initials and rounded-lg. also: what about doing it like so? https://news.google.com/topstories?hl=de&gl=DE&ceid=DE:de -->
 
-<a class="flinch label-text flex w-full gap-2 p-2 text-current no-underline" href="/article/{{article.id }}"
-   oncontextmenu="return false">
-    <img alt="Article Image" class="rounded-lg" height="56" loading="lazy" src="{{article.author_avatar}}" width="56"/>
-    <!-- style="aspect-ratio: 100 / 100; object-fit: cover;" -->
-    <div>
-        <h3 class="duration-800 block text-lg font-bold transition-all" id="article_title">{{article.title }}</h3>
-        <span class="block text-primary transition-all" id="author_name">{{article.author_name }}</span>
-        {{article. publish_date}} | {{article.upvote_count }} Likes
-    </div>
+
+
+<a class="flinch  items-center   rounded-lg flinch label-text flex w-full gap-2 p-2 text-current no-underline"
+
+
+   href="/article/{{article.id }}"
+ 
+   hx-swap="outerHTML transition:true" >  <!-- hx-get="/article/{{article.id }}"-->
+
+<img alt="Article Image" onError="replaceImg(this);" class="rounded-lg flex-none w-16 h-16  " loading="lazy"
+     src="{{article.author_avatar }}" />
+
+    <div class="flex flex-col flex-grow ml-2 text-gray-600 text-xs">
+        <span class=" font-semibold  text-primary " id="article_title">{{article.author_name }}</span>
+        <span class="text-lg font-bold text-white transition  " >{{article.title }}</span>
+        {{article. publish_date}}  //  {{article.upvote_count }} Likes
+</div>
 </a>
 
 
 {% endfor %}
 
-
-{% for article in articles %}
-
-
-<!-- if no avatar, then initials and rounded-lg -->
-
-<a class="flinch label-text flex w-full gap-2 p-2 text-current no-underline" href="/article/{{article.id }}"
-   oncontextmenu="return false">
-    <img alt="Article Image" onError="replaceImg(this);" class="rounded-lg" height="56" loading="lazy"
-         src="{{article.author_avatar }}" width="56"/>
-    <!-- style="aspect-ratio: 100 / 100; object-fit: cover;" -->
-    <div>
-        <b class="duration-3000 block text-lg font-bold tracking-tight transition-all"
-           id="article_title">{{article.title }}</b>
-        <span class="block text-primary transition-all" id="author_name">{{article.author_name }}</span>
-        {{article. publish_date}} | {{article.upvote_count }} Likes
-    </div>
-</a>
-
-
-{% endfor %}
-
-
-{% for article in articles %}
-
-
-<!-- if no avatar, then initials and rounded-lg -->
-
-<a class="flinch label-text flex w-full gap-2 p-2 text-current no-underline" href="/article/{{article.id }}"
-   oncontextmenu="return false">
-    <img alt="Article Image" class="rounded-lg" height="56" loading="lazy" src="{{article.author_avatar }}"
-         width="56"/>
-    <!-- style="aspect-ratio: 100 / 100; object-fit: cover;" -->
-    <div>
-        <b class="duration-3000 block text-lg font-bold tracking-tight transition-all"
-           id="article_title">{{article.title }}</b>
-        <span class="block text-primary transition-all" id="author_name">{{article.author_name }}</span>
-        {{article. publish_date}} | {{article.upvote_count }} Likes
-    </div>
-</a>
-
-
-{% endfor %}
-
-
-{% for article in articles %}
-
-
-<!-- if no avatar, then initials and rounded-lg -->
-
-<a class="flinch label-text flex w-full gap-2 p-2 text-current no-underline" href="/article/{{article.id }}"
-   oncontextmenu="return false">
-    <img alt="Article Image" class="rounded-lg" height="56" loading="lazy" src="{{article.author_avatar }}"
-         width="56"/>
-    <!-- style="aspect-ratio: 100 / 100; object-fit: cover;" -->
-    <div>
-        <b class="duration-3000 block text-lg font-bold tracking-tight transition-all"
-           id="article_title">{{article.title }}</b>
-        <span class="block text-primary transition-all" id="author_name">{{article.author_name }}</span>
-        {{article. publish_date}} | {{article.upvote_count }} Likes
-    </div>
-</a>
-
-
-{% endfor %}
-
-
-{% for article in articles %}
-
-
-<!-- if no avatar, then initials and rounded-lg -->
-
-<a class="flinch label-text flex w-full gap-2 p-2 text-current no-underline" href="/article/{{article.id }}"
-   oncontextmenu="return false">
-    <img alt="Article Image" class="rounded-lg" height="56" loading="lazy" src="{{article.author_avatar }}"
-         width="56"/>
-    <!-- style="aspect-ratio: 100 / 100; object-fit: cover;" -->
-    <div>
-        <b class="duration-3000 block text-lg font-bold tracking-tight transition-all"
-           id="article_title">{{article.title }}</b>
-        <span class="block text-primary transition-all" id="author_name">{{article.author_name }}</span>
-        {{article. publish_date}} | {{article.upvote_count }} Likes
-    </div>
-
-
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col items-center justify-between pt-8 sm:pt-12">
-            <div class="flex flex-row items-center mb-4">
-                <img src="author-profile.png" alt="Author's Profile Picture" class="rounded-full w-12 h-12 ml-4">
-
-                <span class="text-xl font-bold">John Doe</span>
-            </div>
-
-            <h2 class="text-3xl font-bold mb-4">
-                <a href="/blog/post-title" class="text-gray-800 hover:text-blue-500">The Ultimate Guide to Blog Post
-                    Previews with Tailwind CSS</a>
-            </h2>
-
-            <div class="flex justify-between mt-4">
-                <span class="text-gray-600">30 Likes</span>
-                <span class="text-gray-600">Uploaded 5 hours ago</span>
-            </div>
-        </div>
-    </div>
-
-
-</a>
-
-
-{% endfor %}
 
 {% endblock %}

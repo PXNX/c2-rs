@@ -11,6 +11,7 @@ use axum_htmx::HX_REDIRECT;
 use http::HeaderMap;
 use serde::{Deserialize, Serialize};
 use sqlx::{PgPool, query};
+use tracing::error;
 
 use crate::auth::error_handling::AppError;
 use crate::common::tools::{ format_date};
@@ -104,13 +105,13 @@ async fn publish_article(
         input.publisher
     )
         .fetch_one(&db_pool)
-        .await?;
+        .await.map_err(|e|{error!("RROR : {e:?}");e}).unwrap();
 
 
     let mut headers = HeaderMap::new();
     headers.insert(HX_REDIRECT, format!("/article/{}", query.id).parse().unwrap());
 
-    Ok((headers, ))
+    Ok(headers, )
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

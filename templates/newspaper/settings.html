@@ -3,6 +3,11 @@
 {% block main %}
 
 <div class="my-12 px-4 space-y-8">
+    <button class="btn btn-circle" onclick="history.back()">
+        <img class="h-6 w-6"  src="/dist/window-close.svg" alt="">
+
+    </button>
+
     <form class="form-control w-full space-y-4" hx-ext="debug" hx-put="/n/settings" id="publish_article">
 
         <h2 class="text-2xl font-bold mx-2">Appearance</h2>

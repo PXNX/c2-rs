@@ -12,14 +12,12 @@
     <orderEntry type="library" name="d3.v7" level="application" />
     <orderEntry type="library" name="topojson.v3" level="application" />
     <orderEntry type="library" name="inter" level="application" />
-    <orderEntry type="library" name="@panzoom/panzoom" level="application" />
-    <orderEntry type="library" name="htmx.org" level="application" />
     <orderEntry type="library" name="alpine" level="application" />
     <orderEntry type="library" name="alpine-editor" level="application" />
-    <orderEntry type="library" name="hammer-time" level="application" />
     <orderEntry type="library" name="hammer.js" level="application" />
     <orderEntry type="library" name="theme-change" level="application" />
     <orderEntry type="library" name="htmx.org" level="application" />
+    <orderEntry type="library" name="@panzoom/panzoom" level="application" />
     <orderEntry type="library" name="hammer-time" level="application" />
   </component>
 </module>

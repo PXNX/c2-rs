@@ -37,6 +37,7 @@ module.exports = {
     plugins: [
         require("@tailwindcss/typography"),
         require("daisyui"),
+
         //  backfaceVisibility
     ],
     theme: {
@@ -46,7 +47,7 @@ module.exports = {
 
             },
             fontFamily: {
-                sans: ['Inter var', ...fontFamily.sans],
+                sans: [ "Kiona-Regular",'Inter var', ...fontFamily.sans],
             },
 
             animation: {
