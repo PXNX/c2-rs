@@ -10,14 +10,11 @@ use axum::response::AppendHeaders;
 use axum_extra::{headers::Cookie, TypedHeader};
 use chrono::Utc;
 use dotenvy::var;
-use oauth2::{
-    AuthorizationCode, AuthUrl, basic::BasicClient, ClientId, ClientSecret, CsrfToken,
-    PkceCodeChallenge, PkceCodeVerifier, RedirectUrl, reqwest::http_client, RevocationUrl, Scope,
-    TokenResponse, TokenUrl,
-};
+use oauth2::{AuthorizationCode, AuthUrl, basic::BasicClient, ClientId, ClientSecret, CsrfToken, PkceCodeChallenge, PkceCodeVerifier, RedirectUrl, RevocationUrl, Scope, TokenResponse, TokenUrl};
+use oauth2::reqwest;
+use random_word::Lang;
 use sqlx::PgPool;
 use uuid::Uuid;
-use random_word::Lang;
 
 use crate::auth::SESSION_TOKEN;
 use crate::routes::{AppState, UserData};
@@ -25,12 +22,18 @@ use crate::routes::{AppState, UserData};
 use super::error_handling::AppError;
 
 fn get_client(hostname: String) -> Result<BasicClient, AppError> {
-    let google_client_id = ClientId::new(var("GOOGLE_CLIENT_ID")?);
-    let google_client_secret = ClientSecret::new(var("GOOGLE_CLIENT_SECRET")?);
+    let google_client_id = ClientId::new(
+       var("GOOGLE_CLIENT_ID").expect("Missing the GOOGLE_CLIENT_ID environment variable."),
+    );
+    let google_client_secret = ClientSecret::new(
+       var("GOOGLE_CLIENT_SECRET")
+            .expect("Missing the GOOGLE_CLIENT_SECRET environment variable."),
+    );
     let auth_url = AuthUrl::new("https://accounts.google.com/o/oauth2/v2/auth".to_string())
-        .map_err(|_| "OAuth: invalid authorization endpoint URL")?;
+        .expect("Invalid authorization endpoint URL");
     let token_url = TokenUrl::new("https://www.googleapis.com/oauth2/v3/token".to_string())
-        .map_err(|_| "OAuth: invalid token endpoint URL")?;
+        .expect("Invalid token endpoint URL");
+
 
     let protocol = if hostname.starts_with("localhost") || hostname.starts_with("127.0.0.1") {
         "http"
@@ -38,20 +41,22 @@ fn get_client(hostname: String) -> Result<BasicClient, AppError> {
         "https"
     };
 
-    let redirect_url = format!("{}://{}/auth/callback", protocol, hostname);
 
     // Set up the config for the Google OAuth2 process.
-    let client = BasicClient::new(
-        google_client_id,
-        Some(google_client_secret),
-        auth_url,
-        Some(token_url),
-    )
-        .set_redirect_uri(RedirectUrl::new(redirect_url).map_err(|_| "OAuth: invalid redirect URL")?)
-        .set_revocation_uri(
-            RevocationUrl::new("https://oauth2.googleapis.com/revoke".to_string())
-                .map_err(|_| "OAuth: invalid revocation endpoint URL")?,
+    let client = BasicClient::new(google_client_id)
+        .set_client_secret(google_client_secret)
+        .set_auth_uri(auth_url)
+        .set_token_uri(token_url)
+        .set_redirect_uri(
+               RedirectUrl::new(format!("{}://{}/auth/callback", protocol, hostname)).expect("Invalid redirect URL"),
         );
+
+        // Google supports OAuth 2.0 Token Revocation (RFC-7009)
+     //   .set_revocation_url(
+       //     RevocationUrl::new("https://oauth2.googleapis.com/revoke".to_string())
+         //       .expect("Invalid revocation endpoint URL"),
+       // );
+
     Ok(client)
 }
 
@@ -128,15 +133,22 @@ async fn oauth_return(
 
     // Exchange the code with a token.
     let client = get_client(hostname)?;
-    let token_response = tokio::task::spawn_blocking(move || {
+
+    let http_client = reqwest::ClientBuilder::new()
+        // Following redirects opens the client up to SSRF vulnerabilities.
+        .redirect(reqwest::redirect::Policy::none())
+        .build()
+        .expect("Client should build");
+
+    let token_response =
         client
             .exchange_code(code)
             .set_pkce_verifier(pkce_code_verifier)
-            .request(http_client)
-    })
-        .await
-        .map_err(|_| "OAuth: exchange_code failure")?
-        .map_err(|_| "OAuth: tokio spawn blocking failure")?;
+            .request_async(&http_client)
+
+            .await
+            .map_err(|_| "OAuth: exchange_code failure")?
+        ;
     let access_token = token_response.access_token().secret();
 
     println!("pkce_verifier");
@@ -180,7 +192,7 @@ async fn oauth_return(
         let query: (i64, ) =
             sqlx::query_as(r#"INSERT INTO users (email,name) VALUES ($1,$2) RETURNING id;"#)
                 .bind(email)
-                .bind( random_word::gen(Lang::En))
+                .bind(random_word::gen(Lang::En))
                 .fetch_one(&db_pool)
                 .await?;
         query.0
