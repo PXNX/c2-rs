@@ -154,18 +154,16 @@ impl<T> IntoResponse for StaticFile<T>
 
         match Asset::get(path.as_str()) {
             Some(content) => {
-                let mime = mime_guess::from_path(path).first_or_octet_stream();
+                let mut headers = HeaderMap::new();
+                //   headers.insert(HX_TRIGGER, "close".parse().unwrap());
 
-                let encoding = if mime.to_string().contains(".min") {
+                 let encoding = if path.contains(".min") {
                     "br"
                 } else {
                     "utf-8" //TODO: just don't have any encoding here?
                 };
-
-                let mut headers = HeaderMap::new();
-                //   headers.insert(HX_TRIGGER, "close".parse().unwrap());
-                headers.insert(CONTENT_TYPE, mime.to_string().parse().unwrap());
                 headers.insert(CONTENT_ENCODING, encoding.parse().unwrap());
+                headers.insert(CONTENT_TYPE, mime_guess::from_path(&path).first_or_octet_stream().to_string().parse().unwrap());
                 headers.insert(CACHE_CONTROL, "public, max-age=604800, s-maxage=43200".parse().unwrap());
                 //  headers.insert(StatusCode::CREATED)
                 (headers, content.data).into_response()

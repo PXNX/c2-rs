@@ -1,9 +1,12 @@
+#![allow(unused)]
+
 use anyhow::{anyhow, Result};
 use dotenvy::{dotenv, var};
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 
 use c2::run;
+
 
 #[tokio::main]
 async fn main() -> Result<()> {

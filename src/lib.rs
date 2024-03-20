@@ -1,3 +1,4 @@
+#![allow(unused)]
 use std::env;
 
 use anyhow::{anyhow, Context, Result};
