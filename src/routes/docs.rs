@@ -44,7 +44,7 @@ pub async fn docs(  Extension(user_data): Extension<Option<UserData>>,
         .await
         .map_err(|e| AppError {
             code: StatusCode::NOT_FOUND,
-            message: format!("GET Profile: No documentation entry with id {blob} was found: {e}"),
+            message: format!("GET Docs: No documentation entry with id {blob} was found: {e}"),
             user_message: format!("No user with id {blob} was found."),
         })?;
 
@@ -63,7 +63,7 @@ pub async fn docs(  Extension(user_data): Extension<Option<UserData>>,
         content: docs_result.content,
         changed_at: docs_result.changed_at,
         changed_id: docs_result.changed_by,
-        changed_name: "".to_string(),
+        changed_name: "Author".to_string(),
     })
 }
 

@@ -22,5 +22,12 @@
       <jdbc-url>jdbc:postgresql://ep-delicate-night-63455145.eu-central-1.aws.neon.fl0.io/c2rs</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="c2rs@localhost [2]" uuid="183a4550-1eae-424f-b107-6c89fdefe34e">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5432/c2rs</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

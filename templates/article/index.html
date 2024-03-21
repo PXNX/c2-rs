@@ -8,7 +8,7 @@
 
     <div class="flex space-x-2 p-2">
         <a class="btn btn-square btn-primary" href="/article/create" role="button">
-            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path
                         d="M5 19V5H12V12H19V13C19.7 13 20.37 13.13 21 13.35V9L15 3H5C3.89 3 3 3.89 3 5V19C3 20.1 3.89 21 5 21H13.35C13.13 20.37 13 19.7 13 19H5M14 4.5L19.5 10H14V4.5M23 18V20H20V23H18V20H15V18H18V15H20V18H23Z"/>
             </svg>
@@ -17,7 +17,7 @@
 
 
         <a class="btn btn-square" href="/newspaper" role="button">
-            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path
                         d="M4 7V19H19V21H4C2 21 2 19 2 19V7H4M21.3 3H7.7C6.76 3 6 3.7 6 4.55V15.45C6 16.31 6.76 17 7.7 17H21.3C22.24 17 23 16.31 23 15.45V4.55C23 3.7 22.24 3 21.3 3M8 5H13V11H8V5M21 15H8V13H21V15M21 11H15V9H21V11M21 7H15V5H21V7Z"/>
             </svg>
@@ -43,11 +43,12 @@
 
 <a class="flinch label-text flex w-full gap-2 p-2 text-current no-underline" href="/article/1"
    oncontextmenu="return false">
-    <img alt="Article Image" class="rounded-lg" height="56" loading="lazy" src="https://www.diehl.com/cms/files/Diehl.jpg?box_crop=600%2C600" width="56"/>
+    <img alt="Article Image" class="rounded-lg" height="56" loading="lazy"
+         src="https://www.diehl.com/cms/files/Diehl.jpg?box_crop=600%2C600" width="56"/>
     <!-- style="aspect-ratio: 100 / 100; object-fit: cover;" -->
     <div class="text-sm ">
-        <span class="block text-primary transition-all" >Newspaper</span>
-        <h3 class="duration-800 block text-lg font-bold transition-all" >This is a title.</h3>
+        <span class="block text-primary transition-all">Newspaper</span>
+        <h3 class="duration-800 block text-lg font-bold transition-all">This is a title.</h3>
 
         22.04.2024 | 100 Likes
     </div>
@@ -56,9 +57,9 @@
 
 <div class="flinch flex items-center p-2  rounded-lg ">
     <img
+            alt=""
             class="flex-none w-16 h-16 rounded-lg bg-cover"
             src="https://www.diehl.com/cms/files/Diehl.jpg?box_crop=600%2C600"
-            alt=""
 
             style="aspect-ratio: 1; object-fit: cover;"
     />
@@ -67,7 +68,7 @@
         <span class="text-lg font-bold">Scientific conference to discuss...</span>
 
 
-            <span class=" mt-1 text-sm text-gray-600">20.05.2024, 10:15 //  100 Likes</span>
+        <span class=" mt-1 text-sm text-gray-600">20.05.2024, 10:15 //  100 Likes</span>
 
     </div>
 </div>
@@ -78,22 +79,16 @@
 <!-- todo: if no avatar, then initials and rounded-lg. also: what about doing it like so? https://news.google.com/topstories?hl=de&gl=DE&ceid=DE:de -->
 
 
+<a class="flinch  items-center   rounded-lg flinch label-text flex w-full gap-2 p-2 text-current no-underline" href="/article/{{article.id }}" hx-swap="outerHTML transition:true">  <!-- hx-get="/article/{{article.id }}"-->
 
-<a class="flinch  items-center   rounded-lg flinch label-text flex w-full gap-2 p-2 text-current no-underline"
+    <img alt="Article Image" class="rounded-lg flex-none w-12 h-12  " loading="lazy" onError="replaceImg(this);"
+         src="{{article.author_avatar }}"/>
 
-
-   href="/article/{{article.id }}"
- 
-   hx-swap="outerHTML transition:true" >  <!-- hx-get="/article/{{article.id }}"-->
-
-<img alt="Article Image" onError="replaceImg(this);" class="rounded-lg flex-none w-16 h-16  " loading="lazy"
-     src="{{article.author_avatar }}" />
-
-    <div class="flex flex-col flex-grow ml-2 text-gray-600 text-xs">
+    <div class="flex flex-col flex-grow text-gray-600 text-xs">
         <span class=" font-semibold  text-primary " id="article_title">{{article.author_name }}</span>
-        <span class="text-lg font-bold text-white transition  " >{{article.title }}</span>
-        {{article. publish_date}}  //  {{article.upvote_count }} Likes
-</div>
+        <span class="text-lg font-bold text-white transition  ">{{article.title }}</span>
+        {{article. publish_date}} // {{article.upvote_count }} Likes
+    </div>
 </a>
 
 

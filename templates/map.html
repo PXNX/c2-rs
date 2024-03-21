@@ -26,10 +26,7 @@
 {% endblock %}
 
 
-
 {% block main %}
-
-
 
 
 <style>
@@ -49,7 +46,6 @@
     }
 
 
-
     #svg {
         border: 1px #333;
         border-style: solid none;
@@ -66,15 +62,27 @@
         width: 600px;
     }
 
-    .province{stroke:#1d232a;stroke-width:.5;opacity:1}
-    path:hover{
-        fill:#fff
+    .province {
+        stroke: #1d232a;
+        stroke-width: .5;
+        opacity: 1
     }
 
-    .city{fill:#a59890}
-    .wasteland{fill:#91847c}
+    path:hover {
+        fill: #fff
+    }
 
-    .uncolonized{fill:#a59890}
+    .city {
+        fill: #a59890
+    }
+
+    .wasteland {
+        fill: #91847c
+    }
+
+    .uncolonized {
+        fill: #a59890
+    }
 
     #info p {
         margin: 0;
@@ -85,37 +93,35 @@
 <div class="flex">
 
 
-
-{% include "map.svg" %}
+    {% include "map.svg" %}
 
 
 </div>
 <!--<script type="text/javascript">showMap();</script> -->
 
 
+<a class="bg-red-400 h-56 w-full z-8 sticky p-2 " id="region_link">
 
-    <a id="region_link" class="bg-red-400 h-56 w-full z-8 sticky p-2 ">
 
-
-        <h2 id="region_name">Kyiv</h2>
-        <img id="region_logo"   alt="Region Logo" class="h-40 w-40">
-    </a>
+    <h2 id="region_name">Kyiv</h2>
+    <img alt="Region Logo" class="h-40 w-40" id="region_logo">
+</a>
 </dialog>
 
 
 <script>
     const elem = document.getElementById('panzoom-element')
     const panzoom = Panzoom(elem, {
-        maxScale: 5,  contain: 'inside'
+        maxScale: 5, contain: 'inside'
     })
     panzoom.pan(10, 10)
-    panzoom.zoom(2, { animate: true })
+    panzoom.zoom(2, {animate: true})
 
     // Panning and pinch zooming are bound automatically (unless disablePan is true).
     // There are several available methods for zooming
     // that can be bound on button clicks or mousewheel.
 
-    elem.parentElement.addEventListener('wheel', function(event) {
+    elem.parentElement.addEventListener('wheel', function (event) {
         if (!event.shiftKey) return
         panzoom.zoomWithWheel(event)
     })

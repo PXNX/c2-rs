@@ -17,8 +17,8 @@
         </button>
 
         <button class="btn btn-circle" onclick="history.back()">
-            <img class="h-6 w-6"  src="/dist/window-close.svg" alt="">
-                           
+            <img alt="" class="h-6 w-6" src="/dist/window-close.svg">
+
         </button>
     </div>
 
@@ -29,13 +29,13 @@
 <main class="m-2">
 
 
-        <div class="px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800">
-            <label for="editor2" class="sr-only">Publish post</label>
-            <textarea id="editor2" rows="8"
-                      class="block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
-                      placeholder="Write an article..." required form="publish_article"
-                      name="article_content"></textarea>
-        </div>
+    <div class="px-4 py-2 bg-white rounded-b-lg dark:bg-gray-800">
+        <label class="sr-only" for="editor2">Publish post</label>
+        <textarea class="block w-full px-0 text-sm text-gray-800 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400" form="publish_article"
+                  id="editor2"
+                  name="article_content" placeholder="Write an article..." required
+                  rows="8"></textarea>
+    </div>
 
 
     <div id="editor">

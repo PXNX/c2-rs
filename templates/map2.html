@@ -1,80 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport"
-            content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+          name="viewport">
 
 
-        <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
+    <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
 
-        <!-- or from a CDN -->
-
-
-        <style>
-            .container {
-                width: 500px;
-                height: 400px;
-                overflow: hidden;
-                border: solid 1px black;
-            }
+    <!-- or from a CDN -->
 
 
-
-            svg {
-                border: 2px solid #333;
-                box-sizing: border-box;
-            }
-
-            #info {
-                box-sizing: border-box;
-                border: 1px solid #DEDEDE;
-                padding: 10px;
-                width: 600px;
-            }
-
-            #info p {
-                margin: 0;
-                padding: 1px;
-            }
-        </style>
-        <title>TEST</title>
-
-    </head>
-
-    <body style="background:cyan">
+    <style>
+        .container {
+            width: 500px;
+            height: 400px;
+            overflow: hidden;
+            border: solid 1px black;
+        }
 
 
+        svg {
+            border: 2px solid #333;
+            box-sizing: border-box;
+        }
+
+        #info {
+            box-sizing: border-box;
+            border: 1px solid #DEDEDE;
+            padding: 10px;
+            width: 600px;
+        }
+
+        #info p {
+            margin: 0;
+            padding: 1px;
+        }
+    </style>
+    <title>TEST</title>
+
+</head>
+
+<body style="background:cyan">
 
 
+<svg height="300" id="panzoom-element" viewBox="0 0 600 300" width="600">
+    <rect fill="none" height="300" stroke="#EB7B2D" stroke-width="2" width="600" x="0" y="0"/>
+
+    <rect fill="#0077cc" height="200" width="300" x="50" y="50"/>
+    <circle cx="200" cy="150" fill="#ff9900" r="30"/>
+</svg>
 
 
-        <svg id="panzoom-element" width="600" height="300" viewBox="0 0 600 300">
-            <rect x="0" y="0" fill="none" stroke="#EB7B2D" stroke-width="2" width="600" height="300" />
+</body>
 
-            <rect x="50" y="50" width="300" height="200" fill="#0077cc" />
-            <circle cx="200" cy="150" r="30" fill="#ff9900" />
-        </svg>
+<script type="text/javascript">
+    const elem = document.getElementById('panzoom-element')
+    const panzoom = Panzoom(elem, {
+        maxScale: 5, contain: 'inside'
+    })
+    panzoom.pan(10, 10)
+    panzoom.zoom(2, {animate: true})
 
+    // Panning and pinch zooming are bound automatically (unless disablePan is true).
+    // There are several available methods for zooming
+    // that can be bound on button clicks or mousewheel.
 
-
-
-    </body>
-
-    <script type="text/javascript" >
-        const elem = document.getElementById('panzoom-element')
-        const panzoom = Panzoom(elem, {
-            maxScale: 5,  contain: 'inside'
-        })
-        panzoom.pan(10, 10)
-        panzoom.zoom(2, { animate: true })
-
-        // Panning and pinch zooming are bound automatically (unless disablePan is true).
-        // There are several available methods for zooming
-        // that can be bound on button clicks or mousewheel.
-
-        elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
-    </script>
+    elem.parentElement.addEventListener('wheel', panzoom.zoomWithWheel)
+</script>
 
 </html>

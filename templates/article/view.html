@@ -3,7 +3,8 @@
 {% block body %}
 
 <header class="sticky top-0 flex w-full items-center justify-center bg-base-100 p-2">
-    <h2 class="overflow-ellipsis text-xl font-semibold fade_in transition-opacity duration-500 ease-in" id="article_title">{{article_title}}</h2>
+    <h2 class="overflow-ellipsis text-xl font-semibold fade_in transition-opacity duration-500 ease-in"
+        id="article_title">{{article_title}}</h2>
 </header>
 {% endblock %}
 
@@ -17,7 +18,7 @@
 <section class="flex w-full gap-2 p-2">
 
     <a class="flinch label-text flex flex-grow flex-row gap-2" href="{{author_link}}" role="button">
-        <img class="rounded-lg bg-cover" onError="replaceImg(this);" height="48" src="{{author_avatar}}" width="48"/>
+        <img class="rounded-lg bg-cover" height="48" onError="replaceImg(this);" src="{{author_avatar}}" width="48"/>
         <div>
             <b class="block text-lg" id="author_name">{{author_name}}</b>
             <span class="text-primary">Published</span><span> {{publish_date}}</span>
@@ -27,7 +28,7 @@
     {% if author_id == user_id %}
     <a class="btn btn-square btn-primary" href="/article/{{article_id}}/edit" role="button" type="button">
 
-        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path
                     d="M18.13 12L19.39 10.74C19.83 10.3 20.39 10.06 21 10V9L15 3H5C3.89 3 3 3.89 3 5V19C3 20.1 3.89 21 5 21H11V19.13L11.13 19H5V5H12V12H18.13M14 4.5L19.5 10H14V4.5M19.13 13.83L21.17 15.87L15.04 22H13V19.96L19.13 13.83M22.85 14.19L21.87 15.17L19.83 13.13L20.81 12.15C21 11.95 21.33 11.95 21.53 12.15L22.85 13.47C23.05 13.67 23.05 14 22.85 14.19Z"/>
         </svg>
@@ -41,7 +42,7 @@
     <button class="share-button btn btn-square" onClick="shareLink('{{article_title}}');" title="Share this article"
             type="button">
 
-        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path
                     d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z"/>
         </svg>
