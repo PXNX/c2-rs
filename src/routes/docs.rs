@@ -2,7 +2,7 @@ use std::fs;
 use std::ops::Deref;
 
 use askama::Template;
-use askama_axum::IntoResponse;
+use askama_axum::axum_core::response::IntoResponse;
 use axum::{Extension, Router};
 use axum::routing::get;
 use crate::auth::error_handling::AppError;
