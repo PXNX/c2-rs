@@ -33,9 +33,9 @@ http-body-util = "0.1.1"
 hyper = { version = "1.2.0", features = ["full"] }
 
 #auth
-oauth2 = "4.4.2"
+oauth2 = { version = "5.0.0-alpha.3", features = ["reqwest-blocking"] }
 uuid = { version = "1.8.0", features = ["v4"] }
-reqwest = "0.12.1"
+reqwest = { version = "0.12.2" }
 constant_time_eq = "0.3.0"
 
 dotenvy = "0.15.7"

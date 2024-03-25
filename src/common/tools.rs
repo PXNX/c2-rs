@@ -6,3 +6,14 @@ pub fn format_date(date: Option<PrimitiveDateTime>) -> String {
         .unwrap()
 }
 
+#[macro_export]
+macro_rules! getenv {
+    ($envvar:expr) => {
+        std::env::var($envvar).expect(format!("should specify `{}` in .env file",$envvar).as_str())
+    };
+    ($envvar:expr, $type:ty) => {
+        getenv!($envvar)
+            .parse::<$type>()
+            .expect(format!( "{} should be of type {}",$envvar, stringify!($type)).as_str())
+    };
+}

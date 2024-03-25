@@ -9,51 +9,45 @@ use axum::{
 use axum::response::AppendHeaders;
 use axum_extra::{headers::Cookie, TypedHeader};
 use chrono::Utc;
-use dotenvy::var;
-use oauth2::{
-    AuthorizationCode, AuthUrl, basic::BasicClient, ClientId, ClientSecret, CsrfToken,
-    PkceCodeChallenge, PkceCodeVerifier, RedirectUrl, reqwest::http_client, RevocationUrl, Scope,
-    TokenResponse, TokenUrl,
-};
+use oauth2::{AuthorizationCode, AuthUrl, basic::BasicClient, Client, ClientId, ClientSecret, CsrfToken, EndpointNotSet, EndpointSet, PkceCodeChallenge, PkceCodeVerifier, RedirectUrl, RevocationUrl, Scope, StandardRevocableToken, TokenResponse, TokenUrl};
+use oauth2::basic::{BasicErrorResponse, BasicRevocationErrorResponse, BasicTokenIntrospectionResponse, BasicTokenResponse, BasicTokenType};
+use random_word::Lang;
+use reqwest::ClientBuilder;
 use sqlx::PgPool;
 use uuid::Uuid;
-use random_word::Lang;
 
 use crate::auth::SESSION_TOKEN;
+use crate::getenv;
 use crate::routes::{AppState, UserData};
 
 use super::error_handling::AppError;
 
-fn get_client(hostname: String) -> Result<BasicClient, AppError> {
-    let google_client_id = ClientId::new(var("GOOGLE_CLIENT_ID")?);
-    let google_client_secret = ClientSecret::new(var("GOOGLE_CLIENT_SECRET")?);
-    let auth_url = AuthUrl::new("https://accounts.google.com/o/oauth2/v2/auth".to_string())
-        .map_err(|_| "OAuth: invalid authorization endpoint URL")?;
-    let token_url = TokenUrl::new("https://www.googleapis.com/oauth2/v3/token".to_string())
-        .map_err(|_| "OAuth: invalid token endpoint URL")?;
-
+// Extracted function for OAuth client setup
+ fn setup_oauth_client(hostname: &str) -> Client<BasicErrorResponse, BasicTokenResponse, BasicTokenType, BasicTokenIntrospectionResponse, StandardRevocableToken, BasicRevocationErrorResponse, EndpointSet, EndpointNotSet, EndpointNotSet, EndpointSet, EndpointSet> {
+    let google_client_id = ClientId::new(getenv!("GOOGLE_CLIENT_ID"));
+    let google_client_secret = ClientSecret::new(getenv!("GOOGLE_CLIENT_SECRET"));
+    let auth_url = AuthUrl::new("https://accounts.google.com/o/oauth2/v2/auth".to_string()).expect("Auth Uri could not be set up!");
+    let token_url = TokenUrl::new("https://www.googleapis.com/oauth2/v3/token".to_string()).expect("Token Uri could not be set up!");
+    let revocation_url = RevocationUrl::new("https://oauth2.googleapis.com/revoke".to_string()).expect("Revocation Uri could not be set up!");
     let protocol = if hostname.starts_with("localhost") || hostname.starts_with("127.0.0.1") {
         "http"
     } else {
         "https"
     };
+    let redirect_url = RedirectUrl::new(format!("{}://{}/auth/callback", protocol, hostname)).expect("Redirect Uri could not be set up!");
 
-    let redirect_url = format!("{}://{}/auth/callback", protocol, hostname);
-
-    // Set up the config for the Google OAuth2 process.
-    let client = BasicClient::new(
-        google_client_id,
-        Some(google_client_secret),
-        auth_url,
-        Some(token_url),
-    )
-        .set_redirect_uri(RedirectUrl::new(redirect_url).map_err(|_| "OAuth: invalid redirect URL")?)
-        .set_revocation_uri(
-            RevocationUrl::new("https://oauth2.googleapis.com/revoke".to_string())
-                .map_err(|_| "OAuth: invalid revocation endpoint URL")?,
-        );
-    Ok(client)
+    BasicClient::new(google_client_id)
+        .set_client_secret(google_client_secret)
+        .set_auth_uri(auth_url)
+        .set_token_uri(token_url)
+        .set_redirect_uri(redirect_url)
+        .set_revocation_url(revocation_url)
 }
+
+fn generate_session_token() -> String {
+    Uuid::new_v4().to_string()
+}
+
 
 async fn signin(
     Extension(user_data): Extension<Option<UserData>>,
@@ -69,11 +63,10 @@ async fn signin(
         return Ok(Redirect::to(&return_url));
     }
 
-    let client = get_client(hostname)?;
 
     let (pkce_code_challenge, pkce_code_verifier) = PkceCodeChallenge::new_random_sha256();
 
-    let (authorize_url, csrf_state) = client
+    let (authorize_url, csrf_state) = setup_oauth_client(&hostname)
         .authorize_url(CsrfToken::new_random)
         .add_scope(Scope::new(
             "https://www.googleapis.com/auth/userinfo.email".to_string(),
@@ -126,24 +119,24 @@ async fn oauth_return(
     let return_url = query.1;
     let pkce_code_verifier = PkceCodeVerifier::new(pkce_code_verifier);
 
-    // Exchange the code with a token.
-    let client = get_client(hostname)?;
-    let token_response = tokio::task::spawn_blocking(move || {
-        client
-            .exchange_code(code)
-            .set_pkce_verifier(pkce_code_verifier)
-            .request(http_client)
-    })
-        .await
-        .map_err(|_| "OAuth: exchange_code failure")?
-        .map_err(|_| "OAuth: tokio spawn blocking failure")?;
-    let access_token = token_response.access_token().secret();
+
+    let http_client = ClientBuilder::new()
+        // Following redirects opens the client up to SSRF vulnerabilities.
+        .redirect(reqwest::redirect::Policy::none())
+        .build()
+        .expect("Client should build");
+
+    let token_response = setup_oauth_client(&hostname)
+        .exchange_code(code)
+        .set_pkce_verifier(pkce_code_verifier)
+        .request_async(&http_client)
+        .await.unwrap();
 
     println!("pkce_verifier");
 
     // Get user info from Google
     let url =
-        "https://www.googleapis.com/oauth2/v2/userinfo?oauth_token=".to_owned() + access_token;
+        "https://www.googleapis.com/oauth2/v2/userinfo?oauth_token=".to_owned() + token_response.access_token().secret();
     let body = reqwest::get(url)
         .await
         .map_err(|_| "OAuth: reqwest failed to query userinfo")?
@@ -180,7 +173,7 @@ async fn oauth_return(
         let query: (i64, ) =
             sqlx::query_as(r#"INSERT INTO users (email,name) VALUES ($1,$2) RETURNING id;"#)
                 .bind(email)
-                .bind( random_word::gen(Lang::En))
+                .bind(random_word::gen(Lang::En))
                 .fetch_one(&db_pool)
                 .await?;
         query.0
@@ -189,8 +182,8 @@ async fn oauth_return(
     println!("create_user {user_id}");
 
     // Create a session for the user
-    let session_token_p1 = Uuid::new_v4().to_string();
-    let session_token_p2 = Uuid::new_v4().to_string();
+    let session_token_p1 = generate_session_token();
+    let session_token_p2 = generate_session_token();
     let session_token = [session_token_p1.as_str(), "_", session_token_p2.as_str()].concat();
     let headers = AppendHeaders([(
         http::header::SET_COOKIE,
