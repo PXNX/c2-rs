@@ -101,18 +101,6 @@ async fn oauth_return(
         .fetch_one(&db_pool)
         .await?;
 
-    // Alternative:
-    // let query: (String, String) = sqlx::query_as(
-    //     r#"SELECT pkce_code_verifier,return_url FROM oauth2_state_storage WHERE csrf_state = ?"#,
-    // )
-    // .bind(state.secret())
-    // .fetch_one(&db_pool)
-    // .await?;
-    // let _ = sqlx::query("DELETE FROM oauth2_state_storage WHERE csrf_state = ?")
-    //     .bind(state.secret())
-    //     .execute(&db_pool)
-    //     .await;
-
     println!("oauth_return");
 
     let pkce_code_verifier = query.0;
@@ -205,6 +193,8 @@ async fn oauth_return(
         .await?;
 
     println!("set cookie");
+
+    println!("-------- {return_url}");
 
     match user_query {
         Ok(_) => Ok((headers, Redirect::to(return_url.as_str()))),

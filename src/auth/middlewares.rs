@@ -11,11 +11,11 @@ use axum_htmx::{HX_RESWAP, HX_RETARGET};
 use chrono::Utc;
 use http::{HeaderMap, StatusCode};
 use serde::de::DeserializeOwned;
-use sqlx::{PgPool, query};
+use sqlx::PgPool;
 use thiserror::Error;
 use validator::{Validate, ValidationErrors};
-
 use crate::auth::SESSION_TOKEN;
+
 use crate::routes::UserData;
 
 use super::error_handling::AppError;
@@ -29,32 +29,33 @@ pub async fn inject_user_data(
     if let Some(cookie) = cookie {
         if let Some(session_token) = cookie.get(SESSION_TOKEN) {
             let session_token: Vec<&str> = session_token.split('_').collect();
-            let query = query!(
+            let query: Result<(i64, i64, String), _> = sqlx::query_as(
                 r#"SELECT user_id,expires_at,session_token_p2 FROM user_sessions WHERE session_token_p1=$1;"#,
-            session_token[0])
+            )
+                .bind(session_token[0])
                 .fetch_one(&db_pool)
-                .await?;
+                .await;
 
-            println!("inject--{:#?}", query);
-
-            let session_token_p2_db: &[u8; 36] = query.session_token_p2.as_bytes().try_into().unwrap();
-            let session_token_p2_cookie: &[u8; 36] = session_token
-                .get(1)
-                .copied()
-                .unwrap_or_default()
-                .as_bytes().try_into().unwrap();
-
-            if constant_time_eq::constant_time_eq_n::<36>(
-                session_token_p2_cookie,
-                session_token_p2_db,
-            ) {
-                println!("session active");
-
-                if query.expires_at > Utc::now().timestamp() {
-                    request
-                        .extensions_mut()
-                        .insert(Some(UserData { id: query.user_id }));
-                    //todo: also add language of user, his role (admin/mod) here
+            if let Ok(query) = query {
+                if let Ok(session_token_p2_db) = query.2.as_bytes().try_into() {
+                    if let Ok(session_token_p2_cookie) = session_token
+                        .get(1)
+                        .copied()
+                        .unwrap_or_default()
+                        .as_bytes()
+                        .try_into()
+                    {
+                        if constant_time_eq::constant_time_eq_n::<36>(
+                            session_token_p2_cookie,
+                            session_token_p2_db,
+                        ) {
+                            if query.1 > Utc::now().timestamp() {
+                                request.extensions_mut().insert(Some(UserData {
+                                    id: query.0
+                                }));
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -64,7 +65,7 @@ pub async fn inject_user_data(
 }
 
 pub async fn check_auth(request: Request, next: Next) -> Result<impl IntoResponse, AppError> {
-    println!("check auth");
+    println!("check auth :::: {request:?} --------- {:?}", request.extensions().get::<Option<UserData>>());
 
     if request
         .extensions()
@@ -74,11 +75,11 @@ pub async fn check_auth(request: Request, next: Next) -> Result<impl IntoRespons
     {
         Ok(next.run(request).await)
     } else {
+        eprintln!("REDIR");
         let login_url = "/login?next=".to_owned() + &*request.uri().to_string();
         Ok(Redirect::to(login_url.as_str()).into_response())
     }
 }
-
 
 #[derive(Debug, Clone, Copy, Default)]
 pub struct ValidatedForm<T>(pub T);
@@ -141,7 +142,6 @@ impl<T, S> FromRequest<S> for ValidatedForm<T>
     }
 }
 
-
 #[derive(Debug, Error)]
 pub enum ServerError {
     #[error(transparent)]
@@ -163,7 +163,6 @@ impl IntoResponse for ServerError {
             .into_response()
     }
 }
-
 
 #[derive(Template)]
 #[template(path = "user/partial/settings_edit.html")]

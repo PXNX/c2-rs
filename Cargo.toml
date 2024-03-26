@@ -19,7 +19,7 @@ opt-level = 3
 askama = { git = "https://github.com/djc/askama.git", rev = "353304c", features = ["with-axum", "markdown"] }
 askama_axum = { git = "https://github.com/djc/askama.git", rev = "353304c" }
 axum = { version = "0.7.5", features = ["macros", "ws"] }
-axum-extra = { version = "0.9.3", features = ["typed-header", "cookie"] }
+axum-extra = { version = "0.9.3", features = ["typed-header", "cookie","cookie-private"] }
 axum-htmx = "0.5.0"
 chrono = { version = "0.4.35", features = ["serde"] }
 serde = { version = "1.0.197", features = ["derive"] }
