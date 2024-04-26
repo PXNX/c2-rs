@@ -86,18 +86,19 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router> {
         .nest("/chat", chat_router())
         .nest("/docs", docs_router())
         //  .route("/stream", get(crate::ws::handle_stream))
+
         .route_layer(middleware::from_fn_with_state(
             app_state.clone(),
             check_auth,
         ))
         .nest("/auth", auth_router())
+
+        .route("/login", get(login))
+        .nest("/welcome", welcome_router())
         .route_layer(middleware::from_fn_with_state(
             app_state.clone(),
             inject_user_data,
         ))
-        .route("/login", get(login))
-        .nest("/welcome", welcome_router())
-
 
         .nest("/map", map_router()) //todo: place back up again
 
@@ -109,7 +110,7 @@ pub async fn create_routes(db_pool: PgPool) -> Result<Router> {
         .layer(Extension(user_data))
 
 
-        .nest("/", meta_router())
+    .nest("/", meta_router())
         //   .layer(Extension(tx))
         .layer(
             TraceLayer::new_for_http()

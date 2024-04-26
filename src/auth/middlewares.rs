@@ -20,6 +20,7 @@ use crate::routes::UserData;
 
 use super::error_handling::AppError;
 
+
 pub async fn inject_user_data(
     State(db_pool): State<PgPool>,
     cookie: Option<TypedHeader<Cookie>>,

@@ -23,7 +23,7 @@ use crate::routes::{AppState, UserData};
 use super::error_handling::AppError;
 
 // Extracted function for OAuth client setup
- fn setup_oauth_client(hostname: &str) -> Client<BasicErrorResponse, BasicTokenResponse, BasicTokenType, BasicTokenIntrospectionResponse, StandardRevocableToken, BasicRevocationErrorResponse, EndpointSet, EndpointNotSet, EndpointNotSet, EndpointSet, EndpointSet> {
+fn setup_oauth_client(hostname: &str) -> Client<BasicErrorResponse, BasicTokenResponse, BasicTokenIntrospectionResponse, StandardRevocableToken, BasicRevocationErrorResponse, EndpointSet, EndpointNotSet, EndpointNotSet, EndpointSet, EndpointSet> {
     let google_client_id = ClientId::new(getenv!("GOOGLE_CLIENT_ID"));
     let google_client_secret = ClientSecret::new(getenv!("GOOGLE_CLIENT_SECRET"));
     let auth_url = AuthUrl::new("https://accounts.google.com/o/oauth2/v2/auth".to_string()).expect("Auth Uri could not be set up!");
@@ -41,7 +41,9 @@ use super::error_handling::AppError;
         .set_auth_uri(auth_url)
         .set_token_uri(token_url)
         .set_redirect_uri(redirect_url)
-        .set_revocation_url(revocation_url)
+     .set_revocation_url(revocation_url)
+
+
 }
 
 fn generate_session_token() -> String {
