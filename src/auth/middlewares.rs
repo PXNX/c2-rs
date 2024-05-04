@@ -13,13 +13,13 @@ use http::{HeaderMap, StatusCode};
 use serde::de::DeserializeOwned;
 use sqlx::PgPool;
 use thiserror::Error;
+use tracing::error;
 use validator::{Validate, ValidationErrors};
-use crate::auth::SESSION_TOKEN;
 
+use crate::auth::SESSION_TOKEN;
 use crate::routes::UserData;
 
 use super::error_handling::AppError;
-
 
 pub async fn inject_user_data(
     State(db_pool): State<PgPool>,
@@ -27,18 +27,31 @@ pub async fn inject_user_data(
     mut request: Request<Body>,
     next: Next,
 ) -> Result<impl IntoResponse, AppError> {
+    println!("\x1b[93minject_user_data :::\x1b[0m");
+
     if let Some(cookie) = cookie {
+        println!("\x1b[93minject_user_data : COOKIE {:?}\x1b[0m",cookie);
+
         if let Some(session_token) = cookie.get(SESSION_TOKEN) {
+            println!("\x1b[93minject_user_data : SESSION_TOKEN {session_token}\x1b[0m");
+
+
             let session_token: Vec<&str> = session_token.split('_').collect();
-            let query: Result<(i64, i64, String), _> = sqlx::query_as(
+            let session_query: Result<(i64, i64, String), _> = sqlx::query_as(
                 r#"SELECT user_id,expires_at,session_token_p2 FROM user_sessions WHERE session_token_p1=$1;"#,
             )
                 .bind(session_token[0])
                 .fetch_one(&db_pool)
                 .await;
 
-            if let Ok(query) = query {
+            if let Ok(query) = session_query {
+                println!("\x1b[93minject_user_data : SESSION QUERY\x1b[0m");
+
+
                 if let Ok(session_token_p2_db) = query.2.as_bytes().try_into() {
+                    println!("\x1b[93minject_user_data : session_token_p2_db\x1b[0m");
+
+
                     if let Ok(session_token_p2_cookie) = session_token
                         .get(1)
                         .copied()
@@ -46,37 +59,59 @@ pub async fn inject_user_data(
                         .as_bytes()
                         .try_into()
                     {
+                        println!("\x1b[93minject_user_data : session_token_p2_cookie\x1b[0m");
+
                         if constant_time_eq::constant_time_eq_n::<36>(
                             session_token_p2_cookie,
                             session_token_p2_db,
                         ) {
-                            if query.1 > Utc::now().timestamp() {
+                            println!("\x1b[93minject_user_data : constant_time_eq_n\x1b[0m");
+
+                            let user_id = query.0;
+                            let expires_at = query.1;
+                            if expires_at > Utc::now().timestamp() {
                                 request.extensions_mut().insert(Some(UserData {
-                                    id: query.0
+                                    id: user_id,
+
                                 }));
+
+
+                                println!("\x1b[93minject_user_data : USER FOUND\x1b[0m");
                             }
+                        }else{
+                            println!("\x1b[93minject_user_data : FAIL constant_time_eq_n\x1b[0m");
                         }
+                    }else{
+                        println!("\x1b[93minject_user_data : FAIL session_token_p2_cookie\x1b[0m");
                     }
+                }else{
+                    println!("\x1b[93minject_user_data : FAIL session_token_p2_db\x1b[0m");
                 }
+            }else{
+                println!("\x1b[93minject_user_data : FAIL SESSION QUERY\x1b[0m");
             }
+        }else {
+            println!("\x1b[93minject_user_data : FAIL SESSION_TOKEN\x1b[0m");
+
         }
     }
 
     Ok(next.run(request).await)
 }
 
-pub async fn check_auth(request: Request, next: Next) -> Result<impl IntoResponse, AppError> {
-    println!("check auth :::: {request:?} --------- {:?}", request.extensions().get::<Option<UserData>>());
 
+pub async fn check_auth(request: Request<Body>, next: Next) -> Result<impl IntoResponse, AppError> {
     if request
         .extensions()
         .get::<Option<UserData>>()
         .ok_or("check_auth: extensions have no UserData")?
         .is_some()
     {
+        println!("\x1b[93mcheck_auth : YES\x1b[0m");
         Ok(next.run(request).await)
     } else {
-        eprintln!("REDIR");
+        println!("\x1b[93mcheck_auth : REDIRECT {:#?}\x1b[0m", request.extensions() .get::<Option<UserData>>()
+            .ok_or("check_auth: extensions have no UserData")?);
         let login_url = "/login?next=".to_owned() + &*request.uri().to_string();
         Ok(Redirect::to(login_url.as_str()).into_response())
     }
@@ -146,7 +181,7 @@ impl<T, S> FromRequest<S> for ValidatedForm<T>
 #[derive(Debug, Error)]
 pub enum ServerError {
     #[error(transparent)]
-    ValidationError(#[from] validator::ValidationErrors),
+    ValidationError(#[from] ValidationErrors),
 
     #[error(transparent)]
     AxumFormRejection(#[from] FormRejection),

@@ -15,7 +15,6 @@
     <orderEntry type="library" name="alpine" level="application" />
     <orderEntry type="library" name="alpine-editor" level="application" />
     <orderEntry type="library" name="theme-change" level="application" />
-    <orderEntry type="library" name="quill" level="application" />
-    <orderEntry type="library" name="hammer.js" level="application" />
+    <orderEntry type="library" name="d3.v7" level="application" />
   </component>
 </module>

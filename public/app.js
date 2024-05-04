@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 function shareLink(title, url = window.location.href) {
     if (navigator.share) {
         navigator
@@ -42,7 +44,7 @@ function registerServiceWorker() {
 }
 registerServiceWorker();
 
-
+/*
 function showMap() {
     window.addEventListener("load", init);
     const svgElement = document.getElementById("svg");
@@ -237,5 +239,5 @@ function clickMap(region_id) {
     document.getElementById("region_link").href = `/region/${region_id}`;
 
 }
-
+*/
 

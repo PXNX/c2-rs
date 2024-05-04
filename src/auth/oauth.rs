@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::env::var;
 
 use axum::{
     extract::{Extension, Host, Query, State},
@@ -9,41 +10,58 @@ use axum::{
 use axum::response::AppendHeaders;
 use axum_extra::{headers::Cookie, TypedHeader};
 use chrono::Utc;
-use oauth2::{AuthorizationCode, AuthUrl, basic::BasicClient, Client, ClientId, ClientSecret, CsrfToken, EndpointNotSet, EndpointSet, PkceCodeChallenge, PkceCodeVerifier, RedirectUrl, RevocationUrl, Scope, StandardRevocableToken, TokenResponse, TokenUrl};
-use oauth2::basic::{BasicErrorResponse, BasicRevocationErrorResponse, BasicTokenIntrospectionResponse, BasicTokenResponse, BasicTokenType};
+use http::header::{REFERER, SET_COOKIE};
+use oauth2::{AuthorizationCode, AuthUrl,  Client, ClientId, ClientSecret, CsrfToken, EndpointNotSet, EndpointSet, PkceCodeChallenge, PkceCodeVerifier, RedirectUrl,  RevocationUrl, Scope, StandardRevocableToken, TokenResponse, TokenUrl};
+use oauth2::basic::{BasicErrorResponse, BasicRevocationErrorResponse, BasicTokenIntrospectionResponse, BasicTokenResponse,BasicClient};
 use random_word::Lang;
 use reqwest::ClientBuilder;
 use sqlx::PgPool;
+use tracing::error;
+use tracing::log::__private_api::log;
 use uuid::Uuid;
-
 use crate::auth::SESSION_TOKEN;
+
 use crate::getenv;
 use crate::routes::{AppState, UserData};
 
 use super::error_handling::AppError;
 
 // Extracted function for OAuth client setup
-fn setup_oauth_client(hostname: &str) -> Client<BasicErrorResponse, BasicTokenResponse, BasicTokenIntrospectionResponse, StandardRevocableToken, BasicRevocationErrorResponse, EndpointSet, EndpointNotSet, EndpointNotSet, EndpointSet, EndpointSet> {
+fn get_client(hostname: String) -> Result<Client<BasicErrorResponse, BasicTokenResponse, BasicTokenIntrospectionResponse, StandardRevocableToken, BasicRevocationErrorResponse, EndpointSet, EndpointNotSet, EndpointNotSet, EndpointSet, EndpointSet>, AppError> {
     let google_client_id = ClientId::new(getenv!("GOOGLE_CLIENT_ID"));
     let google_client_secret = ClientSecret::new(getenv!("GOOGLE_CLIENT_SECRET"));
-    let auth_url = AuthUrl::new("https://accounts.google.com/o/oauth2/v2/auth".to_string()).expect("Auth Uri could not be set up!");
-    let token_url = TokenUrl::new("https://www.googleapis.com/oauth2/v3/token".to_string()).expect("Token Uri could not be set up!");
-    let revocation_url = RevocationUrl::new("https://oauth2.googleapis.com/revoke".to_string()).expect("Revocation Uri could not be set up!");
+    let auth_url = AuthUrl::new("https://accounts.google.com/o/oauth2/v2/auth".to_string())
+        .map_err(|_| "OAuth: invalid authorization endpoint URL")?;
+    let token_url = TokenUrl::new("https://www.googleapis.com/oauth2/v3/token".to_string())
+        .map_err(|_| "OAuth: invalid token endpoint URL")?;
+
     let protocol = if hostname.starts_with("localhost") || hostname.starts_with("127.0.0.1") {
         "http"
     } else {
         "https"
     };
-    let redirect_url = RedirectUrl::new(format!("{}://{}/auth/callback", protocol, hostname)).expect("Redirect Uri could not be set up!");
 
-    BasicClient::new(google_client_id)
+    let redirect_url = format!("{}://{}/auth/callback", protocol, hostname);
+
+    // Set up the config for the Google OAuth2 process.
+    let client = BasicClient::new(
+        google_client_id,
+
+    )
+
+
         .set_client_secret(google_client_secret)
         .set_auth_uri(auth_url)
         .set_token_uri(token_url)
-        .set_redirect_uri(redirect_url)
-     .set_revocation_url(revocation_url)
 
 
+        .set_redirect_uri(RedirectUrl::new(redirect_url).map_err(|_| "OAuth: invalid redirect URL")?)
+        .set_revocation_url(
+            RevocationUrl::new("https://oauth2.googleapis.com/revoke".to_string())
+                .map_err(|_| "OAuth: invalid revocation endpoint URL")?,
+        );
+
+    Ok(client)
 }
 
 fn generate_session_token() -> String {
@@ -57,18 +75,25 @@ async fn signin(
     State(db_pool): State<PgPool>,
     Host(hostname): Host,
 ) -> Result<Redirect, AppError> {
-    let return_url = params.remove("next").unwrap_or_else(|| "/".to_string());
+    let return_url = params
+        .remove("next")
+        .unwrap_or_else(|| "/".to_string());
     // TODO: check if return_url is valid
+
+
+    println!("\x1b[93msignin : NEXT {return_url}\x1b[0m");
+
 
     if user_data.is_some() {
         // check if already authenticated
-        return Ok(Redirect::to(&return_url));
+        println!("\x1b[93msignin : REDIRECT {return_url}\x1b[0m");
+        return Ok(Redirect::to(&*return_url));
     }
-
 
     let (pkce_code_challenge, pkce_code_verifier) = PkceCodeChallenge::new_random_sha256();
 
-    let (authorize_url, csrf_state) = setup_oauth_client(&hostname)
+    let client =  get_client(hostname)?;
+    let (authorize_url, csrf_state) =client
         .authorize_url(CsrfToken::new_random)
         .add_scope(Scope::new(
             "https://www.googleapis.com/auth/userinfo.email".to_string(),
@@ -77,13 +102,15 @@ async fn signin(
         .url();
 
     sqlx::query(
-        "INSERT INTO oauth2_state_storage (csrf_state, pkce_code_verifier, return_url) VALUES ($1, $2, $3);",
+        r#"INSERT INTO oauth2_state_storage (csrf_state, pkce_code_verifier, return_url) VALUES ($1, $2, $3);"#,
     )
         .bind(csrf_state.secret())
         .bind(pkce_code_verifier.secret())
         .bind(return_url)
         .execute(&db_pool)
         .await?;
+
+    println!("\x1b[93msignin : REQUEST AUTH {authorize_url}\x1b[0m");
 
     Ok(Redirect::to(authorize_url.as_str()))
 }
@@ -96,6 +123,8 @@ async fn oauth_return(
     let state = CsrfToken::new(params.remove("state").ok_or("OAuth: without state")?);
     let code = AuthorizationCode::new(params.remove("code").ok_or("OAuth: without code")?);
 
+    println!("\x1b[93moauth_return : CODE {:?}\x1b[0m", code.secret());
+
     let query: (String, String) = sqlx::query_as(
         r#"DELETE FROM oauth2_state_storage WHERE csrf_state = $1 RETURNING pkce_code_verifier,return_url;"#,
     )
@@ -103,12 +132,9 @@ async fn oauth_return(
         .fetch_one(&db_pool)
         .await?;
 
-    println!("oauth_return");
-
     let pkce_code_verifier = query.0;
     let return_url = query.1;
     let pkce_code_verifier = PkceCodeVerifier::new(pkce_code_verifier);
-
 
     let http_client = ClientBuilder::new()
         // Following redirects opens the client up to SSRF vulnerabilities.
@@ -116,13 +142,15 @@ async fn oauth_return(
         .build()
         .expect("Client should build");
 
-    let token_response = setup_oauth_client(&hostname)
-        .exchange_code(code)
-        .set_pkce_verifier(pkce_code_verifier)
-        .request_async(&http_client)
-        .await.unwrap();
+    let client = get_client(hostname)?;
 
-    println!("pkce_verifier");
+    // Exchange the code with a token.
+    let token_response = client.exchange_code(code)
+        .set_pkce_verifier(pkce_code_verifier)
+        .request_async(&http_client).await
+        .unwrap();
+
+    println!("\x1b[93moauth_return : TOKEN RESP\x1b[0m");
 
     // Get user info from Google
     let url =
@@ -149,15 +177,13 @@ async fn oauth_return(
             .with_user_message("Your email address is not verified. Please verify your email address with Google and try again.".to_owned()));
     }
 
-    println!("google_verifier");
-
     // Check if user exists in database
     // If not, create a new user
     let user_query: Result<(i64, ), _> = sqlx::query_as(r#"SELECT id FROM users WHERE email=$1;"#)
         .bind(email.as_str())
         .fetch_one(&db_pool)
         .await;
-    let user_id = if let Ok(user_query) = user_query {
+    let user_id =if let Ok(user_query) = user_query {
         user_query.0
     } else {
         let query: (i64, ) =
@@ -169,22 +195,23 @@ async fn oauth_return(
         query.0
     };
 
-    println!("create_user {user_id}");
-
     // Create a session for the user
     let session_token_p1 = generate_session_token();
     let session_token_p2 = generate_session_token();
     let session_token = [session_token_p1.as_str(), "_", session_token_p2.as_str()].concat();
     let headers = AppendHeaders([(
-        http::header::SET_COOKIE,
-        format!("{SESSION_TOKEN}={session_token}; path=/; httponly; secure; samesite=strict")
+        SET_COOKIE,
+        //TODO: change back to strict, but it may require a further button click in login page until cookie is set
+        format!("{SESSION_TOKEN}={session_token}; path=/; httponly; secure; samesite=lax")
     )]);
     let now = Utc::now().timestamp();
+
+    println!("\x1b[93moauth_return : SESSION TOKEN {:?}\x1b[0m",headers);
 
     sqlx::query(
         r#"INSERT INTO user_sessions
         (session_token_p1, session_token_p2, user_id, created_at, expires_at)
-        VALUES ($1, $2, $3, $4, $5);"#,
+       VALUES ($1, $2, $3, $4, $5);"#,
     )
         .bind(session_token_p1)
         .bind(session_token_p2)
@@ -194,17 +221,10 @@ async fn oauth_return(
         .execute(&db_pool)
         .await?;
 
-    println!("set cookie");
-
-    println!("-------- {return_url}");
-
-    match user_query {
-        Ok(_) => Ok((headers, Redirect::to(return_url.as_str()))),
-        Err(_) => Ok((headers, Redirect::to("/welcome"))),
-    }
+    Ok((headers, Redirect::to(return_url.as_str())))
 }
 
-async fn logout(
+pub async fn logout(
     cookie: Option<TypedHeader<Cookie>>,
     State(db_pool): State<PgPool>,
 ) -> Result<impl IntoResponse, AppError> {
@@ -217,13 +237,10 @@ async fn logout(
                 .await;
         }
     }
-    let headers = AppendHeaders([
-        (
-            http::header::SET_COOKIE,
-            "session_token=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT",
-        ),
-        (http::header::REFERER, "/"),
-    ]);
+    let headers = AppendHeaders([(
+        SET_COOKIE,
+        format!("{SESSION_TOKEN}=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"),
+    ), (REFERER, "/".to_string())]);
     Ok((headers, Redirect::to("/")))
 }
 
