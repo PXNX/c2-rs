@@ -1,24 +1,27 @@
 {% extends "layout.html" %}
-{% block title %}Article Feed{% endblock %}
+{% block title %}Region Chat{% endblock %}
 
 {% block header %}
-
-<!-- bg-secondary -->
 <header class="sticky bg-base-100 top-0 ">
-    <div class="tabs tabs-boxed" role="tablist">
 
-        <a class="tab tab-active" hx-get="/chat/en" role="tab">Global</a>
-        <a class="tab " hx-get="/chat/team" role="tab">Team</a>
-        <a class="tab " hx-get="/chat/" role="tab">Personal</a>
+    <div class="tabs tabs-boxed" role="tablist">
+        <a href="/chat" class="tab" role="tab" aria-selected="false" aria-controls="tab-content">Contacts
+        </a>
+        <a href="/chat/en" class="tab-active tab" role="tab" aria-selected="true"
+           aria-controls="tab-content">Region
+        </a>
+
+        <a href="/chat/team" class="tab" role="tab" aria-selected="false" aria-controls="tab-content">Team
+        </a>
     </div>
 
 </header>
 {% endblock %}
 
-
 {% block main %}
-
 
 REGION
 
+
 {% endblock %}
+

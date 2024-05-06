@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block title %}World Map{% endblock %}
 {% block body %}
-<header class="sticky bg-base-100 top-0 p-2 flex items-center justify-end  gap-2 ">
+<header class="sticky bg-base-100 top-0 p-2 flex items-center justify-end  gap-2 touch-none">
     <form class="flex-1">
         <div class="relative">
             <svg class=" absolute left-2.5 top-2.5 h-4 w-4 text-zinc-500 dark:text-zinc-400" fill="none" height="24"
@@ -30,11 +30,12 @@
 
 
 <style>
-    #map {
+    #svg-container {
         height: 150vh;
         width: 70vw;
         background: linear-gradient(blue, green);
-        touch-action: pinch-zoom pan-x pan-y;
+
+
     }
 
 
@@ -139,7 +140,7 @@
 
 
 
-<div id="svg-container" ></div>
+<div id="svg-container" class="touch-pinch-zoom touch-pan-y touch-pan-x"></div>
 
 
 <script>

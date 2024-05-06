@@ -3,13 +3,13 @@
 
 <!-- FIXME: wtf is going on with bottom padding?? :( -->
 
-<body class=" m-0 p-0 flex flex-col h-[100dvh] w-full">
+<body class=" m-0 p-0 flex flex-col h-[100dvh] w-full ">
 
 {% block body %}{% endblock %}
 
 {% block header %}{% endblock %}
 
-<main class=" flex-1 overflow-y-auto pb-16  w-full  " hx-ext="multi-swap loading-states disable-element">
+<main class=" flex-1 overflow-y-auto pb-16  w-full " hx-ext="multi-swap loading-states disable-element">
 
     {% block main %}{% endblock %}
 
@@ -20,7 +20,7 @@
 
 class="transition-opacity ease-in fade_in duration-500  "
 -->
-<footer>
+<footer class="touch-none">
     <nav class="btm-nav  btm-nav-md ">
 
         <a class="flinch" href="/">

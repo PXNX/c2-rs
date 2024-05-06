@@ -1,33 +1,40 @@
-{% extends "layout.html" %}
-{% block title %}Article Feed{% endblock %}
-{% block header %}
+{% extends "base.html" %}
+{% block title %}Chat {{user_name}}{% endblock %}
+
+
+{% block page %}
+<body class=" m-0 p-0 flex flex-col h-[100dvh] w-full " hx-ext="ws" ws-connect="/chat/1/ws">
 
 <!-- bg-secondary -->
-<header class="sticky bg-base-100 top-0 ">
+<header class="sticky bg-base-100 top-0 p-2 flex-row flex justify-between w-full gap-1">
 
-    <!-- TODO: add TABS -->
-    <div class="tabs tabs-boxed" role="tablist">
+    <div class="flex-1 flex-row flex gap-1">
 
         <img alt="Tailwind CSS chat bubble component"
-             class="w-10 rounded-full" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"/>
+             class="w-8 h-8 rounded-full" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"/>
+
         <h2 class="font-semibold text-xl overflow-ellipsis">{{user_name}}</h2>
     </div>
+    <button type="submit" class="btn btn-circle btn-ghost btn-sm">
 
-    <hr class="divide-gray-200 dark:divide-gray-700">
+
+        <object type="image/svg+xml" data="/dist/icons/kebap.svg"  class="h-5 w-5" style="background-color: transparent; fill:transparent; background: transparent;"> <param wmode="transparent" /></object>
+
+
+
+    </button>
+
+
 </header>
 
-{% endblock %}
 
-{% block main %}
-
-USER
+<main class=" flex-1 overflow-y-auto pb-16  w-full items-end" hx-ext="multi-swap loading-states disable-element">
 
 
-<div class="flex flex-col m-2">
-    <div class="chat chat-start m-2">
+    <div class="chat chat-start ">
 
         <div class="chat-bubble">You were the Chosen One!</div>
-        <div class="chat-footer opacity-50">
+        <div class="chat-footer opacit y-50">
             <time class="text-xs opacity-50">12:45</time>
         </div>
     </div>
@@ -40,17 +47,34 @@ USER
         </div>
     </div>
 
-    <div hx-ext="ws" ws-connect="/chat/1/ws">
-        <div id="notifications"></div>
-        <div id="chat_messages">
-            ...
-        </div>
-        <form id="form" ws-send>
-            <input name="name">
-            <input name="message">
-            <input type="submit" value="Send Request"/>
 
-        </form>
+    <div id="notifications"></div>
+    <div id="chat_messages">
+        ...
     </div>
-</div>
+
+</main>
+
+
+<footer class="p-2  w-full">
+
+    <form id="form" ws-send class="flex-row flex justify-between w-full gap-1">
+        <input name="name" class="hidden" value="yeeee">
+        <textarea class="textarea  flex-1" name="message" placeholder="Bio"></textarea>
+        <button type="submit" class="btn btn-circle btn-sm btn-primary ">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 -rotate-45" fill="currentColor" viewBox="0 0 24 24"
+                 stroke="none">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/>
+            </svg>
+
+
+        </button>
+
+    </form>
+
+
+</footer>
+</body>
+
 {% endblock %}

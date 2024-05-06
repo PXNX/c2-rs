@@ -64,10 +64,12 @@ async fn create_profile(
 
     //todo: check if mail already exists, return error to user if so
 
+
+
     query!(
         r#"UPDATE users SET name = $1 WHERE id=$2;"#,
         input.user_name,
-    44//   user_data.unwrap().id
+     user_data.unwrap().id
     )
         .execute(&db_pool)
         .await?;

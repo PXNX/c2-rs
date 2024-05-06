@@ -764,6 +764,10 @@ video {
   margin: 0px !important;
 }
 
+.m-1 {
+  margin: 0.25rem !important;
+}
+
 .m-10 {
   margin: 2.5rem !important;
 }
@@ -1110,12 +1114,41 @@ video {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)) !important;
 }
 
+.rotate-45 {
+  --tw-rotate: 45deg !important;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)) !important;
+}
+
+.-rotate-45 {
+  --tw-rotate: -45deg !important;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)) !important;
+}
+
 .transform {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)) !important;
 }
 
 .cursor-pointer {
   cursor: pointer !important;
+}
+
+.touch-none {
+  touch-action: none !important;
+}
+
+.touch-pan-x {
+  --tw-pan-x: pan-x !important;
+  touch-action: var(--tw-pan-x) var(--tw-pan-y) var(--tw-pinch-zoom) !important;
+}
+
+.touch-pan-y {
+  --tw-pan-y: pan-y !important;
+  touch-action: var(--tw-pan-x) var(--tw-pan-y) var(--tw-pinch-zoom) !important;
+}
+
+.touch-pinch-zoom {
+  --tw-pinch-zoom: pinch-zoom !important;
+  touch-action: var(--tw-pan-x) var(--tw-pan-y) var(--tw-pinch-zoom) !important;
 }
 
 .grid-cols-2 {
@@ -1138,8 +1171,16 @@ video {
   flex-direction: column !important;
 }
 
+.content-center {
+  align-content: center !important;
+}
+
 .content-between {
   align-content: space-between !important;
+}
+
+.items-end {
+  align-items: flex-end !important;
 }
 
 .items-center {
@@ -1320,6 +1361,10 @@ video {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity)) !important;
 }
 
+.bg-transparent {
+  background-color: transparent !important;
+}
+
 .bg-\[url\(\'https\:\/\/source\.unsplash\.com\/random\.jpg\?soldier\'\)\] {
   background-image: url('https://source.unsplash.com/random.jpg?soldier') !important;
 }
@@ -1466,6 +1511,10 @@ video {
   padding: 1.5rem !important;
 }
 
+.p-1 {
+  padding: 0.25rem !important;
+}
+
 .px-0 {
   padding-left: 0px !important;
   padding-right: 0px !important;
@@ -1548,6 +1597,10 @@ video {
 
 .align-middle {
   vertical-align: middle !important;
+}
+
+.align-bottom {
+  vertical-align: bottom !important;
 }
 
 .text-2xl {

@@ -573,16 +573,17 @@ pub fn chat_router() -> Router<AppState> {
     let users = Users::default();
 
     Router::new()
+        .route("/user/:id", get(chat_user))
         .route("/", get(chats))
         .route("/team", get(chat_team))
         .route("/en", get(chat_region))
         .route("/:id/ws", get(ws_handler))
-        .route("/:id", get(chat_user))
+
 
         .layer(Extension(users))
-    /*    .route("/ws", get(create_chat).post(publish_chat))
+      //  .route("/ws", get(create_chat).post(publish_chat))
 
-     */
+
 }
 
 
