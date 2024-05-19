@@ -1,3 +1,4 @@
+#![feature(lazy_cell)]
 #![allow(unused)]
 use std::env;
 

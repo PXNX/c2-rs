@@ -764,10 +764,6 @@ video {
   margin: 0px !important;
 }
 
-.m-1 {
-  margin: 0.25rem !important;
-}
-
 .m-10 {
   margin: 2.5rem !important;
 }
@@ -1114,11 +1110,6 @@ video {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)) !important;
 }
 
-.rotate-45 {
-  --tw-rotate: 45deg !important;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)) !important;
-}
-
 .-rotate-45 {
   --tw-rotate: -45deg !important;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)) !important;
@@ -1169,10 +1160,6 @@ video {
 
 .flex-col {
   flex-direction: column !important;
-}
-
-.content-center {
-  align-content: center !important;
 }
 
 .content-between {
@@ -1272,6 +1259,10 @@ video {
   border-color: rgb(229 231 235 / var(--tw-divide-opacity)) !important;
 }
 
+.self-center {
+  align-self: center !important;
+}
+
 .overflow-hidden {
   overflow: hidden !important;
 }
@@ -1359,10 +1350,6 @@ video {
 .bg-white {
   --tw-bg-opacity: 1 !important;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity)) !important;
-}
-
-.bg-transparent {
-  background-color: transparent !important;
 }
 
 .bg-\[url\(\'https\:\/\/source\.unsplash\.com\/random\.jpg\?soldier\'\)\] {
@@ -1511,10 +1498,6 @@ video {
   padding: 1.5rem !important;
 }
 
-.p-1 {
-  padding: 0.25rem !important;
-}
-
 .px-0 {
   padding-left: 0px !important;
   padding-right: 0px !important;
@@ -1597,10 +1580,6 @@ video {
 
 .align-middle {
   vertical-align: middle !important;
-}
-
-.align-bottom {
-  vertical-align: bottom !important;
 }
 
 .text-2xl {

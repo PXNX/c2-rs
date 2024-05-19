@@ -8,6 +8,7 @@ use axum::extract::Path;
 use axum::response::Redirect;
 use axum::routing::{get, put};
 use axum_htmx::HX_REDIRECT;
+use comrak::{markdown_to_html, Options};
 use http::HeaderMap;
 use serde::{Deserialize, Serialize};
 use sqlx::{PgPool, query};
@@ -262,7 +263,7 @@ async fn view_article(
         user_id: user_id,
         article_id: article_id,
         article_title: article.title,
-        article_content: article.content,
+        article_content: markdown_to_html(&*article.content, &Options::default()) ,
         publish_date: format_date(article.created_at),
         author_name: article.author_name.unwrap_or("Author".to_string()),
         author_avatar: article.author_avatar.unwrap_or("".to_string()),

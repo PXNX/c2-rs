@@ -1,3 +1,4 @@
+use std::time::SystemTime;
 use askama::Template;
 use axum::{
     extract::{Extension, State},
@@ -21,6 +22,7 @@ use super::{AppState, UserData};
 struct WelcomeTemplate {
     login_return_url: String,
 }
+
 
 pub async fn welcome<T>(
     Extension(user_data): Extension<Option<UserData>>,

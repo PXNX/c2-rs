@@ -1,9 +1,21 @@
+use std::string::ToString;
+use std::time::SystemTime;
 use askama::Template;
 use axum::response::IntoResponse;
 use axum::Router;
 use axum::routing::get;
+use chrono::format::{DelayedFormat, StrftimeItems};
+use chrono::Utc;
+
+use lazy_static::lazy_static;
+use once_cell::sync::Lazy;
 
 use crate::auth::error_handling::AppError;
+use crate::getenv;
+
+
+use std::sync::LazyLock;
+use std::env::var;
 
 #[derive(Template)]
 #[template(path = "meta/cookies.html")]
@@ -29,12 +41,20 @@ pub async fn terms() -> Result<impl IntoResponse, AppError> {
     Ok(TermsTemplate {})
 }
 
+
+static VERSION: LazyLock<String> = LazyLock::new(|| {
+    getenv!("CARGO_PKG_VERSION")
+});
+
 #[derive(Template)]
 #[template(path = "meta/about.html")]
-struct AboutTemplate {}
+struct AboutTemplate {
+  version:  &'static String
+}
 
 pub async fn about() -> Result<impl IntoResponse, AppError> {
-    Ok(AboutTemplate {})
+    Ok(AboutTemplate { version: &*VERSION
+    })
 }
 
 pub fn meta_router() -> Router {

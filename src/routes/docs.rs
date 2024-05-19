@@ -9,6 +9,7 @@ use crate::auth::error_handling::AppError;
 
 use axum::extract::{Path, State};
 use axum_extra::response::Html;
+use comrak::{markdown_to_html, Options};
 use http::StatusCode;
 use sqlx::{PgPool, query};
 use tracing::error;
@@ -60,7 +61,7 @@ pub async fn docs(  Extension(user_data): Extension<Option<UserData>>,
 
     Ok(DocsTemplate {
         title: docs_result.title,
-        content: docs_result.content,
+        content: markdown_to_html(&*docs_result.content, &Options::default()) ,
         changed_at: docs_result.changed_at,
         changed_id: docs_result.changed_by,
         changed_name: "Author".to_string(),
